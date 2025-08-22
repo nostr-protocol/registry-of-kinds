@@ -103,12 +103,6 @@ _etag: &etag
         next:
           type: free
 
-2:
-  description: Recommend Relay
-  content: free
-  deprecated: true
-  tags: []
-
 3:
   description: Follows
   content: json
@@ -386,12 +380,6 @@ _etag: &etag
 1337:
   description: Code Snippet
   content: free
-  tags: []
-
-1622:
-  description: Git Replies (deprecated)
-  content: free
-  deprecated: true
   tags: []
 
 1971:
@@ -1515,12 +1503,6 @@ _etag: &etag
 30000:
   description: Follow sets
   content: empty
-  tags: []
-
-30001:
-  description: Generic lists
-  content: empty
-  deprecated: true
   tags: []
 
 30002:

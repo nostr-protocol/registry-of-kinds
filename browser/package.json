@@ -1,0 +1,22 @@
+{
+  "name": "nostr-kinds-registry",
+  "version": "1.0.0",
+  "description": "Registry of Nostr event kinds viewer",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "solid-js": "^1.9.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.12",
+    "autoprefixer": "^10.4.21",
+    "tailwindcss": "^4.1.12",
+    "vite": "^5.0.0",
+    "vite-plugin-solid": "^2.8.0"
+  }
+}
