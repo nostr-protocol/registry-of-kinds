@@ -12,7 +12,7 @@ function App() {
   // load schema.yaml on mount
   onMount(async () => {
     try {
-      const response = await fetch('/schema.yaml');
+      const response = await fetch('schema.yaml');
       if (!response.ok) throw new Error('Failed to load schema.yaml');
       const text = await response.text();
       const data = yaml.load(text);

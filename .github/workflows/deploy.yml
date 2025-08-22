@@ -1,0 +1,59 @@
+name: deploy to github pages
+
+on:
+  push:
+    branches: ["master"]
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+
+      - name: set up node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: install dependencies
+        run: npm install
+        working-directory: ./browser
+
+      - name: delete schema.yaml symlink
+        run: rm browser/public/schema.yaml
+
+      - name: copy schema.yaml to browser public folder
+        run: cp schema.yaml browser/public/schema.yaml
+
+      - name: build project
+        run: npm run build
+        working-directory: ./browser
+        env:
+          NODE_ENV: production
+
+      - name: setup pages
+        uses: actions/configure-pages@v4
+
+      - name: upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './browser/dist'
+
+      - name: deploy to github pages
+        id: deployment
+        uses: actions/deploy-pages@v4
