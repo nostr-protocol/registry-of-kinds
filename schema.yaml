@@ -40,6 +40,18 @@ _etag: &etag
   name: e
   next: *event
 
+_etag-bare: &etag-bare
+  name: e
+  next:
+    type: id
+    required: true
+
+_atag-bare: &atag-bare
+  name: a
+  next:
+    type: addr
+    required: true
+
 0:
   description: User Metadata
   content: json
@@ -119,7 +131,8 @@ _etag: &etag
   description: Event Deletion Request
   content: empty
   tags:
-    - *etag
+    - *etag-bare
+    - *atag-bare
 
 6:
   description: Repost

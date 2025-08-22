@@ -1,4 +1,4 @@
-import { createSignal, createEffect, Show, For, onMount } from 'solid-js';
+import { createSignal, Show, For, onMount } from 'solid-js';
 import { createStore } from 'solid-js/store';
 import yaml from 'js-yaml';
 
@@ -9,7 +9,7 @@ function App() {
   const [loading, setLoading] = createSignal(true);
   const [error, setError] = createSignal(null);
 
-  // Load schema.yaml on mount
+  // load schema.yaml on mount
   onMount(async () => {
     try {
       const response = await fetch('/schema.yaml');
@@ -17,10 +17,9 @@ function App() {
       const text = await response.text();
       const data = yaml.load(text);
 
-      // Transform the schema into an array of kinds
       const kindsList = [];
       for (const [key, value] of Object.entries(data)) {
-        // Skip aliases (keys starting with _)
+        // skip anchors (keys starting with _)
         if (key.startsWith('_')) continue;
 
         kindsList.push({
@@ -31,10 +30,13 @@ function App() {
         });
       }
 
-      // Sort by kind number
+      // sort by kind number
       kindsList.sort((a, b) => a.number - b.number);
       setKinds(kindsList);
       setLoading(false);
+
+      // Load kind from hash if present
+      loadKindFromHash();
     } catch (err) {
       console.error('Error loading schema:', err);
       setError(err.message);
@@ -42,19 +44,43 @@ function App() {
     }
   });
 
-  // Filter kinds based on search term
-  const filteredKinds = () => {
+  // handle hash routing
+  function loadKindFromHash () {
+    const hash = window.location.hash;
+    if (hash.startsWith('#kind-')) {
+      const kindNumber = parseInt(hash.replace('#kind-', ''));
+      const kind = kinds.find(k => k.number === kindNumber);
+      if (kind) {
+        setSelectedKind(kind);
+      }
+    }
+  };
+
+  // Listen for hash changes
+  onMount(() => {
+    const handleHashChange = () => loadKindFromHash();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  });
+
+  // update hash when kind is selected
+  function selectKind (kind) {
+    setSelectedKind(kind);
+    window.location.hash = `#kind-${kind.number}`;
+  };
+
+  function filteredKinds () {
     const term = searchTerm().toLowerCase();
     if (!term) return kinds;
 
     return kinds.filter(kind =>
       kind.number.toString().includes(term) ||
-      kind.description.toLowerCase().includes(term)
+      kind.description.toLowerCase().includes(term) ||
+      kind.tags.map(t => t.name).join('').includes(term)
     );
   };
 
-  // Generate example JSON for selected kind
-  const generateExampleJson = (kind) => {
+  function generateExampleJson (kind) {
     const event = {
       id: "<32-bytes lowercase hex>",
       pubkey: "<32-bytes lowercase hex>",
@@ -62,82 +88,64 @@ function App() {
       kind: kind.number,
       tags: [],
       content: "",
-      sig: "<64-bytes lowercase hex>"
+      sig: "<64-bytes-lowercase-hex>"
     };
 
     // Add example content based on content type
     switch (kind.content) {
       case 'json':
-        event.content = JSON.stringify({ example: "data" });
+        event.content = JSON.stringify({ json: "text" });
         break;
       case 'free':
-        event.content = "Example text content";
+        event.content = "<some-text>";
         break;
       case 'empty':
-        event.content = "";
+        event.content = "<empty>";
         break;
       default:
-        event.content = "";
+        event.content = "<some-text>";
     }
 
-    // Add example tags
     if (kind.tags && kind.tags.length > 0) {
       for (const tagDef of kind.tags) {
         const tagName = tagDef.name || tagDef.prefix;
         if (tagName) {
           const tag = [tagName];
 
-          // Add example values based on tag type
-          if (tagDef.next) {
-            switch (tagDef.next.type) {
+          let nextDef = tagDef.next;
+          while (nextDef) {
+            switch (nextDef.type) {
               case 'id':
-                tag.push("<event-id>");
+                tag.push("<32-bytes-lowercase-hex-event-id>");
                 break;
               case 'pubkey':
-                tag.push("<pubkey>");
+                tag.push("<32-bytes-lowercase-hex-pubkey>");
                 break;
               case 'relay':
-                tag.push("wss://relay.example.com");
+                tag.push("wss://relay.tld");
                 break;
               case 'url':
-                tag.push("https://example.com");
+                tag.push("https://website.tld/path");
                 break;
               case 'free':
-                tag.push("example value");
+                tag.push("<some-value>");
                 break;
               case 'addr':
-                tag.push("<kind>:<pubkey>:<d-tag>");
+                tag.push("<stringified-kind-number>:<lowercase-hex-pubkey>:<d-tag>");
+                break;
+              case 'constrained':
+                if (nextDef.either && nextDef.either.length > 0) {
+                  tag.push(nextDef.either[Math.floor(Math.random() * nextDef.either.length)]);
+                }
                 break;
               case 'kind':
-                tag.push("1");
+                tag.push("<stringified-kind-number>");
                 break;
               default:
-                tag.push("value");
+                tag.push("<some-value>");
             }
 
-            // Add more values if there are nested 'next' properties
-            let nextDef = tagDef.next.next;
-            while (nextDef) {
-              switch (nextDef.type) {
-                case 'relay':
-                  tag.push("wss://relay.example.com");
-                  break;
-                case 'constrained':
-                  if (nextDef.either && nextDef.either.length > 0) {
-                    tag.push(nextDef.either[0]);
-                  }
-                  break;
-                case 'free':
-                  tag.push("value");
-                  break;
-                case 'pubkey':
-                  tag.push("<pubkey>");
-                  break;
-                default:
-                  if (nextDef.type) tag.push(nextDef.type);
-              }
-              nextDef = nextDef.next;
-            }
+            nextDef = nextDef.next;
           }
 
           event.tags.push(tag);
@@ -148,20 +156,21 @@ function App() {
     return JSON.stringify(event, null, 2);
   };
 
-  // Format JSON with syntax highlighting
-  const formatJson = (json) => {
+  function formatJson (json) {
     return json
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
       .replace(/("[^"]+":)/g, '<span class="text-purple-400">$1</span>')
-      .replace(/(: "[^"]*")/g, ': <span class="text-green-400">$1</span>')
+      .replace(/(: "[^"]*")/g, ': <span class="text-emerald-400">$1</span>')
       .replace(/(: \d+)/g, ': <span class="text-yellow-400">$1</span>')
       .replace(/(: null)/g, ': <span class="text-red-400">$1</span>');
   };
 
   return (
-    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <div class="min-h-screen bg-gradient-to-br from-yellow-50 to-emerald-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="text-center mb-12">
-          <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">
+          <h1 class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-800 bg-clip-text text-transparent mb-4">
             Nostr Event Kinds Registry
           </h1>
           <p class="text-gray-600 text-lg">
@@ -185,7 +194,7 @@ function App() {
           <div class="mb-8">
             <input
               type="text"
-              class="w-full px-6 py-3 text-gray-700 bg-white border-2 border-gray-200 rounded-xl shadow-sm focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all placeholder-gray-400"
+              class="w-full px-6 py-3 text-gray-700 bg-white border-2 border-amber-200 rounded-xl shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 transition-all placeholder-gray-400"
               placeholder="Search by kind number or description..."
               value={searchTerm()}
               onInput={(e) => setSearchTerm(e.target.value)}
@@ -193,10 +202,10 @@ function App() {
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+            <div class="bg-amber-50 rounded-xl shadow-lg overflow-hidden border border-amber-200">
               <div class="max-h-[70vh] overflow-y-auto">
                 <table class="w-full">
-                  <thead class="sticky top-0 bg-gray-50 border-b-2 border-gray-200">
+                  <thead class="sticky top-0 bg-amber-100 border-b-2 border-amber-300">
                     <tr>
                       <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                         Kind
@@ -210,15 +219,15 @@ function App() {
                     <For each={filteredKinds()}>
                       {(kind) => (
                         <tr
-                          class={`cursor-pointer transition-colors hover:bg-purple-50 ${
+                          class={`cursor-pointer transition-colors hover:bg-emerald-50 ${
                             selectedKind()?.number === kind.number
-                              ? 'bg-purple-100 hover:bg-purple-100'
+                              ? 'bg-emerald-100 hover:bg-emerald-100'
                               : ''
                           }`}
-                          onClick={() => setSelectedKind(kind)}
+                          onClick={() => selectKind(kind)}
                         >
                           <td class="px-6 py-4">
-                            <span class="font-mono font-semibold text-purple-600">
+                            <span class="font-mono font-semibold text-emerald-600">
                               {kind.number}
                             </span>
                           </td>
@@ -233,7 +242,7 @@ function App() {
               </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-8 lg:sticky lg:top-8 self-start">
+            <div class="bg-amber-50 rounded-xl shadow-lg border border-amber-200 p-8 lg:sticky lg:top-8 self-start">
               <Show
                 when={selectedKind()}
                 fallback={
@@ -260,7 +269,7 @@ function App() {
                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                       Content Type
                     </h3>
-                    <span class="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-md font-medium">
+                    <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-md font-medium">
                       {selectedKind().content}
                     </span>
                   </div>
@@ -272,19 +281,40 @@ function App() {
                       </h3>
                       <div class="space-y-2">
                         <For each={selectedKind().tags}>
-                          {(tag) => (
-                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                              <div class="font-semibold text-purple-600">
-                                {tag.name || 'unnamed'}
-                              </div>
-                              <Show when={tag.next}>
-                                <div class="text-sm text-gray-600 mt-1">
-                                  Type: {tag.next.type}
-                                  {tag.next.required && ' (required)'}
+                          {(tag) => {
+                            function getNextTypes (nextSpec) {
+                              const types = [];
+                              let current = nextSpec;
+                              while (current) {
+                                let typeInfo = current.type;
+                                if (current.type === 'constrained' && current.either) {
+                                  typeInfo += ` (${current.either.join(', ')})`;
+                                }
+                                types.push(typeInfo);
+                                current = current.next;
+                              }
+                              return types;
+                            };
+
+                            return (
+                              <div class="bg-amber-100 border border-amber-300 rounded-lg p-3">
+                                <div class="font-semibold text-emerald-600">
+                                  {tag.name || tag.prefix || 'unnamed'}
                                 </div>
-                              </Show>
-                            </div>
-                          )}
+                                <Show when={tag.next}>
+                                  <div class="text-sm text-gray-600 mt-2">
+                                    <ul class="list-disc my-1 ml-0.5 list-inside space-y-1">
+                                      <For each={getNextTypes(tag.next)}>
+                                        {(type) => (
+                                          <li class="text-xs">{type}</li>
+                                        )}
+                                      </For>
+                                    </ul>
+                                  </div>
+                                </Show>
+                              </div>
+                            );
+                          }}
                         </For>
                       </div>
                     </div>
@@ -294,7 +324,7 @@ function App() {
                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
                       Example JSON Event
                     </h3>
-                    <pre class="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm font-mono">
+                    <pre class="bg-black text-emerald-100 p-4 rounded-lg overflow-x-auto text-sm font-mono">
                       <code innerHTML={formatJson(generateExampleJson(selectedKind()))} />
                     </pre>
                   </div>
