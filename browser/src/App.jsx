@@ -160,32 +160,30 @@ function App() {
     return json
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
-      .replace(/("[^"]+":)/g, '<span class="text-purple-400">$1</span>')
-      .replace(/(: "[^"]*")/g, ': <span class="text-emerald-400">$1</span>')
-      .replace(/(: \d+)/g, ': <span class="text-yellow-400">$1</span>')
-      .replace(/(: null)/g, ': <span class="text-red-400">$1</span>');
+      .replace(/("[^"]+":)/g, '<span class="font-bold">$1</span>')
+      .replace(/(: null)/g, ': <span class="italic">$1</span>');
   };
 
   return (
-    <div class="min-h-screen bg-gradient-to-br from-yellow-50 to-emerald-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="min-h-screen bg-white text-black font-mono">
+      <div class="max-w-7xl mx-auto px-4 py-8">
         <div class="text-center mb-12">
-          <h1 class="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-emerald-800 bg-clip-text text-transparent mb-4">
+          <h1 class="text-4xl font-bold mb-4">
             Nostr Event Kinds Registry
           </h1>
-          <p class="text-gray-600 text-lg">
+          <p class="text-lg">
             Browse and explore Nostr protocol event definitions
           </p>
         </div>
 
         <Show when={loading()}>
           <div class="flex items-center justify-center h-64">
-            <div class="text-gray-600 text-lg">Loading schema...</div>
+            <div class="text-lg">Loading schema...</div>
           </div>
         </Show>
 
         <Show when={error()}>
-          <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-red-800">
+          <div class="border-2 border-black p-6">
             Error: {error()}
           </div>
         </Show>
@@ -194,7 +192,7 @@ function App() {
           <div class="mb-8">
             <input
               type="text"
-              class="w-full px-6 py-3 text-gray-700 bg-white border-2 border-amber-200 rounded-xl shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200 transition-all placeholder-gray-400"
+              class="w-full px-4 py-2 bg-white border-2 border-black focus:outline-none"
               placeholder="Search by kind number or description..."
               value={searchTerm()}
               onInput={(e) => setSearchTerm(e.target.value)}
@@ -202,36 +200,36 @@ function App() {
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="bg-amber-50 rounded-xl shadow-lg overflow-hidden border border-amber-200">
+            <div class="bg-white border-2 border-black">
               <div class="max-h-[70vh] overflow-y-auto">
                 <table class="w-full">
-                  <thead class="sticky top-0 bg-amber-100 border-b-2 border-amber-300">
+                  <thead class="sticky top-0 bg-white border-b-2 border-black">
                     <tr>
-                      <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th class="px-4 py-2 text-left font-bold">
                         Kind
                       </th>
-                      <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      <th class="px-4 py-2 text-left font-bold">
                         Description
                       </th>
                     </tr>
                   </thead>
-                  <tbody class="divide-y divide-gray-100">
+                  <tbody class="divide-y divide-black">
                     <For each={filteredKinds()}>
                       {(kind) => (
                         <tr
-                          class={`cursor-pointer transition-colors hover:bg-emerald-50 ${
+                          class={`cursor-pointer hover:bg-gray-200 ${
                             selectedKind()?.number === kind.number
-                              ? 'bg-emerald-100 hover:bg-emerald-100'
+                              ? 'bg-gray-300'
                               : ''
                           }`}
                           onClick={() => selectKind(kind)}
                         >
-                          <td class="px-6 py-4">
-                            <span class="font-mono font-semibold text-emerald-600">
+                          <td class="px-4 py-2">
+                            <span class="font-bold">
                               {kind.number}
                             </span>
                           </td>
-                          <td class="px-6 py-4 text-gray-700">
+                          <td class="px-4 py-2">
                             {kind.description}
                           </td>
                         </tr>
@@ -242,42 +240,42 @@ function App() {
               </div>
             </div>
 
-            <div class="bg-amber-50 rounded-xl shadow-lg border border-amber-200 p-8 lg:sticky lg:top-8 self-start">
+            <div class="bg-white border-2 border-black p-8 lg:sticky lg:top-8 self-start">
               <Show
                 when={selectedKind()}
                 fallback={
-                  <div class="flex items-center justify-center h-96 text-gray-400">
+                  <div class="flex items-center justify-center h-96">
                     Select an event kind to view details
                   </div>
                 }
               >
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">
+                <h2 class="text-2xl font-bold mb-6">
                   Kind {selectedKind().number}
                 </h2>
 
                 <div class="space-y-6">
                   <div>
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                      Description
+                    <h3 class="text-sm font-bold mb-2">
+                      Description:
                     </h3>
-                    <p class="text-gray-700 text-lg">
+                    <p class="text-lg">
                       {selectedKind().description}
                     </p>
                   </div>
 
                   <div>
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                      Content Type
+                    <h3 class="text-sm font-bold mb-2">
+                      Content Type:
                     </h3>
-                    <span class="inline-block px-3 py-1 bg-emerald-100 text-emerald-700 rounded-md font-medium">
+                    <span class="inline-block px-2 py-1 border border-black font-bold">
                       {selectedKind().content}
                     </span>
                   </div>
 
                   <Show when={selectedKind().tags && selectedKind().tags.length > 0}>
                     <div>
-                      <h3 class="text-sm font-semibold text-gray-700 mb-3">
-                        Supported Tags
+                      <h3 class="text-sm font-bold mb-3">
+                        Supported Tags:
                       </h3>
                       <div class="space-y-2">
                         <For each={selectedKind().tags}>
@@ -297,16 +295,16 @@ function App() {
                             };
 
                             return (
-                              <div class="bg-amber-100 border border-amber-300 rounded-lg p-3">
-                                <div class="font-semibold text-emerald-600">
+                              <div class="border border-black p-3">
+                                <div class="font-bold">
                                   {tag.name || tag.prefix || 'unnamed'}
                                 </div>
                                 <Show when={tag.next}>
-                                  <div class="text-sm text-gray-600 mt-2">
-                                    <ul class="list-disc my-1 ml-0.5 list-inside space-y-1">
+                                  <div class="text-sm mt-2">
+                                    <ul class="list-disc ml-4 space-y-1">
                                       <For each={getNextTypes(tag.next)}>
                                         {(type) => (
-                                          <li class="text-xs">{type}</li>
+                                          <li class="text-sm">{type}</li>
                                         )}
                                       </For>
                                     </ul>
@@ -321,10 +319,10 @@ function App() {
                   </Show>
 
                   <div>
-                    <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                      Example JSON Event
+                    <h3 class="text-sm font-bold mb-2">
+                      Example JSON Event:
                     </h3>
-                    <pre class="bg-black text-emerald-100 p-4 rounded-lg overflow-x-auto text-sm font-mono">
+                    <pre class="bg-black text-white p-4 border border-black overflow-x-auto text-sm font-mono">
                       <code innerHTML={formatJson(generateExampleJson(selectedKind()))} />
                     </pre>
                   </div>
