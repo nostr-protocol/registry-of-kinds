@@ -53,12 +53,12 @@ _atag-bare: &atag-bare
     required: true
 
 0:
-  description: User Metadata
+  description: User metadata
   content: json
   tags: []
 
 1:
-  description: Short Text Note
+  description: Short text note
   content: free
   tags:
     -
@@ -322,11 +322,14 @@ _atag-bare: &atag-bare
   description: Chess (PGN)
   content: free
   tags:
-    -
-      name: alt
-      next:
-        type: free
-        required: true
+     -
+       name: alt
+       next:
+         type: free
+         required: true
+     -
+       name: p
+       next: *profile
 
 818:
   description: Merge Requests
@@ -373,7 +376,17 @@ _atag-bare: &atag-bare
 1040:
   description: OpenTimestamps
   content: free
-  tags: []
+  tags:
+     -
+       name: e
+       next:
+         type: id
+         required: true
+         next:
+           type: relay
+     -
+       name: k
+       next: *kind
 
 1222:
   description: Voice Message
@@ -413,12 +426,42 @@ _atag-bare: &atag-bare
 2003:
   description: Torrent
   content: free
-  tags: []
+  tags:
+     -
+       name: title
+       next:
+         type: free
+         required: true
+     -
+       name: x
+       next:
+         type: free
+         required: true
+     -
+       name: file
+       next:
+         type: free
+         required: true
+         next:
+           type: free
+     -
+       name: tracker
+       next:
+         type: url
+     -
+       name: i
+       next:
+         type: free
+     -
+       name: t
+       next:
+         type: free
 
 2004:
   description: Torrent Comment
   content: free
-  tags: []
+  tags:
+     - *etag
 
 2022:
   description: Coinjoin Pool
@@ -824,41 +867,53 @@ _atag-bare: &atag-bare
   description: HTTP Auth
   content: empty
   tags:
-    -
-      name: u
-      next:
-        type: url
-        required: true
-    -
-      name: method
-      next:
-        type: constrained
-        either:
-          - GET
-          - POST
-          - PUT
-          - DELETE
-        required: true
+     -
+       name: u
+       next:
+         type: url
+         required: true
+     -
+       name: method
+       next:
+         type: constrained
+         either:
+           - GET
+           - POST
+           - PUT
+           - DELETE
+         required: true
+     -
+       name: payload
+       next:
+         type: free
 
 10000:
   description: Mute list
   content: empty
-  tags: []
+  tags:
+     - *ptag
 
 10001:
   description: Pin list
   content: empty
-  tags: []
+  tags:
+     - *etag
+     - *ptag
+     - *atag
 
 10003:
   description: Bookmark list
   content: empty
-  tags: []
+  tags:
+     - *etag
+     - *ptag
+     - *atag
 
 10004:
   description: Communities list
   content: empty
-  tags: []
+  tags:
+     - *atag
 
 10005:
   description: Public chats list
@@ -878,7 +933,16 @@ _atag-bare: &atag-bare
 10009:
   description: User groups
   content: empty
-  tags: []
+  tags:
+     -
+       name: group
+       next:
+         type: free
+         required: true
+         next:
+           type: relay
+           next:
+             type: free
 
 10012:
   description: Favorite relays list
@@ -911,14 +975,24 @@ _atag-bare: &atag-bare
   tags: []
 
 10063:
-  description: User server list
+  description: Blossom server list
   content: empty
-  tags: []
+  tags:
+    -
+      name: server
+      next:
+        type: url
+        required: true
 
 10096:
   description: File storage server list
   content: empty
-  tags: []
+  tags:
+    -
+      name: server
+      next:
+        type: url
+        required: true
 
 10166:
   description: Relay Monitor Announcement
@@ -1234,47 +1308,51 @@ _atag-bare: &atag-bare
   description: Date-Based Calendar Event
   content: free
   tags:
-    - *dtag
-    -
-      name: title
-      next:
-        type: free
-        required: true
-    -
-      name: summary
-      next:
-        type: free
-    -
-      name: image
-      next:
-        type: url
-    -
-      name: location
-      next:
-        type: free
-    -
-      name: g
-      next:
-        type: free
-    - *ptag
-    -
-      name: t
-      next:
-        type: free
-    -
-      name: r
-      next:
-        type: url
-    - *atag
-    -
-      name: start
-      next:
-        type: free
-        required: true
-    -
-      name: end
-      next:
-        type: free
+     - *dtag
+     -
+       name: title
+       next:
+         type: free
+         required: true
+     -
+       name: summary
+       next:
+         type: free
+     -
+       name: image
+       next:
+         type: url
+     -
+       name: location
+       next:
+         type: free
+     -
+       name: g
+       next:
+         type: free
+     - *ptag
+     -
+       name: t
+       next:
+         type: free
+     -
+       name: r
+       next:
+         type: url
+     - *atag
+     -
+       name: start
+       next:
+         type: free
+         required: true
+     -
+       name: end
+       next:
+         type: free
+     -
+       name: description
+       next:
+         type: free
 
 31923:
   description: Time-Based Calendar Event
@@ -1329,43 +1407,51 @@ _atag-bare: &atag-bare
       name: end_tzid
       next:
         type: free
+    -
+      name: start_tzid
+      next:
+        type: free
+    -
+      name: end_tzid
+      next:
+        type: free
 
 31924:
   description: Calendar
   content: free
   tags:
-    - *dtag
-    -
-      name: title
-      next:
-        type: free
-        required: true
-    - *atag
+     - *dtag
+     -
+       name: title
+       next:
+         type: free
+         required: true
+     - *atag
 
 31925:
   description: Calendar Event RSVP
   content: free
   tags:
-    - *dtag
-    - *etag
-    - *atag
-    -
-      name: status
-      next:
-        type: constrained
-        either:
-          - accepted
-          - declined
-          - tentative
-        required: true
-    -
-      name: fb
-      next:
-        type: constrained
-        either:
-          - free
-          - busy
-    - *ptag
+     - *dtag
+     - *etag
+     - *atag
+     -
+       name: status
+       next:
+         type: constrained
+         either:
+           - accepted
+           - declined
+           - tentative
+         required: true
+     -
+       name: fb
+       next:
+         type: constrained
+         either:
+           - free
+           - busy
+     - *ptag
 
 31989:
   description: Handler recommendation
