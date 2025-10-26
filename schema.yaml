@@ -40,6 +40,16 @@ _etag: &etag
   name: e
   next: *event
 
+_ktag: &ktag
+  name: k
+  next: *kind
+
+_ptag-bare: &ptag-bare
+  name: p
+  next:
+    type: pubkey
+    required: true
+
 _etag-bare: &etag-bare
   name: e
   next:
@@ -244,9 +254,7 @@ _atag-bare: &atag-bare
   tags:
     - *etag
     - *ptag
-    -
-      name: k
-      next: *kind
+    - *ktag
 
 17:
   description: Reaction to a website
@@ -322,14 +330,7 @@ _atag-bare: &atag-bare
   description: Chess (PGN)
   content: free
   tags:
-     -
-       name: alt
-       next:
-         type: free
-         required: true
-     -
-       name: p
-       next: *profile
+    - *ptag
 
 818:
   description: Merge Requests
@@ -342,11 +343,7 @@ _atag-bare: &atag-bare
   description: Poll Response
   content: empty
   tags:
-    -
-      name: e
-      next:
-        type: id
-        required: true
+    - *etag
     -
       name: response
       next:
@@ -357,36 +354,20 @@ _atag-bare: &atag-bare
   description: Bid
   content: free
   tags:
-    -
-      name: e
-      next:
-        type: id
-        required: true
+    - *etag
 
 1022:
   description: Bid confirmation
   content: json
   tags:
-    -
-      name: e
-      next:
-        type: id
-        required: true
+    - *etag
 
 1040:
   description: OpenTimestamps
   content: free
   tags:
-     -
-       name: e
-       next:
-         type: id
-         required: true
-         next:
-           type: relay
-     -
-       name: k
-       next: *kind
+     - *etag
+     - *ktag
 
 1222:
   description: Voice Message
@@ -396,7 +377,46 @@ _atag-bare: &atag-bare
 1244:
   description: Voice Message Comment
   content: free
-  tags: []
+  tags:
+    -
+      name: A
+      next: *addr
+    -
+      name: a
+      next: *addr
+    -
+      name: E
+      next: *event
+    -
+      name: e
+      next: *event
+    -
+      name: I
+      next: &external
+        type: free
+        required: true
+        next:
+          type: url
+    -
+      name: i
+      next: *external
+    -
+      name: K
+      next: *kind
+    -
+      name: K
+      next:
+        type: free
+        required: true
+    -
+      name: k
+      next: *kind
+    -
+      name: P
+      next: *profile
+    -
+      name: p
+      next: *profile
 
 1311:
   description: Live Chat Message
@@ -501,7 +521,21 @@ _atag-bare: &atag-bare
 9321:
   description: Nutzap
   content: free
-  tags: []
+  tags:
+    -
+      name: proof
+      next:
+        type: free
+        required: true
+        variadic: true
+    -
+      name: u
+      next:
+        type: url
+        required: true
+    - *etag-bare
+    - *ktag
+    - *ptag
 
 9467:
   description: Tidal login
@@ -574,10 +608,6 @@ _atag-bare: &atag-bare
       next:
         type: free
     -
-      name: alt
-      next:
-        type: free
-    -
       name: fallback
       next:
         type: url
@@ -624,11 +654,6 @@ _atag-bare: &atag-bare
     - *ptag
     -
       name: subject
-      next:
-        type: free
-        required: true
-    -
-      name: t
       next:
         type: free
         required: true
@@ -736,9 +761,7 @@ _atag-bare: &atag-bare
     - *ptag
     - *etag
     - *atag
-    -
-      name: k
-      next: *kind
+    - *ktag
 
 9735:
   description: Zap
@@ -747,13 +770,9 @@ _atag-bare: &atag-bare
     - *ptag
     -
       name: P
-      next:
-        type: pubkey
-        required: true
+      next: *profile
     - *etag
-    -
-      name: k
-      next: *kind
+    - *ktag
     -
       name: bolt11
       next:
@@ -832,18 +851,13 @@ _atag-bare: &atag-bare
   description: Highlights
   content: free
   tags:
-    -
-      name: p
-      next: *profile
+    - *ptag
     - *etag
-    -
-      name: a
-      next: *addr
+    - *atag
     -
       name: r
       next:
         type: url
-        required: true
     -
       name: context
       next:
@@ -881,6 +895,7 @@ _atag-bare: &atag-bare
            - POST
            - PUT
            - DELETE
+           - PATCH
          required: true
      -
        name: payload
@@ -962,7 +977,22 @@ _atag-bare: &atag-bare
 10019:
   description: Nutzap Mint Recommendation
   content: empty
-  tags: []
+  tags:
+    -
+      name: relay
+      next:
+        type: relay
+        required: true
+    -
+      name: mint
+      next:
+        type: url
+        required: true
+    -
+      name: pubkey
+      next:
+        type: pubkey
+        required: true
 
 10020:
   description: Media follows
