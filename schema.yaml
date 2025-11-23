@@ -58,27 +58,33 @@ _emojitag: &emojitag
       type: url
       required: true
 
-_title: &title
+_title: &titletag
   name: title
   next:
     type: free
 
-_image: &image
+_image: &imagetag
   name: image
   next:
     type: url
     required: true
 
-_description: &description
+_description: &descriptiontag
   name: description
   next:
     type: free
     required: true
 
-_summary: &summary
+_summary: &summarytag
   name: summary
   next:
     type: free
+    required: true
+
+_publishedattag: &publishedattag
+  name: published_at
+  next:
+    type: numeric
     required: true
 
 _atag: &atag
@@ -285,7 +291,7 @@ kinds:
     content:
       type: free
     tags:
-      - *title
+      - *titletag
 
   13:
    description: Seal
@@ -373,13 +379,13 @@ kinds:
       - *rtag
 
   20:
-    description: Picture
+    description: Photo
     content:
       type: free
     required:
       - imeta
     tags:
-      - *title
+      - *titletag
       - *imetatag
       -
         name: content-warning
@@ -412,6 +418,82 @@ kinds:
           type: free
           required: true
       - *gtag
+
+  21:
+    description: Normal Video Event
+    content:
+      type: free
+    required:
+      - imeta
+    tags:
+      - *titletag
+      - *publishedattag
+      - *imetatag
+      -
+        name: content-warning
+        next:
+          type: free
+          required: true
+      -
+        name: segment
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+            next:
+              type: free
+              required: true
+              next:
+                type: url
+      - *ptag
+      - *rtag
+      -
+        name: text-track
+        next:
+          type: json
+          required: true
+          next:
+            type: relay
+
+  22:
+    description: Short Video Event
+    content:
+      type: free
+    required:
+      - imeta
+    tags:
+      - *titletag
+      - *publishedattag
+      - *imetatag
+      -
+        name: content-warning
+        next:
+          type: free
+          required: true
+      -
+        name: segment
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+            next:
+              type: free
+              required: true
+              next:
+                type: url
+      - *ptag
+      - *rtag
+      -
+        name: text-track
+        next:
+          type: json
+          required: true
+          next:
+            type: relay
 
   40:
     description: Channel Creation
@@ -600,7 +682,7 @@ kinds:
     content:
       type: free
     tags:
-      - *title
+      - *titletag
       -
          name: x
          next:
@@ -759,8 +841,8 @@ kinds:
         next:
           type: url
           required: true
-      - *image
-      - *summary
+      - *imagetag
+      - *summarytag
       -
         name: fallback
         next:
@@ -850,8 +932,8 @@ kinds:
         name: closed_at
         next:
           type: free
-      - *image
-      - *summary
+      - *imagetag
+      - *summarytag
       - *rtag
       - *atag
       -
@@ -1265,8 +1347,8 @@ kinds:
         next:
           type: free
           required: true
-      - *description
-      - *image
+      - *descriptiontag
+      - *imagetag
       -
         name: thumb
         next:
@@ -1297,14 +1379,10 @@ kinds:
     content:
       type: free
     tags:
-      - *title
-      - *image
-      - *summary
-      -
-        name: published_at
-        next:
-          type: free
-          required: true
+      - *titletag
+      - *imagetag
+      - *summarytag
+      - *publishedattag
       - *etag
       - *atag
 
@@ -1313,14 +1391,10 @@ kinds:
     content:
       type: free
     tags:
-      - *title
-      - *image
-      - *summary
-      -
-        name: published_at
-        next:
-          type: free
-          required: true
+      - *titletag
+      - *imagetag
+      - *summarytag
+      - *publishedattag
       - *etag
       - *atag
 
@@ -1347,13 +1421,9 @@ kinds:
     content:
       type: free
     tags:
-      - *title
-      - *summary
-      -
-        name: published_at
-        next:
-          type: free
-          required: true
+      - *titletag
+      - *summarytag
+      - *publishedattag
       -
         name: location
         next:
@@ -1376,7 +1446,7 @@ kinds:
           either:
            - active
            - sold
-      - *image
+      - *imagetag
       -
         name: g
         next:
@@ -1389,16 +1459,14 @@ kinds:
     content:
       type: free
     tags:
-      - *title
-      - *summary
-      -
-        name: published_at
-        next:
-          type: free
+      - *titletag
+      - *summarytag
+      - *publishedattag
       -
         name: location
         next:
           type: free
+          required: true
       -
         name: price
         next:
@@ -1416,7 +1484,7 @@ kinds:
           either:
            - active
            - sold
-      - *image
+      - *imagetag
       - *gtag
       - *etag
       - *atag
@@ -1426,39 +1494,40 @@ kinds:
     content:
       type: free
     tags:
-      - *title
-      - *summary
-      - *image
+      - *titletag
+      - *summarytag
+      - *imagetag
       -
-         name: location
-         next:
-           type: free
+        name: location
+        next:
+          type: free
+          required: true
       -
-         name: g
-         next:
-           type: free
+        name: g
+        next:
+          type: free
       - *ptag
       - *rtag
       - *atag
       -
-         name: start
-         next:
-           type: free
-           required: true
+        name: start
+        next:
+          type: free
+          required: true
       -
-         name: end
-         next:
-           type: free
-      - *description
+        name: end
+        next:
+          type: free
+      - *descriptiontag
 
   31923:
     description: Time-Based Calendar Event
     content:
       type: free
     tags:
-      - *title
-      - *summary
-      - *image
+      - *titletag
+      - *summarytag
+      - *imagetag
       -
         name: location
         next:
@@ -1498,10 +1567,10 @@ kinds:
     content:
       type: free
     tags:
-      - *title
+      - *titletag
       - *atag
-      - *image
-      - *description
+      - *imagetag
+      - *descriptiontag
 
   31925:
     description: Calendar Event RSVP
@@ -1567,7 +1636,7 @@ kinds:
         next:
           type: free
           required: true
-      - *description
+      - *descriptiontag
       -
         name: web
         next:
@@ -1680,9 +1749,9 @@ kinds:
       type: empty
     tags:
       - *ptag
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   30002:
     description: Relay sets
@@ -1690,9 +1759,9 @@ kinds:
       type: empty
     tags:
       - *relaytag
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   30003:
     description: Bookmark sets
@@ -1702,9 +1771,9 @@ kinds:
       - *etag
       - *atag
       - *rtag
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   30004:
     description: Curation sets
@@ -1713,9 +1782,9 @@ kinds:
     tags:
       - *atag
       - *etag
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   30005:
     description: Video sets
@@ -1723,9 +1792,9 @@ kinds:
       type: empty
     tags:
       - *atag
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   30007:
     description: Kind mute sets
@@ -1733,18 +1802,18 @@ kinds:
       type: empty
     tags:
       - *ptag
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   30015:
     description: Interest sets
     content:
       type: empty
     tags:
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   30019:
     description: Marketplace UI/UX
@@ -1758,9 +1827,9 @@ kinds:
       type: empty
     tags:
       - *emojitag
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   30040:
     description: Curated Publication Index
@@ -1781,9 +1850,9 @@ kinds:
     tags:
       - *etag
       - *atag
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   30166:
     description: Relay Discovery
@@ -1797,9 +1866,9 @@ kinds:
       type: empty
     tags:
       - *atag
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   30311:
     description: Live Event
@@ -1897,9 +1966,9 @@ kinds:
       type: empty
     tags:
       - *ptag
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   39092:
     description: Media starter packs
@@ -1907,9 +1976,9 @@ kinds:
       type: empty
     tags:
       - *ptag
-      - *title
-      - *image
-      - *description
+      - *titletag
+      - *imagetag
+      - *descriptiontag
 
   39701:
     description: Web bookmarks
