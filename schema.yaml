@@ -982,13 +982,6 @@ kinds:
         next:
           type: free
 
-  10050:
-    description: Relay list to receive DMs
-    content:
-      type: empty
-    tags:
-      - *relaytag
-
   27235:
     description: HTTP Auth
     content:
@@ -1071,21 +1064,6 @@ kinds:
     tags:
       - *relaytag
 
-  10009:
-    description: User groups
-    content:
-      type: free
-    tags:
-      -
-        name: group
-        next:
-          type: free
-          next:
-            type: relay
-            next:
-              type: free
-      - *rtag
-
   10012:
     description: Favorite relays list
     content:
@@ -1137,24 +1115,6 @@ kinds:
     tags:
       - *relaytag
 
-  10005:
-    description: Public chats list
-    content:
-      type: empty
-    tags: []
-
-  10006:
-    description: Blocked relays list
-    content:
-      type: empty
-    tags: []
-
-  10007:
-    description: Search relays list
-    content:
-      type: empty
-    tags: []
-
   10009:
     description: User groups
     content:
@@ -1170,20 +1130,8 @@ kinds:
              next:
                type: free
 
-  10012:
-    description: Favorite relays list
-    content:
-      type: empty
-    tags: []
-
   10013:
     description: Private event relay list
-    content:
-      type: empty
-    tags: []
-
-  10015:
-    description: Interests list
     content:
       type: empty
     tags: []
@@ -1204,18 +1152,6 @@ kinds:
         next:
           type: pubkey
           required: true
-
-  10020:
-    description: Media follows
-    content:
-      type: empty
-    tags: []
-
-  10030:
-    description: User emoji list
-    content:
-      type: empty
-    tags: []
 
   10063:
     description: Blossom server list
