@@ -6,6 +6,12 @@ _profile: &profile
     next:
       type: free  # petname
 
+_external: &external
+  type: free
+  required: true
+  next:
+    type: url
+
 _event: &event
   type: id
   required: true
@@ -541,11 +547,7 @@ kinds:
         next: *event
       -
         name: I
-        next: &external
-          type: free
-          required: true
-          next:
-            type: url
+        next: *external
       -
         name: i
         next: *external
@@ -927,11 +929,7 @@ kinds:
       - *etag
       -
         name: I
-        next: &external
-          type: free
-          required: true
-          next:
-            type: url
+        next: *external
       -
         name: i
         next: *external
@@ -1026,7 +1024,7 @@ kinds:
       - name: word
         next:
           type: free
-          true
+          required: true
       - *etag
 
   10001:
