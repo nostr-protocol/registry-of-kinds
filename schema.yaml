@@ -123,13 +123,16 @@ generic_tags:
     type: free
     required: true
   l:
-    type: free
+    type: lowercase
     required: true
     next:
       type: free
       required: true
   expiration:
     type: numeric
+    required: true
+  h:
+    type: free
     required: true
 
 kinds:
@@ -253,13 +256,36 @@ kinds:
                - root
               next:
                 type: pubkey
+      -
+        name: q
+        next:
+          type: id
+          required: true
+          next:
+            type: relay
+            next:
+              type: pubkey
+      -
+        name: q
+        next:
+          type: addr
+          required: true
+          next:
+            type: relay
       - *ptag
 
-  13:
-    description: Seal
+  11:
+    description: Forum Thread
     content:
       type: free
-    tags: []
+    tags:
+      - *title
+
+  13:
+   description: Seal
+   content:
+     type: free
+   tags: []
 
   14:
     description: Direct Message
