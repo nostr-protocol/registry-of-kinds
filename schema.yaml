@@ -44,6 +44,12 @@ _ktag: &ktag
   name: k
   next: *kind
 
+_gtag: &gtag
+  name: g
+  next:
+    type: geohash
+    required: true
+
 _ptag-bare: &ptag-bare
   name: p
   next:
@@ -259,12 +265,65 @@ _atag-bare: &atag-bare
 17:
   description: Reaction to a website
   content: free
+  required:
+    - r
   tags:
     -
       name: r
       next:
         type: url
         required: true
+
+20:
+  description: Picture
+  content: free
+  required:
+    - imeta
+  tags:
+    -
+      name: title
+      next:
+        type: free
+        required: true
+    -
+      name: imeta
+      next:
+        type: imeta
+        required: true
+    -
+      name: content-warning
+      next:
+        type: free
+        required: true
+    - *ptag
+    -
+      name: m
+      next:
+        type: constrained
+        either:
+          - image/apng
+          - image/avif
+          - image/gif
+          - image/jpeg
+          - image/png
+          - image/webp
+        required: true
+    -
+      name: x
+      next:
+        type: hex
+        min: 64
+        max: 64
+        required: true
+    -
+      name: location
+      next:
+        type: free
+        required: true
+    - *gtag
+    -
+      name: L
+      next:
 
 40:
   description: Channel Creation
@@ -333,7 +392,7 @@ _atag-bare: &atag-bare
     - *ptag
 
 818:
-  description: Merge Requests
+  description: Wiki merge requests
   content: free
   tags:
     - *atag
@@ -1547,7 +1606,9 @@ _atag-bare: &atag-bare
     -
       name: r
       next:
-        type: gitcommit
+        type: hex
+        min: 40
+        max: 40
         required: true
         next:
           type: constrained
@@ -1568,7 +1629,9 @@ _atag-bare: &atag-bare
     -
       prefix: "refs/"
       next:
-        type: gitcommit
+        type: hex
+        min: 40
+        max: 40
         required: true
     -
       name: HEAD
@@ -1583,7 +1646,9 @@ _atag-bare: &atag-bare
     -
       name: r
       next:
-        type: gitcommit
+        type: hex
+        min: 40
+        max: 40
         required: true
     - *ptag
     -
@@ -1597,17 +1662,16 @@ _atag-bare: &atag-bare
     -
       name: commit
       next:
-        type: gitcommit
-        required: true
-    -
-      name: r
-      next:
-        type: gitcommit
+        type: hex
+        min: 40
+        max: 40
         required: true
     -
       name: parent-commit
       next:
-        type: gitcommit
+        type: hex
+        min: 40
+        max: 40
         required: true
     -
       name: commit-pgp-sig
