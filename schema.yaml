@@ -3,6 +3,8 @@ _profile: &profile
   required: true
   next:
     type: relay
+    next:
+      type: free  # petname
 
 _event: &event
   type: id
@@ -22,8 +24,53 @@ _kind: &kind
   type: kind
   required: true
 
-_dtag: &dtag
-  name: d
+_rtag: &rtag
+  name: r
+  next:
+    type: url
+    required: true
+
+_relaytag: &relaytag
+  name: relay
+  next:
+    type: relay
+    required: true
+
+_imetatag: &imetatag
+  name: imeta
+  next:
+    type: imeta
+    required: true
+    variadic: true
+
+_emojitag: &emojitag
+  name: emoji
+  next:
+    type: free
+    required: true
+    next:
+      type: url
+      required: true
+
+_title: &title
+  name: title
+  next:
+    type: free
+
+_image: &image
+  name: image
+  next:
+    type: url
+    required: true
+
+_description: &description
+  name: description
+  next:
+    type: free
+    required: true
+
+_summary: &summary
+  name: summary
   next:
     type: free
     required: true
@@ -68,1621 +115,1592 @@ _atag-bare: &atag-bare
     type: addr
     required: true
 
-0:
-  description: User metadata
-  content: json
-  tags: []
+generic_tags:
+  t:
+    type: lowercase
+    required: true
+  L:
+    type: free
+    required: true
+  l:
+    type: free
+    required: true
+    next:
+      type: free
+      required: true
+  expiration:
+    type: numeric
+    required: true
 
-1:
-  description: Short text note
-  content: free
-  tags:
-    -
-      name: e
-      next:
-        type: id
-        required: true
+kinds:
+  0:
+    description: User metadata
+    content:
+      type: json
+    tags:
+      - *emojitag
+
+  1:
+    description: Short text note
+    content:
+      type: free
+    tags:
+      -
+        name: e
         next:
-          type: relay
+          type: id
+          required: true
           next:
-            type: constrained
-            either:
-              - reply
-              - root
+            type: relay
+            next:
+              type: constrained
+              either:
+               - reply
+               - root
+              next:
+                type: pubkey
+      -
+        name: q
+        next:
+          type: id
+          required: true
+          next:
+            type: relay
             next:
               type: pubkey
-    -
-      name: q
-      next:
-        type: id
-        required: true
+      -
+        name: q
         next:
-          type: relay
+          type: addr
+          required: true
           next:
-            type: pubkey
-    -
-      name: q
-      next:
-        type: addr
-        required: true
-        next:
-          type: relay
-    -
-      name: p
-      next: *profile
-    -
-      name: a
-      next: *addr
-    -
-      name: subject
-      next:
-        type: free
-        required: true
-    -
-      name: L
-      next:
-        type: free
-        required: true
-    -
-      name: l
-      next:
-        type: free
-        required: true
+            type: relay
+      -
+        name: p
+        next: *profile
+      -
+        name: a
+        next: *addr
+      -
+        name: subject
         next:
           type: free
+          required: true
+      - *emojitag
 
-3:
-  description: Follows
-  content: json
-  tags:
-    - *ptag
+  3:
+    description: Follows
+    content:
+      type: free
+    tags:
+      - *ptag
 
-4:
-  description: Encrypted Direct Messages
-  content: free
-  tags:
-    - *ptag
+  4:
+    description: Encrypted Direct Messages
+    content:
+      type: free
+    tags:
+      - *ptag
 
-5:
-  description: Event Deletion Request
-  content: empty
-  tags:
-    - *etag-bare
-    - *atag-bare
+  5:
+    description: Event Deletion Request
+    content:
+      type: empty
+    tags:
+      - *etag-bare
+      - *atag-bare
 
-6:
-  description: Repost
-  content: empty
-  tags:
-    - *etag
-    - *ptag
+  6:
+    description: Repost
+    content:
+      type: json
+    tags:
+      - *etag
+      - *ptag
 
-7:
-  description: Reaction
-  content: free
-  tags:
-    - *etag
-    - *ptag
+  7:
+    description: Reaction
+    content:
+      type: free
+    tags:
+      - *etag
+      - *ptag
+      - *emojitag
 
-8:
-  description: Badge Award
-  content: empty
-  tags:
-    - *atag
-    - *ptag
+  8:
+    description: Badge Award
+    content:
+      type: empty
+    tags:
+      - *atag
+      - *ptag
 
-9:
-  description: Chat Message
-  content: free
-  tags:
-    -
-      name: e
-      next:
-        type: id
-        required: true
+  9:
+    description: Chat Message
+    content:
+      type: free
+    tags:
+      -
+        name: e
         next:
-          type: relay
+          type: id
+          required: true
           next:
-            type: constrained
-            either:
-              - root
+            type: relay
             next:
-              type: pubkey
-    - *ptag
+              type: constrained
+              either:
+               - root
+              next:
+                type: pubkey
+      - *ptag
 
-13:
-  description: Seal
-  content: free
-  tags: []
+  13:
+    description: Seal
+    content:
+      type: free
+    tags: []
 
-14:
-  description: Direct Message
-  content: free
-  tags:
-    - *ptag
-    - *etag
-    -
-      name: subject
-      next:
-        type: free
-        required: true
-
-15:
-  description: File Message
-  content: free
-  tags:
-    - *ptag
-    -
-      name: e
-      next:
-        type: id
-        required: true
+  14:
+    description: Direct Message
+    content:
+      type: free
+    tags:
+      - *ptag
+      - *etag
+      -
+        name: subject
         next:
-          type: relay
+          type: free
+          required: true
+
+  15:
+    description: File Message
+    content:
+      type: free
+    tags:
+      - *ptag
+      -
+        name: e
+        next:
+          type: id
+          required: true
           next:
-            type: constrained
-            either:
-              - reply
-    -
-      name: subject
-      next:
-        type: free
-        required: true
-    -
-      name: file-type
-      next:
-        type: free
-        required: true
-    -
-      name: encryption-algorithm
-      next:
-        type: free
-        required: true
-    -
-      name: decryption-key
-      next:
-        type: free
-        required: true
-    -
-      name: decryption-nonce
-      next:
-        type: free
-        required: true
-    -
-      name: x
-      next:
-        type: free
-        required: true
-
-16:
-  description: Generic Repost
-  content: empty
-  tags:
-    - *etag
-    - *ptag
-    - *ktag
-
-17:
-  description: Reaction to a website
-  content: free
-  required:
-    - r
-  tags:
-    -
-      name: r
-      next:
-        type: url
-        required: true
-
-20:
-  description: Picture
-  content: free
-  required:
-    - imeta
-  tags:
-    -
-      name: title
-      next:
-        type: free
-        required: true
-    -
-      name: imeta
-      next:
-        type: imeta
-        required: true
-    -
-      name: content-warning
-      next:
-        type: free
-        required: true
-    - *ptag
-    -
-      name: m
-      next:
-        type: constrained
-        either:
-          - image/apng
-          - image/avif
-          - image/gif
-          - image/jpeg
-          - image/png
-          - image/webp
-        required: true
-    -
-      name: x
-      next:
-        type: hex
-        min: 64
-        max: 64
-        required: true
-    -
-      name: location
-      next:
-        type: free
-        required: true
-    - *gtag
-    -
-      name: L
-      next:
-
-40:
-  description: Channel Creation
-  content: json
-  tags: []
-
-41:
-  description: Channel Metadata
-  content: json
-  tags:
-    -
-      name: e
-      next:
-        type: id
-        required: true
+            type: relay
+            next:
+              type: constrained
+              either:
+               - reply
+      -
+        name: subject
         next:
-          type: relay
+          type: free
+          required: true
+      -
+        name: file-type
+        next:
+          type: free
+          required: true
+      -
+        name: encryption-algorithm
+        next:
+          type: free
+          required: true
+      -
+        name: decryption-key
+        next:
+          type: free
+          required: true
+      -
+        name: decryption-nonce
+        next:
+          type: free
+          required: true
+      -
+        name: x
+        next:
+          type: free
+          required: true
+
+  16:
+    description: Generic Repost
+    content:
+      type: json
+    tags:
+      - *etag
+      - *ptag
+      - *ktag
+
+  17:
+    description: Reaction to a website
+    content:
+      type: free
+    required:
+      - r
+    tags:
+      - *rtag
+
+  20:
+    description: Picture
+    content:
+      type: free
+    required:
+      - imeta
+    tags:
+      - *title
+      - *imetatag
+      -
+        name: content-warning
+        next:
+          type: free
+          required: true
+      - *ptag
+      -
+        name: m
+        next:
+          type: constrained
+          either:
+           - image/apng
+           - image/avif
+           - image/gif
+           - image/jpeg
+           - image/png
+           - image/webp
+          required: true
+      -
+        name: x
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      -
+        name: location
+        next:
+          type: free
+          required: true
+      - *gtag
+
+  40:
+    description: Channel Creation
+    content:
+      type: json
+    tags: []
+
+  41:
+    description: Channel Metadata
+    content:
+      type: json
+    tags:
+      -
+        name: e
+        next:
+          type: id
+          required: true
           next:
-            type: constrained
-            either:
-              - root
-    -
-      name: t
-      next:
-        type: free
-        required: true
+            type: relay
+            next:
+              type: constrained
+              either:
+               - root
 
-42:
-  description: Channel Message
-  content: free
-  tags:
-    -
-      name: e
-      next:
-        type: id
-        required: true
+  42:
+    description: Channel Message
+    content:
+      type: free
+    tags:
+      -
+        name: e
         next:
-          type: relay
+          type: id
+          required: true
           next:
-            type: constrained
-            either:
-              - root
-              - reply
-    - *ptag
+            type: relay
+            next:
+              type: constrained
+              either:
+               - root
+               - reply
+      - *ptag
 
-43:
-  description: Channel Hide Message
-  content: json
-  tags:
-    -
-      name: e
-      next:
-        type: id
-        required: true
-
-44:
-  description: Channel Mute User
-  content: json
-  tags:
-    - *ptag
-
-64:
-  description: Chess (PGN)
-  content: free
-  tags:
-    - *ptag
-
-818:
-  description: Wiki merge requests
-  content: free
-  tags:
-    - *atag
-    - *ptag
-
-1018:
-  description: Poll Response
-  content: empty
-  tags:
-    - *etag
-    -
-      name: response
-      next:
-        type: free
-        required: true
-
-1021:
-  description: Bid
-  content: free
-  tags:
-    - *etag
-
-1022:
-  description: Bid confirmation
-  content: json
-  tags:
-    - *etag
-
-1040:
-  description: OpenTimestamps
-  content: free
-  tags:
-     - *etag
-     - *ktag
-
-1222:
-  description: Voice Message
-  content: free
-  tags: []
-
-1244:
-  description: Voice Message Comment
-  content: free
-  tags:
-    -
-      name: A
-      next: *addr
-    -
-      name: a
-      next: *addr
-    -
-      name: E
-      next: *event
-    -
-      name: e
-      next: *event
-    -
-      name: I
-      next: &external
-        type: free
-        required: true
+  43:
+    description: Channel Hide Message
+    content:
+      type: json
+    tags:
+      -
+        name: e
         next:
-          type: url
-    -
-      name: i
-      next: *external
-    -
-      name: K
-      next: *kind
-    -
-      name: K
-      next:
-        type: free
-        required: true
-    -
-      name: k
-      next: *kind
-    -
-      name: P
-      next: *profile
-    -
-      name: p
-      next: *profile
+          type: id
+          required: true
 
-1311:
-  description: Live Chat Message
-  content: free
-  tags: []
+  44:
+    description: Channel Mute User
+    content:
+      type: json
+    tags:
+      - *ptag
 
-1337:
-  description: Code Snippet
-  content: free
-  tags: []
+  64:
+    description: Chess (PGN)
+    content:
+      type: free
+    tags:
+      - *ptag
 
-1971:
-  description: Problem Tracker
-  content: free
-  tags: []
+  818:
+    description: Wiki merge requests
+    content:
+      type: free
+    tags:
+      - *atag
+      - *ptag
 
-1986:
-  description: Relay reviews
-  content: free
-  tags: []
+  1018:
+    description: Poll Response
+    content:
+      type: empty
+    tags:
+      - *etag
+      -
+        name: response
+        next:
+          type: free
+          required: true
 
-1987:
-  description: AI Embeddings / Vector lists
-  content: free
-  tags: []
+  1021:
+    description: Bid
+    content:
+      type: free
+    tags:
+      - *etag
 
-2003:
-  description: Torrent
-  content: free
-  tags:
-     -
-       name: title
-       next:
-         type: free
-         required: true
-     -
-       name: x
-       next:
-         type: free
-         required: true
-     -
-       name: file
-       next:
-         type: free
-         required: true
+  1022:
+    description: Bid confirmation
+    content:
+      type: json
+    tags:
+      - *etag
+
+  1040:
+    description: OpenTimestamps
+    content:
+      type: free
+    tags:
+      - *etag
+      - *ktag
+
+  1222:
+    description: Voice Message
+    content:
+      type: free
+    tags: []
+
+  1244:
+    description: Voice Message Comment
+    content:
+      type: free
+    tags:
+      -
+        name: A
+        next: *addr
+      -
+        name: a
+        next: *addr
+      -
+        name: E
+        next: *event
+      -
+        name: e
+        next: *event
+      -
+        name: I
+        next: &external
+          type: free
+          required: true
+          next:
+            type: url
+      -
+        name: i
+        next: *external
+      -
+        name: K
+        next: *kind
+      -
+        name: K
+        next:
+          type: free
+          required: true
+      - *ktag
+      -
+        name: P
+        next: *profile
+      - *ptag
+
+  1311:
+    description: Live Chat Message
+    content:
+      type: free
+    tags: []
+
+  1337:
+    description: Code Snippet
+    content:
+      type: free
+    tags: []
+
+  1971:
+    description: Problem Tracker
+    content:
+      type: free
+    tags: []
+
+  1986:
+    description: Relay reviews
+    content:
+      type: free
+    tags: []
+
+  1987:
+    description: AI Embeddings / Vector lists
+    content:
+      type: free
+    tags: []
+
+  2003:
+    description: Torrent
+    content:
+      type: free
+    tags:
+      - *title
+      -
+         name: x
          next:
            type: free
-     -
-       name: tracker
-       next:
-         type: url
-     -
-       name: i
-       next:
-         type: free
-     -
-       name: t
-       next:
-         type: free
-
-2004:
-  description: Torrent Comment
-  content: free
-  tags:
-     - *etag
-
-2022:
-  description: Coinjoin Pool
-  content: free
-  tags: []
-
-4550:
-  description: Community Post Approval
-  content: free
-  tags: []
-
-7374:
-  description: Reserved Cashu Wallet Tokens
-  content: free
-  tags: []
-
-7375:
-  description: Cashu Wallet Tokens
-  content: free
-  tags: []
-
-7376:
-  description: Cashu Wallet History
-  content: free
-  tags: []
-
-7516:
-  description: Geocache log
-  content: free
-  tags: []
-
-7517:
-  description: Geocache proof of find
-  content: free
-  tags: []
-
-9321:
-  description: Nutzap
-  content: free
-  tags:
-    -
-      name: proof
-      next:
-        type: free
-        required: true
-        variadic: true
-    -
-      name: u
-      next:
-        type: url
-        required: true
-    - *etag-bare
-    - *ktag
-    - *ptag
-
-9467:
-  description: Tidal login
-  content: free
-  tags: []
-
-1059:
-  description: Gift Wrap
-  content: free
-  tags:
-    - *ptag
-
-1063:
-  description: File Metadata
-  content: free
-  tags:
-    -
-      name: url
-      next:
-        type: url
-        required: true
-    -
-      name: m
-      next:
-        type: free
-        required: true
-    -
-      name: x
-      next:
-        type: free
-        required: true
-    -
-      name: ox
-      next:
-        type: free
-    -
-      name: size
-      next:
-        type: free
-    -
-      name: dim
-      next:
-        type: free
-    -
-      name: magnet
-      next:
-        type: url
-    -
-      name: i
-      next:
-        type: free
-    -
-      name: blurhash
-      next:
-        type: free
-    -
-      name: thumb
-      next:
-        type: url
-        next:
-          type: free
-    -
-      name: image
-      next:
-        type: url
-        next:
-          type: free
-    -
-      name: summary
-      next:
-        type: free
-    -
-      name: fallback
-      next:
-        type: url
-    -
-      name: service
-      next:
-        type: free
-
-1068:
-  description: Poll
-  content: free
-  tags:
-    -
-      name: option
-      next:
-        type: free
-        required: true
-        next:
-          type: free
-          required: true
-    -
-      name: relay
-      next:
-        type: relay
-        required: true
-    -
-      name: polltype
-      next:
-        type: constrained
-        either:
-          - singlechoice
-          - multiplechoice
-    -
-      name: endsAt
-      next:
-        type: free
-        required: true
-
-1621:
-  description: Issues
-  content: free
-  tags:
-    - *atag
-    - *ptag
-    -
-      name: subject
-      next:
-        type: free
-        required: true
-
-1984:
-  description: Reporting
-  content: free
-  tags:
-    - *ptag
-    - *etag
-    - *atag
-    -
-      name: L
-      next:
-        type: free
-        required: true
-    -
-      name: l
-      next:
-        type: free
-        required: true
-        next:
-          type: free
-
-1985:
-  description: Label
-  content: free
-  tags:
-    - *ptag
-    - *etag
-    - *atag
-    -
-      name: L
-      next:
-        type: free
-        required: true
-    -
-      name: l
-      next:
-        type: free
-        required: true
-        next:
-          type: free
-
-9041:
-  description: Zap Goal
-  content: free
-  tags:
-    -
-      name: amount
-      next:
-        type: free
-        required: true
-    -
-      name: relays
-      next:
-        type: relay
-        variadic: true
-        required: true
-    -
-      name: closed_at
-      next:
-        type: free
-    -
-      name: image
-      next:
-        type: url
-    -
-      name: summary
-      next:
-        type: free
-    -
-      name: r
-      next:
-        type: url
-    - *atag
-    -
-      name: zap
-      next:
-        type: pubkey
-        required: true
-        next:
-          type: relay
-          next:
-            type: free
-
-9734:
-  description: Zap Request
-  content: free
-  tags:
-    -
-      name: relays
-      next:
-        type: relay
-        variadic: true
-        required: true
-    -
-      name: amount
-      next:
-        type: free
-    -
-      name: lnurl
-      next:
-        type: free
-    - *ptag
-    - *etag
-    - *atag
-    - *ktag
-
-9735:
-  description: Zap
-  content: empty
-  tags:
-    - *ptag
-    -
-      name: P
-      next: *profile
-    - *etag
-    - *ktag
-    -
-      name: bolt11
-      next:
-        type: free
-        required: true
-    -
-      name: description
-      next:
-        type: free
-        required: true
-    -
-      name: preimage
-      next:
-        type: free
-
-1111:
-  description: Comment
-  content: free
-  tags:
-    -
-      name: A
-      next: *addr
-    -
-      name: a
-      next: *addr
-    -
-      name: E
-      next: *event
-    -
-      name: e
-      next: *event
-    -
-      name: I
-      next: &external
-        type: free
-        required: true
-        next:
-          type: url
-    -
-      name: i
-      next: *external
-    -
-      name: K
-      next: *kind
-    -
-      name: K
-      next:
-        type: free
-        required: true
-    -
-      name: k
-      next: *kind
-    -
-      name: P
-      next: *profile
-    -
-      name: p
-      next: *profile
-
-10002:
-  description: Relay List Metadata
-  content: empty
-  tags:
-    -
-      name: r
-      next:
-        type: relay
-        required: true
-        next:
-          type: constrained
-          either:
-            - read
-            - write
-
-9802:
-  description: Highlights
-  content: free
-  tags:
-    - *ptag
-    - *etag
-    - *atag
-    -
-      name: r
-      next:
-        type: url
-    -
-      name: context
-      next:
-        type: free
-    -
-      name: comment
-      next:
-        type: free
-
-10050:
-  description: Relay list to receive DMs
-  content: empty
-  tags:
-    -
-      name: relay
-      next:
-        type: relay
-        required: true
-
-27235:
-  description: HTTP Auth
-  content: empty
-  tags:
-     -
-       name: u
-       next:
-         type: url
-         required: true
-     -
-       name: method
-       next:
-         type: constrained
-         either:
-           - GET
-           - POST
-           - PUT
-           - DELETE
-           - PATCH
-         required: true
-     -
-       name: payload
-       next:
-         type: free
-
-10000:
-  description: Mute list
-  content: empty
-  tags:
-     - *ptag
-
-10001:
-  description: Pin list
-  content: empty
-  tags:
-     - *etag
-     - *ptag
-     - *atag
-
-10003:
-  description: Bookmark list
-  content: empty
-  tags:
-     - *etag
-     - *ptag
-     - *atag
-
-10004:
-  description: Communities list
-  content: empty
-  tags:
-     - *atag
-
-10005:
-  description: Public chats list
-  content: empty
-  tags: []
-
-10006:
-  description: Blocked relays list
-  content: empty
-  tags: []
-
-10007:
-  description: Search relays list
-  content: empty
-  tags: []
-
-10009:
-  description: User groups
-  content: empty
-  tags:
-     -
-       name: group
-       next:
-         type: free
-         required: true
+           required: true
+      -
+         name: file
          next:
-           type: relay
+           type: free
+           required: true
            next:
              type: free
+      -
+         name: tracker
+         next:
+           type: url
+      -
+         name: i
+         next:
+           type: free
 
-10012:
-  description: Favorite relays list
-  content: empty
-  tags: []
+  2004:
+    description: Torrent Comment
+    content:
+      type: free
+    tags:
+      - *etag
 
-10013:
-  description: Private event relay list
-  content: empty
-  tags: []
+  2022:
+    description: Coinjoin Pool
+    content:
+      type: free
+    tags: []
 
-10015:
-  description: Interests list
-  content: empty
-  tags: []
+  4550:
+    description: Community Post Approval
+    content:
+      type: free
+    tags: []
 
-10019:
-  description: Nutzap Mint Recommendation
-  content: empty
-  tags:
-    -
-      name: relay
-      next:
-        type: relay
-        required: true
-    -
-      name: mint
-      next:
-        type: url
-        required: true
-    -
-      name: pubkey
-      next:
-        type: pubkey
-        required: true
+  7374:
+    description: Reserved Cashu Wallet Tokens
+    content:
+      type: free
+    tags: []
 
-10020:
-  description: Media follows
-  content: empty
-  tags: []
+  7375:
+    description: Cashu Wallet Tokens
+    content:
+      type: free
+    tags: []
 
-10030:
-  description: User emoji list
-  content: empty
-  tags: []
+  7376:
+    description: Cashu Wallet History
+    content:
+      type: free
+    tags: []
 
-10063:
-  description: Blossom server list
-  content: empty
-  tags:
-    -
-      name: server
-      next:
-        type: url
-        required: true
+  7516:
+    description: Geocache log
+    content:
+      type: free
+    tags: []
 
-10096:
-  description: File storage server list
-  content: empty
-  tags:
-    -
-      name: server
-      next:
-        type: url
-        required: true
+  7517:
+    description: Geocache proof of find
+    content:
+      type: free
+    tags: []
 
-10166:
-  description: Relay Monitor Announcement
-  content: empty
-  tags: []
-
-10312:
-  description: Room Presence
-  content: empty
-  tags: []
-
-10377:
-  description: Proxy Announcement
-  content: empty
-  tags: []
-
-11111:
-  description: Transport Method Announcement
-  content: empty
-  tags: []
-
-13194:
-  description: Wallet Info
-  content: free
-  tags: []
-
-17375:
-  description: Cashu Wallet Event
-  content: free
-  tags: []
-
-21000:
-  description: Lightning Pub RPC
-  content: free
-  tags: []
-
-22242:
-  description: Client Authentication
-  content: free
-  tags: []
-
-23194:
-  description: Wallet Request
-  content: free
-  tags: []
-
-23195:
-  description: Wallet Response
-  content: free
-  tags: []
-
-24133:
-  description: Nostr Connect
-  content: free
-  tags: []
-
-24242:
-  description: Blobs stored on mediaservers
-  content: free
-  tags: []
-
-30008:
-  description: Profile Badges
-  content: empty
-  tags:
-    - *dtag
-    - *atag
-    - *etag
-
-30009:
-  description: Badge Definition
-  content: free
-  tags:
-    - *dtag
-    -
-      name: name
-      next:
-        type: free
-        required: true
-    -
-      name: description
-      next:
-        type: free
-    -
-      name: image
-      next:
-        type: url
+  9321:
+    description: Nutzap
+    content:
+      type: free
+    tags:
+      -
+        name: proof
         next:
           type: free
-    -
-      name: thumb
-      next:
-        type: url
+          required: true
+          variadic: true
+      -
+        name: u
+        next:
+          type: url
+          required: true
+      - *etag-bare
+      - *ktag
+      - *ptag
+
+  9467:
+    description: Tidal login
+    content:
+      type: free
+    tags: []
+
+  1059:
+    description: Gift Wrap
+    content:
+      type: free
+    tags:
+      - *ptag
+
+  1063:
+    description: File Metadata
+    content:
+      type: free
+    tags:
+      -
+        name: url
+        next:
+          type: url
+          required: true
+      -
+        name: m
         next:
           type: free
+          required: true
+      -
+        name: x
+        next:
+          type: free
+          required: true
+      -
+        name: ox
+        next:
+          type: free
+          required: true
+      -
+        name: size
+        next:
+          type: free
+          required: true
+      -
+        name: dim
+        next:
+          type: free
+          required: true
+      -
+        name: magnet
+        next:
+          type: url
+          required: true
+      -
+        name: i
+        next:
+          type: free
+          required: true
+      -
+        name: blurhash
+        next:
+          type: free
+          required: true
+      -
+        name: thumb
+        next:
+          type: url
+          required: true
+      - *image
+      - *summary
+      -
+        name: fallback
+        next:
+          type: url
+          required: true
+      -
+        name: service
+        next:
+          type: free
+          required: true
 
-30017:
-  description: Create or update a stall
-  content: json
-  tags:
-    - *dtag
-
-30018:
-  description: Create or update a product
-  content: json
-  tags:
-    - *dtag
-    -
-      name: t
-      next:
-        type: free
-
-30020:
-  description: Product sold as an auction
-  content: json
-  tags:
-    - *dtag
-
-30023:
-  description: Long-form Content
-  content: free
-  tags:
-    - *dtag
-    -
-      name: title
-      next:
-        type: free
-        required: true
-    -
-      name: image
-      next:
-        type: url
-    -
-      name: summary
-      next:
-        type: free
-    -
-      name: published_at
-      next:
-        type: free
-    -
-      name: t
-      next:
-        type: free
-    - *etag
-    - *atag
-
-30024:
-  description: Draft Long-form Content
-  content: free
-  tags:
-    - *dtag
-    -
-      name: title
-      next:
-        type: free
-        required: true
-    -
-      name: image
-      next:
-        type: url
-    -
-      name: summary
-      next:
-        type: free
-    -
-      name: published_at
-      next:
-        type: free
-    -
-      name: t
-      next:
-        type: free
-    - *etag
-    - *atag
-
-30078:
-  description: Application-specific Data
-  content: free
-  tags:
-    - *dtag
-
-30315:
-  description: User Statuses
-  content: free
-  tags:
-    - *dtag
-    -
-      name: r
-      next:
-        type: url
-    - *ptag
-    - *etag
-    - *atag
-    -
-      name: expiration
-      next:
-        type: free
-
-30402:
-  description: Classified Listing
-  content: free
-  tags:
-    - *dtag
-    -
-      name: title
-      next:
-        type: free
-        required: true
-    -
-      name: summary
-      next:
-        type: free
-    -
-      name: published_at
-      next:
-        type: free
-    -
-      name: location
-      next:
-        type: free
-    -
-      name: price
-      next:
-        type: free
-        required: true
+  1068:
+    description: Poll
+    content:
+      type: free
+    tags:
+      -
+        name: option
         next:
           type: free
           required: true
           next:
             type: free
-    -
-      name: status
-      next:
-        type: constrained
-        either:
-          - active
-          - sold
-    -
-      name: t
-      next:
-        type: free
-    -
-      name: image
-      next:
-        type: url
+            required: true
+      - *relaytag
+      -
+        name: polltype
+        next:
+          type: constrained
+          either:
+           - singlechoice
+           - multiplechoice
+      -
+        name: endsAt
         next:
           type: free
-    -
-      name: g
-      next:
-        type: free
-    - *etag
-    - *atag
+          required: true
 
-30403:
-  description: Draft Classified Listing
-  content: free
-  tags:
-    - *dtag
-    -
-      name: title
-      next:
-        type: free
-        required: true
-    -
-      name: summary
-      next:
-        type: free
-    -
-      name: published_at
-      next:
-        type: free
-    -
-      name: location
-      next:
-        type: free
-    -
-      name: price
-      next:
-        type: free
-        required: true
+  1621:
+    description: Issues
+    content:
+      type: free
+    tags:
+      - *atag
+      - *ptag
+      -
+        name: subject
+        next:
+          type: free
+          required: true
+
+  1984:
+    description: Reporting
+    content:
+      type: free
+    tags:
+      - *ptag
+      - *etag
+      - *atag
+
+  1985:
+    description: Label
+    content:
+      type: free
+    tags:
+      - *ptag
+      - *etag
+      - *atag
+
+  9041:
+    description: Zap Goal
+    content:
+      type: free
+    tags:
+      -
+        name: amount
+        next:
+          type: free
+          required: true
+      -
+        name: relays
+        next:
+          type: relay
+          variadic: true
+          required: true
+      -
+        name: closed_at
+        next:
+          type: free
+      - *image
+      - *summary
+      - *rtag
+      - *atag
+      -
+        name: zap
+        next:
+          type: pubkey
+          required: true
+          next:
+            type: relay
+            next:
+              type: free
+
+  9734:
+    description: Zap Request
+    content:
+      type: free
+    tags:
+      -
+        name: relays
+        next:
+          type: relay
+          variadic: true
+          required: true
+      -
+        name: amount
+        next:
+          type: free
+      -
+        name: lnurl
+        next:
+          type: free
+      - *ptag
+      - *etag
+      - *atag
+      - *ktag
+
+  9735:
+    description: Zap
+    content:
+      type: empty
+    tags:
+      - *ptag
+      -
+        name: P
+        next: *profile
+      - *etag
+      - *ktag
+      -
+        name: bolt11
+        next:
+          type: free
+          required: true
+      -
+        name: description
+        next:
+          type: json
+          required: true
+      -
+        name: preimage
+        next:
+          type: free
+
+  1111:
+    description: Comment
+    content:
+      type: free
+    tags:
+      -
+        name: A
+        next: *addr
+      - *atag
+      -
+        name: E
+        next: *event
+      - *etag
+      -
+        name: I
+        next: &external
+          type: free
+          required: true
+          next:
+            type: url
+      -
+        name: i
+        next: *external
+      -
+        name: K
+        next: *kind
+      -
+        name: K
+        next:
+          type: free
+          required: true
+      - *ktag
+      -
+        name: P
+        next: *profile
+      - *ptag
+      - *emojitag
+
+  10002:
+    description: Relay List Metadata
+    content:
+      type: empty
+    tags:
+      -
+        name: r
+        next:
+          type: relay
+          required: true
+          next:
+            type: constrained
+            either:
+             - read
+             - write
+
+  9802:
+    description: Highlights
+    content:
+      type: free
+    tags:
+      - *ptag
+      - *etag
+      - *atag
+      - *rtag
+      -
+        name: context
+        next:
+          type: free
+      -
+        name: comment
+        next:
+          type: free
+
+  10050:
+    description: Relay list to receive DMs
+    content:
+      type: empty
+    tags:
+      - *relaytag
+
+  27235:
+    description: HTTP Auth
+    content:
+      type: free
+    tags:
+      -
+         name: u
+         next:
+           type: url
+           required: true
+      -
+         name: method
+         next:
+           type: constrained
+           either:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - PATCH
+           required: true
+      -
+         name: payload
+         next:
+           type: free
+
+  10000:
+    description: Mute list
+    content:
+      type: free
+    tags:
+      - *ptag
+      - name: word
+        next:
+          type: free
+          true
+      - *etag
+
+  10001:
+    description: Pin list
+    content:
+      type: empty
+    tags:
+      - *etag
+
+  10003:
+    description: Bookmark list
+    content:
+      type: free
+    tags:
+      - *etag
+      - *atag
+      - *rtag
+
+  10004:
+    description: Communities list
+    content:
+      type: free
+    tags:
+      - *atag
+
+  10005:
+    description: Public chats list
+    content:
+      type: free
+    tags:
+      - *etag
+
+  10006:
+    description: Blocked relays list
+    content:
+      type: free
+    tags:
+      - *relaytag
+
+  10007:
+    description: Search relays list
+    content:
+      type: free
+    tags:
+      - *relaytag
+
+  10009:
+    description: User groups
+    content:
+      type: free
+    tags:
+      -
+        name: group
+        next:
+          type: free
+          next:
+            type: relay
+            next:
+              type: free
+      - *rtag
+
+  10012:
+    description: Favorite relays list
+    content:
+      type: free
+    tags:
+      - *relaytag
+      - *atag
+
+  10015:
+    description: Interests list
+    content:
+      type: free
+    tags:
+      - *atag
+
+  10020:
+    description: Media follows
+    content:
+      type: free
+    tags:
+      - *ptag
+
+  10030:
+    description: User emoji list
+    content:
+      type: free
+    tags:
+      - *emojitag
+      - *atag
+
+  10050:
+    description: Relay list to receive DMs
+    content:
+      type: empty
+    tags:
+      - *relaytag
+
+  10101:
+    description: Good wiki authors
+    content:
+      type: empty
+    tags:
+      - *ptag
+
+  10102:
+    description: Good wiki relays
+    content:
+      type: empty
+    tags:
+      - *relaytag
+
+  10005:
+    description: Public chats list
+    content:
+      type: empty
+    tags: []
+
+  10006:
+    description: Blocked relays list
+    content:
+      type: empty
+    tags: []
+
+  10007:
+    description: Search relays list
+    content:
+      type: empty
+    tags: []
+
+  10009:
+    description: User groups
+    content:
+      type: empty
+    tags:
+      -
+         name: group
+         next:
+           type: free
+           required: true
+           next:
+             type: relay
+             next:
+               type: free
+
+  10012:
+    description: Favorite relays list
+    content:
+      type: empty
+    tags: []
+
+  10013:
+    description: Private event relay list
+    content:
+      type: empty
+    tags: []
+
+  10015:
+    description: Interests list
+    content:
+      type: empty
+    tags: []
+
+  10019:
+    description: Nutzap Mint Recommendation
+    content:
+      type: empty
+    tags:
+      - *relaytag
+      -
+        name: mint
+        next:
+          type: url
+          required: true
+      -
+        name: pubkey
+        next:
+          type: pubkey
+          required: true
+
+  10020:
+    description: Media follows
+    content:
+      type: empty
+    tags: []
+
+  10030:
+    description: User emoji list
+    content:
+      type: empty
+    tags: []
+
+  10063:
+    description: Blossom server list
+    content:
+      type: empty
+    tags:
+      -
+        name: server
+        next:
+          type: url
+          required: true
+
+  10096:
+    description: File storage server list
+    content:
+      type: empty
+    tags:
+      -
+        name: server
+        next:
+          type: url
+          required: true
+
+  10166:
+    description: Relay Monitor Announcement
+    content:
+      type: empty
+    tags: []
+
+  10312:
+    description: Room Presence
+    content:
+      type: empty
+    tags: []
+
+  10377:
+    description: Proxy Announcement
+    content:
+      type: empty
+    tags: []
+
+  11111:
+    description: Transport Method Announcement
+    content:
+      type: empty
+    tags: []
+
+  13194:
+    description: Wallet Info
+    content:
+      type: free
+    tags: []
+
+  17375:
+    description: Cashu Wallet Event
+    content:
+      type: free
+    tags: []
+
+  21000:
+    description: Lightning Pub RPC
+    content:
+      type: free
+    tags: []
+
+  22242:
+    description: Client Authentication
+    content:
+      type: free
+    tags: []
+
+  23194:
+    description: Wallet Request
+    content:
+      type: free
+    tags: []
+
+  23195:
+    description: Wallet Response
+    content:
+      type: free
+    tags: []
+
+  24133:
+    description: Nostr Connect
+    content:
+      type: free
+    tags: []
+
+  24242:
+    description: Blobs stored on mediaservers
+    content:
+      type: free
+    tags: []
+
+  30008:
+    description: Profile Badges
+    content:
+      type: empty
+    tags:
+      - *atag
+      - *etag
+
+  30009:
+    description: Badge Definition
+    content:
+      type: free
+    tags:
+      -
+        name: name
+        next:
+          type: free
+          required: true
+      - *description
+      - *image
+      -
+        name: thumb
+        next:
+          type: url
+          next:
+            type: free
+
+  30017:
+    description: Create or update a stall
+    content:
+      type: json
+    tags: []
+
+  30018:
+    description: Create or update a product
+    content:
+      type: json
+    tags: []
+
+  30020:
+    description: Product sold as an auction
+    content:
+      type: json
+    tags: []
+
+  30023:
+    description: Long-form Content
+    content:
+      type: free
+    tags:
+      - *title
+      - *image
+      - *summary
+      -
+        name: published_at
+        next:
+          type: free
+          required: true
+      - *etag
+      - *atag
+
+  30024:
+    description: Draft Long-form Content
+    content:
+      type: free
+    tags:
+      - *title
+      - *image
+      - *summary
+      -
+        name: published_at
+        next:
+          type: free
+          required: true
+      - *etag
+      - *atag
+
+  30078:
+    description: Application-specific Data
+    content:
+      type: free
+    tags: []
+
+  30315:
+    description: User Statuses
+    content:
+      type: free
+    tags:
+      - *rtag
+      - *ptag
+      - *etag
+      - *atag
+      - *emojitag
+
+
+  30402:
+    description: Classified Listing
+    content:
+      type: free
+    tags:
+      - *title
+      - *summary
+      -
+        name: published_at
+        next:
+          type: free
+          required: true
+      -
+        name: location
+        next:
+          type: free
+          required: true
+      -
+        name: price
         next:
           type: free
           required: true
           next:
             type: free
-    -
-      name: status
-      next:
-        type: constrained
-        either:
-          - active
-          - sold
-    -
-      name: t
-      next:
-        type: free
-    -
-      name: image
-      next:
-        type: url
+            required: true
+            next:
+              type: free
+      -
+        name: status
+        next:
+          type: constrained
+          either:
+           - active
+           - sold
+      - *image
+      -
+        name: g
         next:
           type: free
-    -
-      name: g
-      next:
-        type: free
-    - *etag
-    - *atag
+      - *etag
+      - *atag
 
-31922:
-  description: Date-Based Calendar Event
-  content: free
-  tags:
-     - *dtag
-     -
-       name: title
-       next:
-         type: free
-         required: true
-     -
-       name: summary
-       next:
-         type: free
-     -
-       name: image
-       next:
-         type: url
-     -
-       name: location
-       next:
-         type: free
-     -
-       name: g
-       next:
-         type: free
-     - *ptag
-     -
-       name: t
-       next:
-         type: free
-     -
-       name: r
-       next:
-         type: url
-     - *atag
-     -
-       name: start
-       next:
-         type: free
-         required: true
-     -
-       name: end
-       next:
-         type: free
-     -
-       name: description
-       next:
-         type: free
-
-31923:
-  description: Time-Based Calendar Event
-  content: free
-  tags:
-    - *dtag
-    -
-      name: title
-      next:
-        type: free
-        required: true
-    -
-      name: summary
-      next:
-        type: free
-    -
-      name: image
-      next:
-        type: url
-    -
-      name: location
-      next:
-        type: free
-    -
-      name: g
-      next:
-        type: free
-    - *ptag
-    -
-      name: t
-      next:
-        type: free
-    -
-      name: r
-      next:
-        type: url
-    - *atag
-    -
-      name: start
-      next:
-        type: free
-        required: true
-    -
-      name: end
-      next:
-        type: free
-    -
-      name: start_tzid
-      next:
-        type: free
-    -
-      name: end_tzid
-      next:
-        type: free
-    -
-      name: start_tzid
-      next:
-        type: free
-    -
-      name: end_tzid
-      next:
-        type: free
-
-31924:
-  description: Calendar
-  content: free
-  tags:
-     - *dtag
-     -
-       name: title
-       next:
-         type: free
-         required: true
-     - *atag
-
-31925:
-  description: Calendar Event RSVP
-  content: free
-  tags:
-     - *dtag
-     - *etag
-     - *atag
-     -
-       name: status
-       next:
-         type: constrained
-         either:
-           - accepted
-           - declined
-           - tentative
-         required: true
-     -
-       name: fb
-       next:
-         type: constrained
-         either:
-           - free
-           - busy
-     - *ptag
-
-31989:
-  description: Handler recommendation
-  content: empty
-  tags:
-    - *dtag
-    - *atag
-
-31990:
-  description: Handler information
-  content: json
-  tags:
-    - *dtag
-    -
-      name: k
-      next: *kind
-    -
-      name: web
-      next:
-        type: url
-        required: true
+  30403:
+    description: Draft Classified Listing
+    content:
+      type: free
+    tags:
+      - *title
+      - *summary
+      -
+        name: published_at
         next:
-          type: constrained
-          either:
-            - nevent
-            - nprofile
-    -
-      name: ios
-      next:
-        type: free
-        required: true
-
-30617:
-  description: Repository announcements
-  content: empty
-  tags:
-    - *dtag
-    -
-      name: name
-      next:
-        type: free
-        required: true
-    -
-      name: description
-      next:
-        type: free
-        required: true
-    -
-      name: web
-      next:
-        type: url
-        required: true
-    -
-      name: clone
-      next:
-        type: giturl
-        required: true
-    -
-      name: relays
-      next:
-        type: relay
-        variadic: true
-    -
-      name: r
-      next:
-        type: hex
-        min: 40
-        max: 40
-        required: true
+          type: free
+      -
+        name: location
         next:
-          type: constrained
-          either:
-            - euc
+          type: free
+      -
+        name: price
+        next:
+          type: free
           required: true
-    -
-      name: maintainers
-      next:
-        type: pubkey
-        variadic: true
+          next:
+            type: free
+            required: true
+            next:
+              type: free
+      -
+        name: status
+        next:
+          type: constrained
+          either:
+           - active
+           - sold
+      - *image
+      - *gtag
+      - *etag
+      - *atag
 
-30618:
-  description: Repository state announcements
-  content: empty
-  tags:
-    - *dtag
-    -
-      prefix: "refs/"
-      next:
-        type: hex
-        min: 40
-        max: 40
-        required: true
-    -
-      name: HEAD
-      next:
-        type: free
+  31922:
+    description: Date-Based Calendar Event
+    content:
+      type: free
+    tags:
+      - *title
+      - *summary
+      - *image
+      -
+         name: location
+         next:
+           type: free
+      -
+         name: g
+         next:
+           type: free
+      - *ptag
+      - *rtag
+      - *atag
+      -
+         name: start
+         next:
+           type: free
+           required: true
+      -
+         name: end
+         next:
+           type: free
+      - *description
 
-1617:
-  description: Patches
-  content: free
-  tags:
-    - *atag
-    -
-      name: r
-      next:
-        type: hex
-        min: 40
-        max: 40
-        required: true
-    - *ptag
-    -
-      name: t
-      next:
-        type: constrained
-        either:
-          - root
-          - root-revision
-        required: true
-    -
-      name: commit
-      next:
-        type: hex
-        min: 40
-        max: 40
-        required: true
-    -
-      name: parent-commit
-      next:
-        type: hex
-        min: 40
-        max: 40
-        required: true
-    -
-      name: commit-pgp-sig
-      next:
-        type: free
-        required: true
-    -
-      name: committer
-      next:
-        type: free
-        required: true
+  31923:
+    description: Time-Based Calendar Event
+    content:
+      type: free
+    tags:
+      - *title
+      - *summary
+      - *image
+      -
+        name: location
+        next:
+          type: free
+      - *gtag
+      - *ptag
+      - *rtag
+      - *atag
+      -
+        name: start
+        next:
+          type: free
+          required: true
+      -
+        name: end
+        next:
+          type: free
+      -
+        name: start_tzid
+        next:
+          type: free
+      -
+        name: end_tzid
+        next:
+          type: free
+      -
+        name: start_tzid
+        next:
+          type: free
+      -
+        name: end_tzid
+        next:
+          type: free
+
+  31924:
+    description: Calendar
+    content:
+      type: free
+    tags:
+      - *title
+      - *atag
+      - *image
+      - *description
+
+  31925:
+    description: Calendar Event RSVP
+    content:
+      type: free
+    tags:
+      - *etag
+      - *atag
+      -
+         name: status
+         next:
+           type: constrained
+           either:
+            - accepted
+            - declined
+            - tentative
+           required: true
+      -
+         name: fb
+         next:
+           type: constrained
+           either:
+            - free
+            - busy
+      - *ptag
+
+  31989:
+    description: Handler recommendation
+    content:
+      type: empty
+    tags:
+      - *atag
+
+  31990:
+    description: Handler information
+    content:
+      type: json
+    tags:
+      - *ktag
+      -
+        name: web
+        next:
+          type: url
+          required: true
+          next:
+            type: constrained
+            either:
+             - nevent
+             - nprofile
+      -
+        name: ios
+        next:
+          type: free
+          required: true
+
+  30617:
+    description: Repository announcements
+    content:
+      type: empty
+    tags:
+      -
+        name: name
+        next:
+          type: free
+          required: true
+      - *description
+      -
+        name: web
+        next:
+          type: url
+          required: true
+      -
+        name: clone
+        next:
+          type: giturl
+          required: true
+      -
+        name: relays
+        next:
+          type: relay
+          variadic: true
+      -
+        name: r
+        next:
+          type: hex
+          min: 40
+          max: 40
+          required: true
+          next:
+            type: constrained
+            either:
+             - euc
+            required: true
+      -
+        name: maintainers
+        next:
+          type: pubkey
+          variadic: true
+
+  30618:
+    description: Repository state announcements
+    content:
+      type: empty
+    tags:
+      -
+        prefix: "refs/"
+        next:
+          type: hex
+          min: 40
+          max: 40
+          required: true
+      -
+        name: HEAD
+        next:
+          type: free
+
+  1617:
+    description: Patches
+    content:
+      type: free
+    tags:
+      - *atag
+      -
+        name: r
+        next:
+          type: hex
+          min: 40
+          max: 40
+          required: true
+      - *ptag
+      -
+        name: t
+        next:
+          type: constrained
+          either:
+           - root
+           - root-revision
+          required: true
+      -
+        name: commit
+        next:
+          type: hex
+          min: 40
+          max: 40
+          required: true
+      -
+        name: parent-commit
+        next:
+          type: hex
+          min: 40
+          max: 40
+          required: true
+      -
+        name: commit-pgp-sig
+        next:
+          type: free
+          required: true
+      -
+        name: committer
         next:
           type: free
           required: true
@@ -1692,163 +1710,249 @@ _atag-bare: &atag-bare
             next:
               type: free
               required: true
+              next:
+                type: free
+                required: true
 
-30000:
-  description: Follow sets
-  content: empty
-  tags: []
+  30000:
+    description: Follow sets
+    content:
+      type: empty
+    tags:
+      - *ptag
+      - *title
+      - *image
+      - *description
 
-30002:
-  description: Relay sets
-  content: empty
-  tags: []
+  30002:
+    description: Relay sets
+    content:
+      type: empty
+    tags:
+      - *relaytag
+      - *title
+      - *image
+      - *description
 
-30003:
-  description: Bookmark sets
-  content: empty
-  tags: []
+  30003:
+    description: Bookmark sets
+    content:
+      type: empty
+    tags:
+      - *etag
+      - *atag
+      - *rtag
+      - *title
+      - *image
+      - *description
 
-30004:
-  description: Curation sets
-  content: empty
-  tags: []
+  30004:
+    description: Curation sets
+    content:
+      type: empty
+    tags:
+      - *atag
+      - *etag
+      - *title
+      - *image
+      - *description
 
-30005:
-  description: Video sets
-  content: empty
-  tags: []
+  30005:
+    description: Video sets
+    content:
+      type: empty
+    tags:
+      - *atag
+      - *title
+      - *image
+      - *description
 
-30007:
-  description: Kind mute sets
-  content: empty
-  tags: []
+  30007:
+    description: Kind mute sets
+    content:
+      type: empty
+    tags:
+      - *ptag
+      - *title
+      - *image
+      - *description
 
-30015:
-  description: Interest sets
-  content: empty
-  tags: []
+  30015:
+    description: Interest sets
+    content:
+      type: empty
+    tags:
+      - *title
+      - *image
+      - *description
 
-30019:
-  description: Marketplace UI/UX
-  content: json
-  tags: []
+  30019:
+    description: Marketplace UI/UX
+    content:
+      type: json
+    tags: []
 
-30030:
-  description: Emoji sets
-  content: empty
-  tags: []
+  30030:
+    description: Emoji sets
+    content:
+      type: empty
+    tags:
+      - *emojitag
+      - *title
+      - *image
+      - *description
 
-30040:
-  description: Curated Publication Index
-  content: free
-  tags: []
+  30040:
+    description: Curated Publication Index
+    content:
+      type: free
+    tags: []
 
-30041:
-  description: Curated Publication Content
-  content: free
-  tags: []
+  30041:
+    description: Curated Publication Content
+    content:
+      type: free
+    tags: []
 
-30063:
-  description: Release artifact sets
-  content: empty
-  tags: []
+  30063:
+    description: Release artifact sets
+    content:
+      type: empty
+    tags:
+      - *etag
+      - *atag
+      - *title
+      - *image
+      - *description
 
-30166:
-  description: Relay Discovery
-  content: empty
-  tags: []
+  30166:
+    description: Relay Discovery
+    content:
+      type: empty
+    tags: []
 
-30267:
-  description: App curation sets
-  content: empty
-  tags: []
+  30267:
+    description: App curation sets
+    content:
+      type: empty
+    tags:
+      - *atag
+      - *title
+      - *image
+      - *description
 
-30311:
-  description: Live Event
-  content: free
-  tags: []
+  30311:
+    description: Live Event
+    content:
+      type: free
+    tags: []
 
-30312:
-  description: Interactive Room
-  content: free
-  tags: []
+  30312:
+    description: Interactive Room
+    content:
+      type: free
+    tags: []
 
-30313:
-  description: Conference Event
-  content: free
-  tags: []
+  30313:
+    description: Conference Event
+    content:
+      type: free
+    tags: []
 
-30388:
-  description: Slide Set
-  content: free
-  tags: []
+  30388:
+    description: Slide Set
+    content:
+      type: free
+    tags: []
 
-30818:
-  description: Wiki article
-  content: free
-  tags: []
+  30818:
+    description: Wiki article
+    content:
+      type: free
+    tags: []
 
-30819:
-  description: Redirects
-  content: free
-  tags: []
+  30819:
+    description: Wiki Redirects
+    content:
+      type: free
+    tags: []
 
-31234:
-  description: Draft Event
-  content: free
-  tags: []
+  31234:
+    description: Draft Event
+    content:
+      type: free
+    tags: []
 
-31388:
-  description: Link Set
-  content: free
-  tags: []
+  31388:
+    description: Link Set
+    content:
+      type: free
+    tags: []
 
-31890:
-  description: Feed
-  content: free
-  tags: []
+  31890:
+    description: Feed
+    content:
+      type: free
+    tags: []
 
-32267:
-  description: Software Application
-  content: free
-  tags: []
+  32267:
+    description: Software Application
+    content:
+      type: free
+    tags: []
 
-34550:
-  description: Community Definition
-  content: free
-  tags: []
+  34550:
+    description: Community Definition
+    content:
+      type: free
+    tags: []
 
-37516:
-  description: Geocache listing
-  content: free
-  tags: []
+  37516:
+    description: Geocache listing
+    content:
+      type: free
+    tags: []
 
-38172:
-  description: Cashu Mint Announcement
-  content: free
-  tags: []
+  38172:
+    description: Cashu Mint Announcement
+    content:
+      type: free
+    tags: []
 
-38173:
-  description: Fedimint Announcement
-  content: free
-  tags: []
+  38173:
+    description: Fedimint Announcement
+    content:
+      type: free
+    tags: []
 
-38383:
-  description: Peer-to-peer Order events
-  content: free
-  tags: []
+  38383:
+    description: Peer-to-peer Order events
+    content:
+      type: free
+    tags: []
 
-39089:
-  description: Starter packs
-  content: empty
-  tags: []
+  39089:
+    description: Starter packs
+    content:
+      type: empty
+    tags:
+      - *ptag
+      - *title
+      - *image
+      - *description
 
-39092:
-  description: Media starter packs
-  content: empty
-  tags: []
+  39092:
+    description: Media starter packs
+    content:
+      type: empty
+    tags:
+      - *ptag
+      - *title
+      - *image
+      - *description
 
-39701:
-  description: Web bookmarks
-  content: free
-  tags: []
+  39701:
+    description: Web bookmarks
+    content:
+      type: free
+    tags: []
