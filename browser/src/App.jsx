@@ -28,10 +28,25 @@ function App() {
         });
       }
 
-      // sort by kind number
-      kindsList.sort((a, b) => a.number - b.number);
-      setKinds(kindsList);
-      setLoading(false);
+       // sort by kind number
+       kindsList.sort((a, b) => a.number - b.number);
+
+       // Add 'd' tag as required for kinds 30000-39999
+       for (const kind of kindsList) {
+         if (kind.number >= 30000 && kind.number <= 39999) {
+           if (!kind.tags) kind.tags = [];
+           kind.tags.unshift({
+             name: 'd',
+             next: {
+               type: 'free',
+               required: true
+             }
+           });
+         }
+       }
+
+       setKinds(kindsList);
+       setLoading(false);
 
       // Load kind from hash if present
       loadKindFromHash();

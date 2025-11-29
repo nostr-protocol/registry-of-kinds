@@ -84,7 +84,7 @@ _summary: &summarytag
 _publishedattag: &publishedattag
   name: published_at
   next:
-    type: numeric
+    type: timestamp
     required: true
 
 _atag: &atag
@@ -141,7 +141,7 @@ generic_tags:
       type: free
       required: true
   expiration:
-    type: numeric
+    type: timestamp
     required: true
   h:
     type: free
@@ -1493,6 +1493,10 @@ kinds:
     description: Date-Based Calendar Event
     content:
       type: free
+    required:
+      - title
+      - start
+      - location
     tags:
       - *titletag
       - *summarytag
@@ -1502,28 +1506,27 @@ kinds:
         next:
           type: free
           required: true
-      -
-        name: g
-        next:
-          type: free
+      - *gtag
       - *ptag
-      - *rtag
-      - *atag
       -
         name: start
         next:
-          type: free
+          type: date
           required: true
       -
         name: end
         next:
-          type: free
-      - *descriptiontag
+          type: date
+          required: true
 
   31923:
     description: Time-Based Calendar Event
     content:
       type: free
+    required:
+      - title
+      - start
+      - location
     tags:
       - *titletag
       - *summarytag
@@ -1534,38 +1537,31 @@ kinds:
           type: free
       - *gtag
       - *ptag
-      - *rtag
-      - *atag
       -
         name: start
+        next:
+          type: timestamp
+          required: true
+        name: end
+        next:
+          type: timestamp
+          required: true
+      -
+        name: start_tzid
         next:
           type: free
           required: true
       -
-        name: end
-        next:
-          type: free
-      -
-        name: start_tzid
-        next:
-          type: free
-      -
         name: end_tzid
         next:
           type: free
-      -
-        name: start_tzid
-        next:
-          type: free
-      -
-        name: end_tzid
-        next:
-          type: free
-
+          required: true
   31924:
     description: Calendar
     content:
       type: free
+    required:
+      - title
     tags:
       - *titletag
       - *atag
@@ -1576,6 +1572,9 @@ kinds:
     description: Calendar Event RSVP
     content:
       type: free
+    required:
+      - a
+      - status
     tags:
       - *etag
       - *atag
