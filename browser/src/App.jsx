@@ -18,15 +18,13 @@ function App() {
       const data = yaml.load(text);
 
       const kindsList = [];
-      for (const [key, value] of Object.entries(data)) {
-        // skip anchors (keys starting with _)
-        if (key.startsWith('_')) continue;
-
+      for (const [key, value] of Object.entries(data.kinds)) {
         kindsList.push({
           number: parseInt(key),
           description: value.description || 'No description',
-          content: value.content || 'unknown',
+          content: value.content?.type || 'unknown',
           tags: value.tags || [],
+          required: value.required || [],
         });
       }
 
@@ -171,9 +169,6 @@ function App() {
           <h1 class="text-4xl font-bold mb-4">
             Nostr Event Kinds Registry
           </h1>
-          <p class="text-lg">
-            Browse and explore Nostr protocol event definitions
-          </p>
         </div>
 
         <Show when={loading()}>
@@ -272,51 +267,68 @@ function App() {
                     </span>
                   </div>
 
-                  <Show when={selectedKind().tags && selectedKind().tags.length > 0}>
-                    <div>
-                      <h3 class="text-sm font-bold mb-3">
-                        Supported Tags:
-                      </h3>
-                      <div class="space-y-2">
-                        <For each={selectedKind().tags}>
-                          {(tag) => {
-                            function getNextTypes (nextSpec) {
-                              const types = [];
-                              let current = nextSpec;
-                              while (current) {
-                                let typeInfo = current.type;
-                                if (current.type === 'constrained' && current.either) {
-                                  typeInfo += ` (${current.either.join(', ')})`;
-                                }
-                                types.push(typeInfo);
-                                current = current.next;
-                              }
-                              return types;
-                            };
+                   <Show when={selectedKind().tags && selectedKind().tags.length > 0}>
+                     <div>
+                       <h3 class="text-sm font-bold mb-3">
+                         Supported Tags:
+                       </h3>
+                       <div class="space-y-2">
+                         <For each={selectedKind().tags}>
+                           {(tag) => {
+                             function getNextTypes (nextSpec) {
+                               const types = [];
+                               let current = nextSpec;
+                               while (current) {
+                                 let typeInfo = current.type;
+                                 if (current.type === 'constrained' && current.either) {
+                                   typeInfo += ` (${current.either.join(', ')})`;
+                                 }
+                                 types.push(typeInfo);
+                                 current = current.next;
+                               }
+                               return types;
+                             };
 
-                            return (
-                              <div class="border border-black p-3">
-                                <div class="font-bold">
-                                  {tag.name || tag.prefix || 'unnamed'}
-                                </div>
-                                <Show when={tag.next}>
-                                  <div class="text-sm mt-2">
-                                    <ul class="list-disc ml-4 space-y-1">
-                                      <For each={getNextTypes(tag.next)}>
-                                        {(type) => (
-                                          <li class="text-sm">{type}</li>
-                                        )}
-                                      </For>
-                                    </ul>
-                                  </div>
-                                </Show>
-                              </div>
-                            );
-                          }}
-                        </For>
-                      </div>
-                    </div>
-                  </Show>
+                             return (
+                               <div class="border border-black p-3">
+                                 <div class="font-bold">
+                                   {tag.name || tag.prefix || 'unnamed'}
+                                 </div>
+                                 <Show when={tag.next}>
+                                   <div class="text-sm mt-2">
+                                     <ul class="list-disc ml-4 space-y-1">
+                                       <For each={getNextTypes(tag.next)}>
+                                         {(type) => (
+                                           <li class="text-sm">{type}</li>
+                                         )}
+                                       </For>
+                                     </ul>
+                                   </div>
+                                 </Show>
+                               </div>
+                             );
+                           }}
+                         </For>
+                       </div>
+                     </div>
+                   </Show>
+
+                   <Show when={selectedKind().required && selectedKind().required.length > 0}>
+                     <div>
+                       <h3 class="text-sm font-bold mb-3">
+                         Required Tags:
+                       </h3>
+                       <div class="space-y-2">
+                         <For each={selectedKind().required}>
+                           {(req) => (
+                             <div class="inline-block px-2 py-1 border border-black font-bold mr-2 mb-2">
+                               {req}
+                             </div>
+                           )}
+                         </For>
+                       </div>
+                     </div>
+                   </Show>
 
                   <div>
                     <h3 class="text-sm font-bold mb-2">
