@@ -586,6 +586,7 @@ kinds:
     tags:
       - *atag
       - *ptag
+      - *etag
 
   1018:
     description: Poll Response
@@ -1964,7 +1965,11 @@ kinds:
     in_use: true
     content:
       type: free
-    tags: []
+    tags:
+      - *titletag
+      - *summarytag
+      - *atag
+      - *etag
 
   30819:
     description: Wiki Redirects
