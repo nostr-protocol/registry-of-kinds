@@ -150,6 +150,7 @@ generic_tags:
 kinds:
   0:
     description: User metadata
+    in_use: true
     content:
       type: json
     tags:
@@ -157,6 +158,7 @@ kinds:
 
   1:
     description: Short text note
+    in_use: true
     content:
       type: free
     tags:
@@ -205,6 +207,7 @@ kinds:
 
   3:
     description: Follows
+    in_use: true
     content:
       type: free
     tags:
@@ -219,6 +222,7 @@ kinds:
 
   5:
     description: Event Deletion Request
+    in_use: true
     content:
       type: empty
     tags:
@@ -227,6 +231,7 @@ kinds:
 
   6:
     description: Repost
+    in_use: true
     content:
       type: json
     tags:
@@ -235,6 +240,7 @@ kinds:
 
   7:
     description: Reaction
+    in_use: true
     content:
       type: free
     tags:
@@ -244,6 +250,7 @@ kinds:
 
   8:
     description: Badge Award
+    in_use: true
     content:
       type: empty
     tags:
@@ -252,6 +259,7 @@ kinds:
 
   9:
     description: Chat Message
+    in_use: true
     content:
       type: free
     tags:
@@ -288,19 +296,22 @@ kinds:
 
   11:
     description: Forum Thread
+    in_use: true
     content:
       type: free
     tags:
       - *titletag
 
   13:
-   description: Seal
-   content:
-     type: free
-   tags: []
+    description: Seal
+    in_use: true
+    content:
+      type: free
+    tags: []
 
   14:
     description: Direct Message
+    in_use: true
     content:
       type: free
     tags:
@@ -314,6 +325,7 @@ kinds:
 
   15:
     description: File Message
+    in_use: true
     content:
       type: free
     tags:
@@ -362,6 +374,7 @@ kinds:
 
   16:
     description: Generic Repost
+    in_use: true
     content:
       type: json
     tags:
@@ -380,6 +393,7 @@ kinds:
 
   20:
     description: Photo
+    in_use: true
     content:
       type: free
     required:
@@ -421,6 +435,7 @@ kinds:
 
   21:
     description: Normal Video Event
+    in_use: true
     content:
       type: free
     required:
@@ -459,6 +474,7 @@ kinds:
 
   22:
     description: Short Video Event
+    in_use: true
     content:
       type: free
     required:
@@ -564,6 +580,7 @@ kinds:
 
   818:
     description: Wiki merge requests
+    in_use: true
     content:
       type: free
     tags:
@@ -572,6 +589,7 @@ kinds:
 
   1018:
     description: Poll Response
+    in_use: true
     content:
       type: empty
     tags:
@@ -598,6 +616,7 @@ kinds:
 
   1040:
     description: OpenTimestamps
+    in_use: true
     content:
       type: free
     tags:
@@ -606,12 +625,14 @@ kinds:
 
   1222:
     description: Voice Message
+    in_use: true
     content:
       type: free
     tags: []
 
   1244:
     description: Voice Message Comment
+    in_use: true
     content:
       type: free
     tags:
@@ -649,12 +670,14 @@ kinds:
 
   1311:
     description: Live Chat Message
+    in_use: true
     content:
       type: free
     tags: []
 
   1337:
     description: Code Snippet
+    in_use: true
     content:
       type: free
     tags: []
@@ -679,6 +702,7 @@ kinds:
 
   2003:
     description: Torrent
+    in_use: true
     content:
       type: free
     tags:
@@ -725,18 +749,21 @@ kinds:
 
   7374:
     description: Reserved Cashu Wallet Tokens
+    in_use: true
     content:
       type: free
     tags: []
 
   7375:
     description: Cashu Wallet Tokens
+    in_use: true
     content:
       type: free
     tags: []
 
   7376:
     description: Cashu Wallet History
+    in_use: true
     content:
       type: free
     tags: []
@@ -755,6 +782,7 @@ kinds:
 
   9321:
     description: Nutzap
+    in_use: true
     content:
       type: free
     tags:
@@ -781,6 +809,7 @@ kinds:
 
   1059:
     description: Gift Wrap
+    in_use: true
     content:
       type: free
     tags:
@@ -856,6 +885,7 @@ kinds:
 
   1068:
     description: Poll
+    in_use: true
     content:
       type: free
     tags:
@@ -896,6 +926,7 @@ kinds:
 
   1984:
     description: Reporting
+    in_use: true
     content:
       type: free
     tags:
@@ -948,6 +979,7 @@ kinds:
 
   9734:
     description: Zap Request
+    in_use: true
     content:
       type: free
     tags:
@@ -972,6 +1004,7 @@ kinds:
 
   9735:
     description: Zap
+    in_use: true
     content:
       type: empty
     tags:
@@ -998,6 +1031,7 @@ kinds:
 
   1111:
     description: Comment
+    in_use: true
     content:
       type: free
     tags:
@@ -1032,6 +1066,7 @@ kinds:
 
   10002:
     description: Relay List Metadata
+    in_use: true
     content:
       type: empty
     tags:
@@ -1048,6 +1083,7 @@ kinds:
 
   9802:
     description: Highlights
+    in_use: true
     content:
       type: free
     tags:
@@ -1066,6 +1102,7 @@ kinds:
 
   27235:
     description: HTTP Auth
+    in_use: true
     content:
       type: free
     tags:
@@ -1092,6 +1129,7 @@ kinds:
 
   10000:
     description: Mute list
+    in_use: true
     content:
       type: free
     tags:
@@ -1104,6 +1142,7 @@ kinds:
 
   10001:
     description: Pin list
+    in_use: true
     content:
       type: empty
     tags:
@@ -1111,6 +1150,7 @@ kinds:
 
   10003:
     description: Bookmark list
+    in_use: true
     content:
       type: free
     tags:
@@ -1141,6 +1181,7 @@ kinds:
 
   10007:
     description: Search relays list
+    in_use: true
     content:
       type: free
     tags:
@@ -1148,6 +1189,7 @@ kinds:
 
   10012:
     description: Favorite relays list
+    in_use: true
     content:
       type: free
     tags:
@@ -1156,6 +1198,7 @@ kinds:
 
   10015:
     description: Interests list
+    in_use: true
     content:
       type: free
     tags:
@@ -1170,6 +1213,7 @@ kinds:
 
   10030:
     description: User emoji list
+    in_use: true
     content:
       type: free
     tags:
@@ -1178,6 +1222,7 @@ kinds:
 
   10050:
     description: Relay list to receive DMs
+    in_use: true
     content:
       type: empty
     tags:
@@ -1199,6 +1244,7 @@ kinds:
 
   10009:
     description: User groups
+    in_use: true
     content:
       type: empty
     tags:
@@ -1220,6 +1266,7 @@ kinds:
 
   10019:
     description: Nutzap Mint Recommendation
+    in_use: true
     content:
       type: empty
     tags:
@@ -1237,6 +1284,7 @@ kinds:
 
   10063:
     description: Blossom server list
+    in_use: true
     content:
       type: empty
     tags:
@@ -1283,12 +1331,14 @@ kinds:
 
   13194:
     description: Wallet Info
+    in_use: true
     content:
       type: free
     tags: []
 
   17375:
     description: Cashu Wallet Event
+    in_use: true
     content:
       type: free
     tags: []
@@ -1301,6 +1351,7 @@ kinds:
 
   22242:
     description: Client Authentication
+    in_use: true
     content:
       type: free
     tags: []
@@ -1331,6 +1382,7 @@ kinds:
 
   30008:
     description: Profile Badges
+    in_use: true
     content:
       type: empty
     tags:
@@ -1339,6 +1391,7 @@ kinds:
 
   30009:
     description: Badge Definition
+    in_use: true
     content:
       type: free
     tags:
@@ -1376,6 +1429,7 @@ kinds:
 
   30023:
     description: Long-form Content
+    in_use: true
     content:
       type: free
     tags:
@@ -1400,6 +1454,7 @@ kinds:
 
   30078:
     description: Application-specific Data
+    in_use: true
     content:
       type: free
     tags: []
@@ -1491,6 +1546,7 @@ kinds:
 
   31922:
     description: Date-Based Calendar Event
+    in_use: true
     content:
       type: free
     required:
@@ -1521,6 +1577,7 @@ kinds:
 
   31923:
     description: Time-Based Calendar Event
+    in_use: true
     content:
       type: free
     required:
@@ -1558,6 +1615,7 @@ kinds:
           required: true
   31924:
     description: Calendar
+    in_use: true
     content:
       type: free
     required:
@@ -1570,6 +1628,7 @@ kinds:
 
   31925:
     description: Calendar Event RSVP
+    in_use: true
     content:
       type: free
     required:
@@ -1627,6 +1686,7 @@ kinds:
 
   30617:
     description: Repository announcements
+    in_use: true
     content:
       type: empty
     tags:
@@ -1671,6 +1731,7 @@ kinds:
 
   30618:
     description: Repository state announcements
+    in_use: true
     content:
       type: empty
     tags:
@@ -1688,6 +1749,7 @@ kinds:
 
   1617:
     description: Patches
+    in_use: true
     content:
       type: free
     tags:
@@ -1744,6 +1806,7 @@ kinds:
 
   30000:
     description: Follow sets
+    in_use: true
     content:
       type: empty
     tags:
@@ -1754,6 +1817,7 @@ kinds:
 
   30002:
     description: Relay sets
+    in_use: true
     content:
       type: empty
     tags:
@@ -1822,6 +1886,7 @@ kinds:
 
   30030:
     description: Emoji sets
+    in_use: true
     content:
       type: empty
     tags:
@@ -1871,6 +1936,7 @@ kinds:
 
   30311:
     description: Live Event
+    in_use: true
     content:
       type: free
     tags: []
@@ -1895,12 +1961,14 @@ kinds:
 
   30818:
     description: Wiki article
+    in_use: true
     content:
       type: free
     tags: []
 
   30819:
     description: Wiki Redirects
+    in_use: true
     content:
       type: free
     tags: []
@@ -1961,6 +2029,7 @@ kinds:
 
   39089:
     description: Starter packs
+    in_use: true
     content:
       type: empty
     tags:
@@ -1981,6 +2050,7 @@ kinds:
 
   39701:
     description: Web bookmarks
+    in_use: true
     content:
       type: free
     tags: []
