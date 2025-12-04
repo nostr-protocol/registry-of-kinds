@@ -1600,6 +1600,7 @@ kinds:
         next:
           type: timestamp
           required: true
+      -
         name: end
         next:
           type: timestamp
