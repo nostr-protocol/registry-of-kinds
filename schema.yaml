@@ -511,6 +511,16 @@ kinds:
           next:
             type: relay
 
+  24:
+    description: Public Message
+    in_use: true
+    content:
+      type: free
+    required:
+      - p
+    tags:
+      - *ptag
+
   40:
     description: Channel Creation
     content:
