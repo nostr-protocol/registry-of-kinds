@@ -588,6 +588,56 @@ kinds:
     tags:
       - *ptag
 
+  777:
+    description: Spell
+    content:
+      type: free
+    in_use: true
+    required:
+      - cmd
+    tags:
+      -
+        name: name
+        next:
+          type: free
+          required: true
+      -
+        name: cmd
+        next:
+          type: constrained
+          either:
+           - REQ
+          required: true
+      -
+        name: k
+        next:
+          type: kind
+          required: true
+          variadic: true
+      -
+        name: authors
+        next:
+          type: free
+          required: true
+          variadic: true
+      -
+        name: tag
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+            variadic: true
+      -
+        name: relays
+        next:
+          type: relay
+          variadic: true
+          required: true
+      -
+        name: close-on-eose
+
   818:
     description: Wiki merge requests
     in_use: true
