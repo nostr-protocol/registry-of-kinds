@@ -615,6 +615,12 @@ kinds:
           required: true
           variadic: true
       -
+        name: ids
+        next:
+          type: id
+          required: true
+          variadic: true
+      -
         name: authors
         next:
           type: free
