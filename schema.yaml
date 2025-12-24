@@ -814,6 +814,46 @@ kinds:
       type: free
     tags: []
 
+  4454:
+    description: Decoupled key client announcement
+    content:
+      type: empty
+    in_use: true
+    required:
+      - P
+      - client
+    tags:
+      -
+        name: P
+        next:
+          type: pubkey
+          required: true
+      -
+        name: client
+        next:
+          type: free
+          required: true
+
+  4455:
+    description: Decoupled encryption key distribution
+    content:
+      type: free
+    in_use: true
+    required:
+      - p
+      - P
+    tags:
+      -
+        name: p
+        next:
+          type: pubkey
+          required: true
+      -
+        name: P
+        next:
+          type: pubkey
+          required: true
+
   7374:
     description: Reserved Cashu Wallet Tokens
     in_use: true
@@ -1286,6 +1326,20 @@ kinds:
     tags:
       - *emojitag
       - *atag
+
+  10044:
+    description: Decoupled key announcement
+    in_use: true
+    content:
+      type: empty
+    required:
+      - n
+    tags:
+      -
+        name: n
+        next:
+          type: pubkey
+          required: true
 
   10050:
     description: Relay list to receive DMs
