@@ -153,6 +153,8 @@ kinds:
     in_use: true
     content:
       type: json
+    multiple:
+      - emoji
     tags:
       - *emojitag
 
@@ -161,6 +163,12 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - e
+      - q
+      - p
+      - a
+      - emoji
     tags:
       -
         name: e
@@ -210,6 +218,8 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - p
     tags:
       - *ptag
 
@@ -225,6 +235,9 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - e
+      - a
     tags:
       - *etag-bare
       - *atag-bare
@@ -234,6 +247,8 @@ kinds:
     in_use: true
     content:
       type: json
+    multiple:
+      - p
     tags:
       - *etag
       - *ptag
@@ -262,6 +277,10 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - e
+      - p
+      - q
     tags:
       -
         name: e
@@ -299,8 +318,13 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - p
+      - q
     tags:
       - *titletag
+      - *ptag
+      - *qtag
 
   13:
     description: Seal
@@ -314,9 +338,13 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - p
+      - q
     tags:
       - *ptag
       - *etag
+      - *qtag
       -
         name: subject
         next:
@@ -398,6 +426,9 @@ kinds:
       type: free
     required:
       - imeta
+    multiple:
+      - p
+      - g
     tags:
       - *titletag
       - *imetatag
@@ -440,6 +471,8 @@ kinds:
       type: free
     required:
       - imeta
+    multiple:
+      - p
     tags:
       - *titletag
       - *publishedattag
@@ -479,6 +512,8 @@ kinds:
       type: free
     required:
       - imeta
+    multiple:
+      - p
     tags:
       - *titletag
       - *publishedattag
@@ -595,6 +630,8 @@ kinds:
     in_use: true
     required:
       - cmd
+    multiple:
+      - tag
     tags:
       -
         name: name
@@ -695,13 +732,21 @@ kinds:
     in_use: true
     content:
       type: free
-    tags: []
+    multiple:
+      - p
+    tags:
+      - *ptag
 
   1244:
     description: Voice Message Comment
     in_use: true
     content:
       type: free
+    required:
+      - P
+      - p
+    multiple:
+      - p
     tags:
       -
         name: A
@@ -995,6 +1040,10 @@ kinds:
     in_use: true
     content:
       type: free
+    required:
+      - option
+    multiple:
+      - option
     tags:
       -
         name: option
@@ -1022,6 +1071,8 @@ kinds:
     description: Issues
     content:
       type: free
+    multiple:
+      - p
     tags:
       - *atag
       - *ptag
@@ -1141,6 +1192,11 @@ kinds:
     in_use: true
     content:
       type: free
+    required:
+      - P
+      - p
+    multiple:
+      - p
     tags:
       -
         name: A
@@ -1176,6 +1232,8 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - r
     tags:
       -
         name: r
@@ -1193,6 +1251,8 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - p
     tags:
       - *ptag
       - *etag
@@ -1239,6 +1299,9 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - p
+      - word
     tags:
       - *ptag
       - name: word
@@ -1252,6 +1315,8 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - e
     tags:
       - *etag
 
@@ -1260,10 +1325,12 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - e
+      - a
     tags:
       - *etag
       - *atag
-      - *rtag
 
   10004:
     description: Communities list
@@ -1291,6 +1358,8 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - relay
     tags:
       - *relaytag
 
@@ -1299,6 +1368,8 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - relay
     tags:
       - *relaytag
       - *atag
@@ -1315,6 +1386,8 @@ kinds:
     description: Media follows
     content:
       type: free
+    multiple:
+      - p
     tags:
       - *ptag
 
@@ -1323,6 +1396,9 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - emoji
+      - a
     tags:
       - *emojitag
       - *atag
@@ -1346,6 +1422,8 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - relay
     tags:
       - *relaytag
 
@@ -1353,6 +1431,8 @@ kinds:
     description: Good wiki authors
     content:
       type: empty
+    multiple:
+      - p
     tags:
       - *ptag
 
@@ -1360,6 +1440,8 @@ kinds:
     description: Good wiki relays
     content:
       type: empty
+    multiple:
+      - relay
     tags:
       - *relaytag
 
@@ -1368,6 +1450,8 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - group
     tags:
       -
          name: group
@@ -1390,6 +1474,8 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - mint
     tags:
       - *relaytag
       -
@@ -1408,6 +1494,8 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - server
     tags:
       -
         name: server
@@ -1506,6 +1594,9 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - a
+      - e
     tags:
       - *atag
       - *etag
@@ -1553,25 +1644,35 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - q
+      - a
+      - p
     tags:
       - *titletag
       - *imagetag
       - *summarytag
       - *publishedattag
-      - *etag
+      - *qtag
       - *atag
+      - *ptag
 
   30024:
     description: Draft Long-form Content
     content:
       type: free
+    multiple:
+      - q
+      - a
+      - p
     tags:
       - *titletag
       - *imagetag
       - *summarytag
       - *publishedattag
-      - *etag
+      - *qtag
       - *atag
+      - *ptag
 
   30078:
     description: Application-specific Data
@@ -1590,7 +1691,6 @@ kinds:
       - *etag
       - *atag
       - *emojitag
-
 
   30402:
     description: Classified Listing
@@ -1674,6 +1774,9 @@ kinds:
       - title
       - start
       - location
+    multiple:
+      - p
+      - g
     tags:
       - *titletag
       - *summarytag
@@ -1701,6 +1804,9 @@ kinds:
     in_use: true
     content:
       type: free
+    multiple:
+      - p
+      - g
     required:
       - title
       - start
@@ -1742,6 +1848,8 @@ kinds:
       type: free
     required:
       - title
+    multiple:
+      - a
     tags:
       - *titletag
       - *atag
@@ -1811,6 +1919,9 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - web
+      - clone
     tags:
       -
         name: name
@@ -1856,6 +1967,8 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - "refs/"
     tags:
       -
         prefix: "refs/"
@@ -1931,6 +2044,8 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - p
     tags:
       - *ptag
       - *titletag
@@ -1942,6 +2057,8 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - relay
     tags:
       - *relaytag
       - *titletag
@@ -1952,10 +2069,12 @@ kinds:
     description: Bookmark sets
     content:
       type: empty
+    multiple:
+      - e
+      - a
     tags:
       - *etag
       - *atag
-      - *rtag
       - *titletag
       - *imagetag
       - *descriptiontag
@@ -1964,6 +2083,9 @@ kinds:
     description: Curation sets
     content:
       type: empty
+    multiple:
+      - e
+      - a
     tags:
       - *atag
       - *etag
@@ -1975,8 +2097,10 @@ kinds:
     description: Video sets
     content:
       type: empty
+    multiple:
+      - e
     tags:
-      - *atag
+      - *etag
       - *titletag
       - *imagetag
       - *descriptiontag
@@ -2158,6 +2282,8 @@ kinds:
     in_use: true
     content:
       type: empty
+    multiple:
+      - p
     tags:
       - *ptag
       - *titletag
@@ -2168,6 +2294,8 @@ kinds:
     description: Media starter packs
     content:
       type: empty
+    multiple:
+      - p
     tags:
       - *ptag
       - *titletag
@@ -2179,4 +2307,6 @@ kinds:
     in_use: true
     content:
       type: free
-    tags: []
+    tags:
+      - *publishedattag
+      - *titletag
