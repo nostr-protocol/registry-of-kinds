@@ -99,6 +99,10 @@ _etag: &etag
   name: e
   next: *event
 
+_qtag: &qtag
+  name: q
+  next: *event
+
 _ktag: &ktag
   name: k
   next: *kind
