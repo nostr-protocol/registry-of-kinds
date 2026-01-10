@@ -2314,3 +2314,219 @@ kinds:
     tags:
       - *publishedattag
       - *titletag
+
+  9000:
+    description: Put user (add/update user in group)
+    content:
+      type: empty
+    required:
+      - h
+      - p
+    tags:
+      -
+        name: h
+        next:
+          type: free
+          required: true
+      -
+        name: p
+        next:
+          type: pubkey
+          required: true
+          next:
+            type: free
+            variadic: true
+
+  9001:
+    description: Remove user from group
+    content:
+      type: empty
+    required:
+      - h
+      - p
+    tags:
+      -
+        name: h
+        next:
+          type: free
+          required: true
+      -
+        name: p
+        next:
+          type: pubkey
+          required: true
+
+  9002:
+    description: Edit group metadata
+    content:
+      type: empty
+    required:
+      - h
+    tags:
+      -
+        name: h
+        next:
+          type: free
+          required: true
+      - *titletag
+      - *imagetag
+      - *descriptiontag
+      -
+        name: private
+      -
+        name: restricted
+      -
+        name: hidden
+      -
+        name: closed
+
+  9005:
+    description: Delete event from group
+    content:
+      type: empty
+    required:
+      - h
+      - e
+    tags:
+      -
+        name: h
+        next:
+          type: free
+          required: true
+      -
+        name: e
+        next:
+          type: id
+          required: true
+
+  9007:
+    description: Create group
+    content:
+      type: empty
+    required:
+      - h
+    tags:
+      -
+        name: h
+        next:
+          type: free
+          required: true
+
+  9008:
+    description: Delete group
+    content:
+      type: empty
+    required:
+      - h
+    tags:
+      -
+        name: h
+        next:
+          type: free
+          required: true
+
+  9009:
+    description: Create group invite
+    content:
+      type: empty
+    required:
+      - h
+    tags:
+      -
+        name: h
+        next:
+          type: free
+          required: true
+
+  9021:
+    description: Join request
+    content:
+      type: empty
+    required:
+      - h
+    tags:
+      -
+        name: h
+        next:
+          type: free
+          required: true
+      -
+        name: code
+        next:
+          type: free
+          required: true
+
+  9022:
+    description: Leave request
+    content:
+      type: empty
+    required:
+      - h
+    tags:
+      -
+        name: h
+        next:
+          type: free
+          required: true
+
+  39000:
+    description: Group metadata
+    content:
+      type: empty
+    tags:
+      - *titletag
+      - *imagetag
+      - *descriptiontag
+      -
+        name: private
+      -
+        name: restricted
+      -
+        name: hidden
+      -
+        name: closed
+
+  39001:
+    description: Group admins
+    content:
+      type: empty
+    multiple:
+      - p
+    tags:
+      -
+        name: p
+        next:
+          type: pubkey
+          required: true
+          next:
+            type: free
+            variadic: true
+
+  39002:
+    description: Group members
+    content:
+      type: empty
+    multiple:
+      - p
+    tags:
+      -
+        name: p
+        next:
+          type: pubkey
+          required: true
+
+  39003:
+    description: Group roles
+    content:
+      type: empty
+    multiple:
+      - role
+    tags:
+      -
+        name: role
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            variadic: true
