@@ -1919,7 +1919,7 @@ kinds:
           required: true
 
   30617:
-    description: Repository announcements
+    description: Git Repository Announcement
     in_use: true
     content:
       type: empty
@@ -1967,7 +1967,7 @@ kinds:
           variadic: true
 
   30618:
-    description: Repository state announcements
+    description: Git Repository State Announcement
     in_use: true
     content:
       type: empty
@@ -1987,7 +1987,7 @@ kinds:
           type: free
 
   1617:
-    description: Patches
+    description: Git Patch
     in_use: true
     content:
       type: free
@@ -2044,7 +2044,7 @@ kinds:
                 required: true
 
   30000:
-    description: Follow sets
+    description: Follow set
     in_use: true
     content:
       type: empty
@@ -2057,7 +2057,7 @@ kinds:
       - *descriptiontag
 
   30002:
-    description: Relay sets
+    description: Relay set
     in_use: true
     content:
       type: empty
@@ -2070,7 +2070,7 @@ kinds:
       - *descriptiontag
 
   30003:
-    description: Bookmark sets
+    description: Bookmark set
     content:
       type: empty
     multiple:
@@ -2084,7 +2084,7 @@ kinds:
       - *descriptiontag
 
   30004:
-    description: Curation sets
+    description: Curation set
     content:
       type: empty
     multiple:
@@ -2098,7 +2098,7 @@ kinds:
       - *descriptiontag
 
   30005:
-    description: Video sets
+    description: Video set
     content:
       type: empty
     multiple:
@@ -2110,7 +2110,7 @@ kinds:
       - *descriptiontag
 
   30007:
-    description: Kind mute sets
+    description: Kind mute set
     content:
       type: empty
     tags:
@@ -2120,7 +2120,7 @@ kinds:
       - *descriptiontag
 
   30015:
-    description: Interest sets
+    description: Interest set
     content:
       type: empty
     tags:
@@ -2135,7 +2135,7 @@ kinds:
     tags: []
 
   30030:
-    description: Emoji sets
+    description: Emoji set
     in_use: true
     content:
       type: empty
@@ -2158,7 +2158,7 @@ kinds:
     tags: []
 
   30063:
-    description: Release artifact sets
+    description: Release artifact set
     content:
       type: empty
     tags:
@@ -2175,7 +2175,7 @@ kinds:
     tags: []
 
   30267:
-    description: App curation sets
+    description: App curation set
     content:
       type: empty
     tags:
@@ -2317,6 +2317,7 @@ kinds:
 
   9000:
     description: Put user (add/update user in group)
+    in_use: true
     content:
       type: empty
     required:
@@ -2339,6 +2340,7 @@ kinds:
 
   9001:
     description: Remove user from group
+    in_use: true
     content:
       type: empty
     required:
@@ -2358,6 +2360,7 @@ kinds:
 
   9002:
     description: Edit group metadata
+    in_use: true
     content:
       type: empty
     required:
@@ -2382,6 +2385,7 @@ kinds:
 
   9005:
     description: Delete event from group
+    in_use: true
     content:
       type: empty
     required:
@@ -2401,6 +2405,7 @@ kinds:
 
   9007:
     description: Create group
+    in_use: true
     content:
       type: empty
     required:
@@ -2414,6 +2419,7 @@ kinds:
 
   9008:
     description: Delete group
+    in_use: true
     content:
       type: empty
     required:
@@ -2427,6 +2433,7 @@ kinds:
 
   9009:
     description: Create group invite
+    in_use: true
     content:
       type: empty
     required:
@@ -2440,6 +2447,7 @@ kinds:
 
   9021:
     description: Join request
+    in_use: true
     content:
       type: empty
     required:
@@ -2458,6 +2466,7 @@ kinds:
 
   9022:
     description: Leave request
+    in_use: true
     content:
       type: empty
     required:
@@ -2471,6 +2480,7 @@ kinds:
 
   39000:
     description: Group metadata
+    in_use: true
     content:
       type: empty
     tags:
@@ -2488,6 +2498,7 @@ kinds:
 
   39001:
     description: Group admins
+    in_use: true
     content:
       type: empty
     multiple:
@@ -2504,6 +2515,7 @@ kinds:
 
   39002:
     description: Group members
+    in_use: true
     content:
       type: empty
     multiple:
@@ -2517,6 +2529,7 @@ kinds:
 
   39003:
     description: Group roles
+    in_use: true
     content:
       type: empty
     multiple:
