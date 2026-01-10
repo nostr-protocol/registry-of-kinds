@@ -824,25 +824,25 @@ kinds:
     tags:
       - *titletag
       -
-         name: x
-         next:
-           type: free
-           required: true
+        name: x
+        next:
+          type: free
+          required: true
       -
-         name: file
-         next:
-           type: free
-           required: true
-           next:
-             type: free
+        name: file
+        next:
+          type: free
+          required: true
+          next:
+            type: free
       -
-         name: tracker
-         next:
-           type: url
+        name: tracker
+        next:
+          type: url
       -
-         name: i
-         next:
-           type: free
+        name: i
+        next:
+          type: free
 
   2004:
     description: Torrent Comment
@@ -1278,25 +1278,25 @@ kinds:
       type: free
     tags:
       -
-         name: u
-         next:
-           type: url
-           required: true
+        name: u
+        next:
+          type: url
+          required: true
       -
-         name: method
-         next:
-           type: constrained
-           either:
+        name: method
+        next:
+          type: constrained
+          either:
             - GET
             - POST
             - PUT
             - DELETE
             - PATCH
-           required: true
+          required: true
       -
-         name: payload
-         next:
-           type: free
+        name: payload
+        next:
+          type: free
 
   10000:
     description: Mute list
@@ -1458,14 +1458,14 @@ kinds:
       - group
     tags:
       -
-         name: group
-         next:
-           type: free
-           required: true
-           next:
-             type: relay
-             next:
-               type: free
+        name: group
+        next:
+          type: free
+          required: true
+          next:
+            type: relay
+            next:
+              type: free
 
   10013:
     description: Private event relay list
@@ -1872,19 +1872,19 @@ kinds:
       - *etag
       - *atag
       -
-         name: status
-         next:
-           type: constrained
-           either:
+        name: status
+        next:
+          type: constrained
+          either:
             - accepted
             - declined
             - tentative
-           required: true
+          required: true
       -
-         name: fb
-         next:
-           type: constrained
-           either:
+        name: fb
+        next:
+          type: constrained
+          either:
             - free
             - busy
       - *ptag
