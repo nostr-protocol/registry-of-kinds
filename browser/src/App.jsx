@@ -3,6 +3,7 @@ import { createStore } from "solid-js/store"
 import yaml from "js-yaml"
 
 import { Tag } from "./Tag"
+import { EventJSON } from "./EventJSON"
 
 function App() {
   const [kinds, setKinds] = createStore([])
@@ -114,7 +115,7 @@ function App() {
     // Add example content based on content type
     switch (kind.content) {
       case "json":
-        event.content = JSON.stringify({ json: "text" })
+        event.content = "<stringified-json>"
         break
       case "free":
         event.content = "<some-text>"
@@ -173,15 +174,7 @@ function App() {
       }
     }
 
-    return JSON.stringify(event, null, 2)
-  }
-
-  function formatJson(json) {
-    return json
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/("[^"]+":)/g, '<span class="font-bold">$1</span>')
-      .replace(/(: null)/g, ': <span class="italic">$1</span>')
+    return event
   }
 
   return (
@@ -280,8 +273,8 @@ function App() {
 
                   <div>
                     <h3 class="text-sm font-bold mb-2">Example JSON Event:</h3>
-                    <pre class="bg-black text-white p-4 border border-black overflow-x-auto text-sm font-mono">
-                      <code innerHTML={formatJson(generateExampleJson(selectedKind()))} />
+                    <pre class="bg-black p-4 border border-black overflow-x-auto">
+                      <EventJSON event={generateExampleJson(selectedKind())} />
                     </pre>
                   </div>
                 </div>

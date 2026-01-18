@@ -45,7 +45,9 @@ export function Tag(props) {
           <div class="flex items-center gap-2 mt-1">
             <div class="ml-6 text-sm">
               "&lt;{type.type}&gt;"<Show when={i() + 1 < nextTypes().length}>,</Show>
-              <Show when={type.variadic}>, <span title="variadic, takes any number of items in the same tag">...</span></Show>
+              <Show when={type.variadic}>
+                , <span title="variadic, takes any number of items in the same tag">...</span>
+              </Show>
             </div>
             <Show when={type.constrained}>
               <div class="text-sm pl-2">
@@ -54,7 +56,9 @@ export function Tag(props) {
             </Show>
             <Show when={type.required}>
               <div class="text-sm pl-2">
-                <div class="text-xs bg-red-100 px-2 py-0.5 box-border border border-red-200">required</div>
+                <div class="text-xs bg-red-100 px-2 py-0.5 box-border border border-red-200">
+                  required
+                </div>
               </div>
             </Show>
           </div>
