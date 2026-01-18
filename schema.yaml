@@ -48,6 +48,7 @@ _imetatag: &imetatag
     type: imeta
     required: true
     variadic: true
+  description: metadata about media items present in the event, each tag item is a space-separated key-value pair
 
 _emojitag: &emojitag
   name: emoji
@@ -57,6 +58,7 @@ _emojitag: &emojitag
     next:
       type: url
       required: true
+  description: emojis references used inside the .content
 
 _title: &titletag
   name: title
@@ -86,6 +88,7 @@ _publishedattag: &publishedattag
   next:
     type: timestamp
     required: true
+  description: when an event is replaced, the stringified timestamp of the original event
 
 _atag: &atag
   name: a
@@ -106,6 +109,7 @@ _qtag: &qtag
 _ktag: &ktag
   name: k
   next: *kind
+  description: kind of the event being replied to or referenced
 
 _gtag: &gtag
   name: g
@@ -173,6 +177,7 @@ kinds:
       - p
       - a
       - emoji
+      - imeta
     tags:
       -
         name: e
@@ -197,6 +202,7 @@ kinds:
             type: relay
             next:
               type: pubkey
+        description: quoted event
       -
         name: q
         next:
@@ -204,6 +210,7 @@ kinds:
           required: true
           next:
             type: relay
+        description: quoted address
       -
         name: p
         next: *profile
@@ -216,6 +223,7 @@ kinds:
           type: free
           required: true
       - *emojitag
+      - *imetatag
 
   3:
     description: Follows
@@ -1280,29 +1288,26 @@ kinds:
       -
         name: A
         next: *addr
+        description: the root of the thread, if it is an addressable event
       - *atag
       -
         name: E
         next: *event
+        description: the root of the thread, if it is a normal event
       - *etag
       -
         name: I
         next: *external
-      -
-        name: i
-        next: *external
+        description: the root of the thread, if it is an external reference
       -
         name: K
         next: *kind
-      -
-        name: K
-        next:
-          type: free
-          required: true
+        description: kind of the thread root
       - *ktag
       -
         name: P
         next: *profile
+        description: author of the original event
       - *ptag
       - *emojitag
 
