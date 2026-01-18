@@ -1072,11 +1072,12 @@ kinds:
           required: true
 
   1621:
-    description: Issues
+    description: Git Issue
     content:
       type: free
-    multiple:
-      - p
+    required:
+      - subject
+      - a
     tags:
       - *atag
       - *ptag
@@ -1085,6 +1086,80 @@ kinds:
         next:
           type: free
           required: true
+
+  1630:
+    description: Git Issue Status Open
+    content:
+      - type: free
+    required:
+      - e
+      - p
+    multiple:
+      - p
+      - e
+    tags:
+      - *ptag
+      - *etag
+
+  1631:
+    description: Git Issue Applied/Merged/Resolved
+    content:
+      - type: free
+    required:
+      - e
+      - p
+    multiple:
+      - p
+      - e
+    tags:
+      - *ptag
+      - *etag
+      -
+        name: q
+        next: *event
+        description: applied or merged patch event id
+      -
+        name: merge-commit
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      -
+        name: applied-as-commits
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+
+  1632:
+    description: Git Issue Status Closed
+    content:
+      - type: free
+    required:
+      - e
+      - p
+    multiple:
+      - p
+      - e
+    tags:
+      - *ptag
+      - *etag
+
+  1633:
+    description: Git Issue Status Draft
+    content:
+      - type: free
+    required:
+      - e
+      - p
+    multiple:
+      - p
+      - e
+    tags:
+      - *ptag
+      - *etag
 
   1984:
     description: Reporting
@@ -1530,6 +1605,17 @@ kinds:
       type: empty
     tags: []
 
+  10317:
+    description: User grasp list
+    content:
+      type: empty
+    tags:
+      -
+        name: "g"
+        next:
+          type: relay
+          required: true
+
   10377:
     description: Proxy Announcement
     content:
@@ -1965,6 +2051,8 @@ kinds:
         next:
           type: pubkey
           variadic: true
+      -
+        name: t
 
   30618:
     description: Git Repository State Announcement
@@ -1991,6 +2079,10 @@ kinds:
     in_use: true
     content:
       type: free
+    required:
+      - t
+      - a
+      - p
     tags:
       - *atag
       -
@@ -2042,6 +2134,115 @@ kinds:
               next:
                 type: free
                 required: true
+
+  1618:
+    description: Git Pull Request
+    in_use: true
+    content:
+      type: free
+    required:
+      - a
+      - subject
+      - clone
+      - c
+    tags:
+      - *atag
+      - *ptag
+      -
+        name: r
+        next:
+          type: hex
+          min: 40
+          max: 40
+          required: true
+        description: earliest commit id of repo, so clients can subscribe to all PRs sent to a local git repo
+      -
+        name: subject
+        next:
+          type: free
+          required: true
+      -
+        name: branch-name
+        next:
+          type: free
+          required: true
+      -
+        name: c
+        next:
+          type: hex
+          min: 40
+          max: 40
+          required: true
+        description: tip of the PR branch
+      -
+        name: clone
+        next:
+          type: giturl
+          required: true
+          variadic: true
+        description: at least one git clone url where commit can be downloaded
+      - *etag
+      -
+        name: merge-base
+        next:
+          type: hex
+          min: 40
+          max: 40
+          required: true
+        description: the most recent common ancestor with the target branch
+
+  1619:
+    description: Git Pull Request Update
+    in_use: true
+    content:
+      type: free
+    required:
+      - a
+      - E
+      - clone
+      - c
+    tags:
+      - *atag
+      - *ptag
+      -
+        name: r
+        next:
+          type: hex
+          min: 40
+          max: 40
+          required: true
+        description: earliest commit id of repo, so clients can subscribe to all PRs sent to a local git repo
+      -
+        name: P
+        next: *profile
+      -
+        name: E
+        next: *event
+      - *etag
+      - *ptag
+      -
+        name: c
+        next:
+          type: hex
+          min: 40
+          max: 40
+          required: true
+        description: tip of the PR branch
+      -
+        name: clone
+        next:
+          type: giturl
+          required: true
+          variadic: true
+        description: at least one git clone url where commit can be downloaded
+      -
+        name: merge-base
+        next:
+          type: hex
+          min: 40
+          max: 40
+          required: true
+        description: the most recent common ancestor with the target branch
 
   30000:
     description: Follow set
