@@ -749,6 +749,51 @@ kinds:
     tags:
       - *ptag
 
+  1227:
+    description: Scroll
+    in_use: true
+    content:
+      type: free
+    multiple:
+      - param
+    tags:
+      -
+        name: name
+        next:
+          type: free
+          required: true
+      - *descriptiontag
+      -
+        name: icon
+        next:
+          type: url
+          required: true
+      -
+        name: param
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+            next:
+              type: constrained
+              either:
+               - public_key
+               - event
+               - string
+               - number
+               - timestamp
+               - relay
+              required: true
+              next:
+                type: constrained
+                either:
+                 - required
+                next:
+                  type: free
+        description: param name, description, type, required, supported kinds
+
   1244:
     description: Voice Message Comment
     in_use: true
