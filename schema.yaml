@@ -1143,7 +1143,7 @@ kinds:
   1630:
     description: Git Issue Status Open
     content:
-      - type: free
+      type: free
     required:
       - e
       - p
@@ -1157,7 +1157,7 @@ kinds:
   1631:
     description: Git Issue Applied/Merged/Resolved
     content:
-      - type: free
+      type: free
     required:
       - e
       - p
@@ -1189,7 +1189,7 @@ kinds:
   1632:
     description: Git Issue Status Closed
     content:
-      - type: free
+      type: free
     required:
       - e
       - p
@@ -1203,7 +1203,7 @@ kinds:
   1633:
     description: Git Issue Status Draft
     content:
-      - type: free
+      type: free
     required:
       - e
       - p
