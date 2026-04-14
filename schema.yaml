@@ -2454,6 +2454,13 @@ kinds:
       type: free
     tags: []
 
+  30333:
+    description: Agent Heartbeat
+    in_use: true
+    content:
+      type: free
+    tags: []
+
   30388:
     description: Slide Set
     content:
@@ -2473,6 +2480,13 @@ kinds:
 
   30819:
     description: Wiki Redirects
+    in_use: true
+    content:
+      type: free
+    tags: []
+
+  31117:
+    description: DVM Job Review
     in_use: true
     content:
       type: free
