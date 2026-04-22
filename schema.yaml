@@ -2062,6 +2062,8 @@ kinds:
     multiple:
       - web
       - clone
+    required:
+      - clone
     tags:
       -
         name: name
@@ -2111,6 +2113,8 @@ kinds:
       type: empty
     multiple:
       - "refs/"
+    required:
+      - HEAD
     tags:
       -
         prefix: "refs/"
