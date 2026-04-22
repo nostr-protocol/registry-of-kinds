@@ -117,6 +117,27 @@ _gtag: &gtag
     type: geohash
     required: true
 
+_servertag: &servertag
+  name: server
+  next:
+    type: url
+    required: true
+
+_pathtag: &pathtag
+  name: path
+  next:
+    type: lowercase
+    required: true
+    next:
+      type: hex
+      required: true
+
+_sourcetag: &sourcetag
+  name: source
+  next:
+    type: url
+    required: true
+
 _ptag-bare: &ptag-bare
   name: p
   next:
@@ -792,7 +813,23 @@ kinds:
                  - required
                 next:
                   type: free
-        description: param name, description, type, required, supported kinds
+
+  15128:
+    description: Root nsite
+    in_use: true
+    content:
+      type: empty
+    multiple:
+      - path
+      - server
+    required:
+      - path
+    tags:
+      - *pathtag
+      - *servertag
+      - *titletag
+      - *descriptiontag
+      - *sourcetag
 
   1244:
     description: Voice Message Comment
@@ -1813,6 +1850,23 @@ kinds:
       - *qtag
       - *atag
       - *ptag
+
+  35128:
+    description: Named nsite
+    in_use: true
+    content:
+      type: empty
+    multiple:
+      - path
+      - server
+    required:
+      - path
+    tags:
+      - *pathtag
+      - *servertag
+      - *titletag
+      - *descriptiontag
+      - *sourcetag
 
   30078:
     description: Application-specific Data
