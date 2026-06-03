@@ -586,8 +586,13 @@ kinds:
       type: free
     required:
       - p
+    multiple:
+      - q
+      - imeta
     tags:
       - *ptag
+      - *qtag
+      - *imetatag
 
   40:
     description: Channel Creation
@@ -648,6 +653,25 @@ kinds:
       type: json
     tags:
       - *ptag
+
+  54:
+    description: Podcast Episode
+    in_use: true
+    content:
+      type: free
+    multiple:
+      - audio
+    tags:
+      - *titletag
+      - *imagetag
+      - *descriptiontag
+      -
+        name: audio
+        next:
+          type: url
+          required: true
+          next:
+            type: free
 
   64:
     description: Chess (PGN)
@@ -753,7 +777,7 @@ kinds:
 
   1040:
     description: OpenTimestamps
-    in_use: true
+    in_use: false
     content:
       type: free
     tags:
@@ -886,7 +910,54 @@ kinds:
     in_use: true
     content:
       type: free
-    tags: []
+    tags:
+      -
+        name: l
+        next:
+          type: lowercase
+          required: true
+        description: programming language name
+      -
+        name: name
+        next:
+          type: free
+          required: true
+        description: snippet name or filename
+      -
+        name: extension
+        next:
+          type: free
+          required: true
+        description: file extension without dot
+      - *descriptiontag
+      -
+        name: runtime
+        next:
+          type: free
+          required: true
+        description: runtime or environment specification
+      -
+        name: license
+        next:
+          type: free
+          required: true
+          next:
+            type: url
+        description: SPDX license identifier, repeatable
+      -
+        name: dep
+        next:
+          type: free
+          required: true
+        description: dependency, repeatable
+      -
+        name: repo
+        next:
+          type: free
+          required: true
+          next:
+            type: relay
+        description: repository URL or NIP-34 address
 
   1971:
     description: Problem Tracker
@@ -1593,6 +1664,16 @@ kinds:
     tags:
       - *relaytag
 
+  10054:
+    description: Favorite Podcasts
+    in_use: true
+    content:
+      type: empty
+    multiple:
+      - p
+    tags:
+      - *ptag
+
   10101:
     description: Good wiki authors
     content:
@@ -1610,6 +1691,42 @@ kinds:
       - relay
     tags:
       - *relaytag
+
+  10154:
+    description: Podcast Metadata
+    in_use: true
+    content:
+      type: empty
+    tags:
+      - *titletag
+      - *imagetag
+      - *descriptiontag
+      -
+        name: website
+        next:
+          type: url
+          required: true
+      -
+        name: p
+        next:
+          type: pubkey
+          required: true
+          next:
+            type: constrained
+            either:
+             - host
+             - cohost
+             - editor
+
+  10164:
+    description: Authored Podcasts
+    in_use: true
+    content:
+      type: empty
+    multiple:
+      - p
+    tags:
+      - *ptag
 
   10009:
     description: User groups
@@ -1867,6 +1984,27 @@ kinds:
       - *titletag
       - *descriptiontag
       - *sourcetag
+
+  34128:
+    description: Legacy nsite File (Deprecated)
+    in_use: false
+    content:
+      type: free
+    tags:
+      -
+        name: d
+        next:
+          type: lowercase
+          required: true
+        description: file path
+      -
+        name: x
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+        description: sha256 hash of file
 
   30078:
     description: Application-specific Data
@@ -2566,11 +2704,111 @@ kinds:
       type: free
     tags: []
 
-  37516:
+  37515:
     description: Geocache listing
+    in_use: true
     content:
       type: free
-    tags: []
+    required:
+      - name
+      - g
+      - location
+      - difficulty
+      - terrain
+      - size
+      - cache-type
+    tags:
+      -
+        name: name
+        next:
+          type: free
+          required: true
+      - *gtag
+      -
+        name: location
+        next:
+          type: free
+          required: true
+      -
+        name: difficulty
+        next:
+          type: free
+          required: true
+      -
+        name: terrain
+        next:
+          type: free
+          required: true
+      -
+        name: size
+        next:
+          type: constrained
+          either:
+           - micro
+           - small
+           - regular
+           - large
+          required: true
+      -
+        name: cache-type
+        next:
+          type: constrained
+          either:
+           - traditional
+           - multi
+           - mystery
+           - earth
+           - virtual
+           - letterbox
+           - event
+          required: true
+      -
+        name: hint
+        next:
+          type: free
+      - *imagetag
+      -
+        name: published_at
+        next:
+          type: timestamp
+      -
+        name: status
+        next:
+          type: constrained
+          either:
+           - active
+           - disabled
+           - archived
+      - *relaytag
+
+  37516:
+    description: Geocache log entry
+    in_use: true
+    content:
+      type: free
+    required:
+      - log-type
+    tags:
+      - *atag
+      -
+        name: log-type
+        next:
+          type: constrained
+          either:
+           - found
+           - dnf
+           - note
+           - maintenance
+           - disabled
+           - enabled
+           - archived
+          required: true
+      - *imagetag
+      - *gtag
+      -
+        name: published_at
+        next:
+          type: timestamp
 
   38172:
     description: Cashu Mint Announcement
