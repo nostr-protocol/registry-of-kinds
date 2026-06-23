@@ -594,6 +594,17 @@ kinds:
       - *qtag
       - *imetatag
 
+  30:
+    description: Jester Chess Event
+    content:
+      type: json
+    multiple:
+      - e
+      - p
+    tags:
+      - *etag
+      - *ptag
+
   40:
     description: Channel Creation
     content:
@@ -673,12 +684,126 @@ kinds:
           next:
             type: free
 
+  62:
+    description: Request to Vanish
+    content:
+      type: free
+    multiple:
+      - relay
+    tags:
+      - *relaytag
+
   64:
     description: Chess (PGN)
     content:
       type: free
     tags:
       - *ptag
+
+  78:
+    description: Application Data
+    content:
+      type: free
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+        description: grouping key
+
+  82:
+    description: Medical Data (FHIR)
+    content:
+      type: free
+    tags: []
+
+  444:
+    description: MLS Welcome
+    content:
+      type: free
+    required:
+      - e
+      - relays
+      - encoding
+    tags:
+      - *etag-bare
+      - *relaytag
+      -
+        name: encoding
+        next:
+          type: free
+          required: true
+      -
+        name: h
+        next:
+          type: hex
+          min: 64
+          max: 64
+
+  445:
+    description: MLS Encrypted Group Message
+    content:
+      type: free
+    required:
+      - h
+    tags:
+      -
+        name: h
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+
+  446:
+    description: MLS Notification Request
+    content:
+      type: free
+    required:
+      - v
+      - encoding
+    tags:
+      -
+        name: v
+        next:
+          type: free
+          required: true
+      -
+        name: encoding
+        next:
+          type: free
+          required: true
+
+  447:
+    description: MLS Token Request
+    content:
+      type: empty
+    tags:
+      -
+        name: token
+        next:
+          type: free
+          required: true
+          variadic: true
+
+  448:
+    description: MLS Token List
+    content:
+      type: empty
+    tags:
+      - *etag-bare
+      -
+        name: token
+        next:
+          type: free
+          required: true
+          variadic: true
+
+  449:
+    description: MLS Token Removal
+    content:
+      type: empty
+    tags: []
 
   777:
     description: Spell
@@ -747,6 +872,18 @@ kinds:
       - *atag
       - *ptag
       - *etag
+
+  1010:
+    description: Text Note Edit
+    content:
+      type: free
+    tags:
+      - *etag-bare
+      - *ptag-bare
+      - name: summary
+        next:
+          type: free
+          required: true
 
   1018:
     description: Poll Response
@@ -1196,6 +1333,34 @@ kinds:
           required: true
       -
         name: service
+        next:
+          type: free
+          required: true
+
+  1064:
+    description: Blob Data (NIP-95)
+    content:
+      type: free
+    tags: []
+
+  1065:
+    description: Blob Header (NIP-95)
+    content:
+      type: free
+    tags:
+      - *etag
+      -
+        name: m
+        next:
+          type: free
+          required: true
+      -
+        name: x
+        next:
+          type: free
+          required: true
+      -
+        name: size
         next:
           type: free
           required: true
@@ -3090,3 +3255,1121 @@ kinds:
           next:
             type: free
             variadic: true
+
+  1163:
+    description: Profile Gallery Entry
+    content:
+      type: empty
+    required:
+      - url
+    tags:
+      - name: url
+        next:
+          type: url
+          required: true
+      - name: m
+        next:
+          type: free
+          required: true
+      - name: x
+        next:
+          type: free
+      - name: size
+        next:
+          type: free
+      - name: dim
+        next:
+          type: free
+      - name: blurhash
+        next:
+          type: free
+      - *summarytag
+      - *etag-bare
+
+  1301:
+    description: Workout Record
+    content:
+      type: free
+    required:
+      - d
+      - t
+      - duration
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *titletag
+      - name: t
+        next:
+          type: lowercase
+          required: true
+      - name: duration
+        next:
+          type: free
+          required: true
+      - name: distance
+        next:
+          type: free
+      - name: calories
+        next:
+          type: free
+      - name: source
+        next:
+          type: free
+      - name: type
+        next:
+          type: free
+      - name: start
+        next:
+          type: timestamp
+      - name: end
+        next:
+          type: timestamp
+
+  1312:
+    description: Live Activity Raid
+    content:
+      type: free
+    tags:
+      - name: a
+        next:
+          type: addr
+          required: true
+          next:
+            type: relay
+            next:
+              type: constrained
+              either:
+               - root
+        description: source stream
+      - name: a
+        next:
+          type: addr
+          required: true
+          next:
+            type: relay
+            next:
+              type: constrained
+              either:
+               - mention
+        description: target stream
+
+  1313:
+    description: Live Activity Clip
+    content:
+      type: free
+    required:
+      - p
+      - r
+      - title
+    tags:
+      - *atag
+      - *ptag
+      - *rtag
+      - *titletag
+
+  1315:
+    description: Road Event Report
+    content:
+      type: free
+    required:
+      - t
+      - g
+      - lat
+      - lon
+      - expiration
+    tags:
+      - name: t
+        next:
+          type: free
+          required: true
+      - *gtag
+      - name: lat
+        next:
+          type: free
+          required: true
+      - name: lon
+        next:
+          type: free
+          required: true
+      - name: expiration
+        next:
+          type: timestamp
+          required: true
+
+  1316:
+    description: Road Event Confirmation
+    content:
+      type: empty
+    required:
+      - e
+      - status
+      - expiration
+    tags:
+      - *etag-bare
+      - name: status
+        next:
+          type: free
+          required: true
+      - name: expiration
+        next:
+          type: timestamp
+          required: true
+
+  1622:
+    description: Git Reply
+    content:
+      type: free
+    required:
+      - a
+    tags:
+      - *atag
+      - *etag
+      - *ptag
+      - *qtag
+
+  1808:
+    description: Audio Header
+    content:
+      type: free
+    required:
+      - download_url
+    tags:
+      - name: download_url
+        next:
+          type: url
+          required: true
+      - name: stream_url
+        next:
+          type: url
+      - name: waveform
+        next:
+          type: json
+
+  3063:
+    description: Software Asset
+    content:
+      type: empty
+    required:
+      - i
+      - m
+      - x
+      - version
+    tags:
+      - name: i
+        next:
+          type: free
+          required: true
+      - name: url
+        next:
+          type: url
+      - name: m
+        next:
+          type: free
+          required: true
+      - name: x
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      - name: size
+        next:
+          type: free
+      - name: version
+        next:
+          type: free
+          required: true
+      - name: f
+        next:
+          type: free
+          required: true
+      - name: variant
+        next:
+          type: free
+
+  4312:
+    description: Nests Admin Command
+    content:
+      type: empty
+    tags:
+      - *atag
+      - *ptag-bare
+      - name: action
+        next:
+          type: free
+          required: true
+
+  8000:
+    description: Relay Add Member
+    content:
+      type: empty
+    multiple:
+      - p
+    tags:
+      - *ptag-bare
+
+  8001:
+    description: Relay Remove Member
+    content:
+      type: empty
+    multiple:
+      - p
+    tags:
+      - *ptag-bare
+
+  8333:
+    description: Onchain Zap
+    content:
+      type: free
+    required:
+      - i
+      - p
+      - amount
+    tags:
+      - name: i
+        next:
+          type: free
+          required: true
+        description: bitcoin tx reference
+      - *ptag
+      - *etag
+      - *atag
+      - *ktag
+      - name: amount
+        next:
+          type: free
+          required: true
+
+  9733:
+    description: Private Zap
+    content:
+      type: free
+    tags:
+      - *ptag
+      - *etag
+      - *atag
+
+  10011:
+    description: External Identities
+    content:
+      type: empty
+    tags:
+      - name: i
+        next:
+          type: free
+          required: true
+          variadic: true
+
+  10112:
+    description: Nests Server List
+    content:
+      type: empty
+    multiple:
+      - server
+    tags:
+      - *servertag
+
+  10133:
+    description: Payment Targets
+    content:
+      type: empty
+    tags:
+      - name: payto
+        next:
+          type: free
+          required: true
+
+  11871:
+    description: Attestor Proficiency
+    content:
+      type: free
+    tags:
+      - *ktag
+
+  12473:
+    description: Birdex
+    content:
+      type: empty
+    tags:
+      - name: n
+        next:
+          type: free
+      - name: i
+        next:
+          type: url
+      - name: alt
+        next:
+          type: free
+
+  13534:
+    description: Relay Membership List
+    content:
+      type: empty
+    tags:
+      - name: member
+        next:
+          type: pubkey
+          required: true
+
+  15129:
+    description: Root Napplet
+    content:
+      type: empty
+    required:
+      - d
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *servertag
+      - *titletag
+      - *descriptiontag
+      - *sourcetag
+      - *pathtag
+      - name: requires
+        next:
+          type: free
+      - name: icon
+        next:
+          type: url
+
+  21001:
+    description: CLINK Offer
+    content:
+      type: free
+    tags:
+      - *ptag
+      - *etag-bare
+      - name: clink_version
+        next:
+          type: free
+          required: true
+
+  21002:
+    description: CLINK Debit
+    content:
+      type: free
+    tags:
+      - *ptag
+      - *etag-bare
+      - name: clink_version
+        next:
+          type: free
+          required: true
+
+  21003:
+    description: CLINK Manage
+    content:
+      type: free
+    tags:
+      - *ptag
+      - *etag-bare
+      - name: clink_version
+        next:
+          type: free
+          required: true
+
+  21059:
+    description: Ephemeral Gift Wrap
+    content:
+      type: free
+    tags:
+      - *ptag
+
+  23196:
+    description: NWC Notification (Legacy)
+    content:
+      type: free
+    tags:
+      - *ptag
+
+  23197:
+    description: NWC Notification
+    content:
+      type: free
+    tags:
+      - *ptag
+
+  23333:
+    description: Ephemeral Chat Room
+    content:
+      type: free
+    required:
+      - d
+      - relay
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - name: relay
+        next:
+          type: relay
+          required: true
+
+  23903:
+    description: Wake Up
+    content:
+      type: empty
+    tags:
+      - *etag-bare
+      - *ptag-bare
+      - *ktag
+
+  25050:
+    description: Call Offer
+    content:
+      type: free
+    required:
+      - p
+      - call-id
+      - call-type
+    tags:
+      - *ptag-bare
+      - name: call-id
+        next:
+          type: free
+          required: true
+      - name: call-type
+        next:
+          type: constrained
+          either:
+           - voice
+           - video
+          required: true
+
+  25051:
+    description: Call Answer
+    content:
+      type: free
+    required:
+      - p
+      - call-id
+    tags:
+      - *ptag-bare
+      - name: call-id
+        next:
+          type: free
+          required: true
+
+  25052:
+    description: Call ICE Candidate
+    content:
+      type: json
+    required:
+      - p
+      - call-id
+    tags:
+      - *ptag-bare
+      - name: call-id
+        next:
+          type: free
+          required: true
+
+  25053:
+    description: Call Hangup
+    content:
+      type: free
+    required:
+      - p
+      - call-id
+    tags:
+      - *ptag-bare
+      - name: call-id
+        next:
+          type: free
+          required: true
+
+  25054:
+    description: Call Reject
+    content:
+      type: free
+    required:
+      - p
+      - call-id
+    tags:
+      - *ptag-bare
+      - name: call-id
+        next:
+          type: free
+          required: true
+
+  25055:
+    description: Call Renegotiate
+    content:
+      type: free
+    required:
+      - p
+      - call-id
+    tags:
+      - *ptag-bare
+      - name: call-id
+        next:
+          type: free
+          required: true
+
+  28934:
+    description: Relay Join Request
+    content:
+      type: empty
+    tags:
+      - name: claim
+        next:
+          type: free
+
+  28935:
+    description: Relay Invite Request
+    content:
+      type: empty
+    tags: []
+
+  28936:
+    description: Relay Leave Request
+    content:
+      type: empty
+    tags: []
+
+  30001:
+    description: Old Bookmark Set
+    in_use: true
+    content:
+      type: empty
+    tags:
+      - *titletag
+      - *etag
+      - *atag
+      - name: d
+        next:
+          type: free
+          required: true
+
+  30006:
+    description: Picture Set
+    content:
+      type: empty
+    tags:
+      - *titletag
+      - *descriptiontag
+      - *imagetag
+      - *etag
+      - *atag
+      - name: d
+        next:
+          type: free
+          required: true
+
+  30053:
+    description: NNS Name
+    content:
+      type: free
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - name: ip4
+        next:
+          type: free
+      - name: ip6
+        next:
+          type: free
+      - name: version
+        next:
+          type: free
+
+  30296:
+    description: Interactive Story Prologue
+    content:
+      type: free
+    required:
+      - d
+      - title
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *titletag
+      - name: option
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+
+  30297:
+    description: Interactive Story Scene
+    content:
+      type: free
+    required:
+      - d
+      - title
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *titletag
+      - name: option
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+
+  30298:
+    description: Interactive Story Reading State
+    content:
+      type: empty
+    required:
+      - d
+      - s
+    tags:
+      - name: d
+        next:
+          type: addr
+          required: true
+      - *atag
+      - name: s
+        next:
+          type: constrained
+          either:
+           - active
+           - completed
+          required: true
+      - *titletag
+      - *summarytag
+      - *imagetag
+
+  30382:
+    description: Contact Card (NIP-85)
+    content:
+      type: json
+    tags:
+      - name: d
+        next:
+          type: pubkey
+          required: true
+
+  30383:
+    description: Event Assertion (NIP-85)
+    content:
+      type: empty
+    tags:
+      - name: d
+        next:
+          type: id
+          required: true
+
+  30384:
+    description: Addressable Assertion (NIP-85)
+    content:
+      type: empty
+    tags:
+      - name: d
+        next:
+          type: addr
+          required: true
+
+  30385:
+    description: External ID Assertion (NIP-85)
+    content:
+      type: empty
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+
+  30443:
+    description: MLS Key Package
+    content:
+      type: free
+    required:
+      - d
+      - mls_protocol_version
+      - mls_ciphersuite
+      - mls_extensions
+      - mls_proposals
+      - encoding
+      - i
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - name: mls_protocol_version
+        next:
+          type: free
+          required: true
+      - name: mls_ciphersuite
+        next:
+          type: free
+          required: true
+      - name: mls_extensions
+        next:
+          type: free
+          required: true
+      - name: mls_proposals
+        next:
+          type: free
+          required: true
+      - name: encoding
+        next:
+          type: free
+          required: true
+      - name: i
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      - *relaytag
+      - name: client
+        next:
+          type: free
+
+  30817:
+    description: NIP Text
+    content:
+      type: free
+    multiple:
+      - k
+      - e
+      - a
+      - q
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *titletag
+      - *ktag
+      - *etag
+      - *atag
+      - *qtag
+
+  31337:
+    description: Audio Track
+    content:
+      type: empty
+    required:
+      - d
+      - type
+      - media
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - name: subject
+        next:
+          type: free
+      - name: type
+        next:
+          type: free
+          required: true
+      - name: media
+        next:
+          type: free
+          required: true
+      - name: price
+        next:
+          type: free
+      - name: cover
+        next:
+          type: url
+      - name: participant
+        next:
+          type: pubkey
+
+  31871:
+    description: Attestation
+    content:
+      type: free
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *etag-bare
+      - *atag
+      - name: s
+        next:
+          type: free
+
+  31872:
+    description: Attestation Request
+    content:
+      type: free
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *etag-bare
+      - *atag
+      - *ptag-bare
+      - name: cashu_token
+        next:
+          type: free
+
+  31873:
+    description: Attestor Recommendation
+    content:
+      type: free
+    tags:
+      - name: d
+        next:
+          type: pubkey
+          required: true
+      - *ktag
+
+  33401:
+    description: Exercise Template
+    content:
+      type: free
+    tags:
+      - name: d
+        next:
+          type: free
+      - *titletag
+      - name: difficulty
+        next:
+          type: free
+      - name: equipment
+        next:
+          type: free
+
+  33863:
+    description: Fundraiser
+    content:
+      type: free
+    required:
+      - d
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *titletag
+      - *imagetag
+      - *imetatag
+      - name: goal
+        next:
+          type: free
+      - name: deadline
+        next:
+          type: timestamp
+      - name: t
+        next:
+          type: lowercase
+      - name: published_at
+        next:
+          type: timestamp
+
+  34139:
+    description: Music Playlist
+    content:
+      type: free
+    required:
+      - d
+      - title
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *titletag
+      - *imagetag
+      - *descriptiontag
+      - *atag
+      - name: public
+      - name: private
+      - name: collaborative
+      - name: t
+        next:
+          type: lowercase
+
+  34235:
+    description: Video Event (Horizontal)
+    content:
+      type: free
+    required:
+      - d
+    multiple:
+      - imeta
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *imetatag
+      - name: alt
+        next:
+          type: free
+
+  34236:
+    description: Video Event (Vertical)
+    content:
+      type: free
+    required:
+      - d
+    multiple:
+      - imeta
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *imetatag
+      - name: alt
+        next:
+          type: free
+
+  34551:
+    description: Community Rules
+    content:
+      type: free
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *atag
+      - *ktag
+      - name: p
+        next:
+          type: pubkey
+
+  35129:
+    description: Named Napplet
+    content:
+      type: empty
+    required:
+      - d
+      - path
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *pathtag
+      - *servertag
+      - *titletag
+      - *descriptiontag
+      - *sourcetag
+      - name: requires
+        next:
+          type: free
+      - name: icon
+        next:
+          type: url
+
+  36787:
+    description: Music Track
+    content:
+      type: free
+    required:
+      - d
+      - title
+      - artist
+      - url
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *titletag
+      - name: artist
+        next:
+          type: free
+          required: true
+      - name: url
+        next:
+          type: url
+          required: true
+      - name: image
+        next:
+          type: url
+      - name: album
+        next:
+          type: free
+      - name: duration
+        next:
+          type: free
+      - name: format
+        next:
+          type: free
+      - name: t
+        next:
+          type: lowercase
+
+  38000:
+    description: Mint Recommendation
+    content:
+      type: free
+    required:
+      - d
+      - k
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *ktag
+      - name: mint
+        next:
+          type: url
+          required: true
+      - *atag
+
+  5129:
+    description: Napplet Snapshot
+    content:
+      type: empty
+    tags:
+      - *pathtag
+      - *servertag
+      - *titletag
+      - *descriptiontag
+      - *sourcetag
+      - name: x
+        next:
+          type: hex
+          min: 64
+          max: 64
+      - name: requires
+        next:
+          type: free
+
+  6969:
+    description: Zap Poll
+    content:
+      type: free
+    tags:
+      - *etag
+      - *ptag
+      - *qtag
+      - *atag
+      - name: option
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+      - name: minimum
+        next:
+          type: free
+      - name: maximum
+        next:
+          type: free
+      - name: closed_at
+        next:
+          type: timestamp
