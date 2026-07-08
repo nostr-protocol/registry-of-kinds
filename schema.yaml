@@ -1805,6 +1805,16 @@ kinds:
       - *emojitag
       - *atag
 
+  10031:
+    description: User sticker pack list
+    in_use: true
+    content:
+      type: empty
+    multiple:
+      - a
+    tags:
+      - *atag
+
   10044:
     description: Decoupled key announcement
     in_use: true
@@ -2756,6 +2766,69 @@ kinds:
       - *titletag
       - *imagetag
       - *descriptiontag
+
+  30031:
+    description: Sticker pack
+    in_use: true
+    content:
+      type: empty
+    required:
+      - d
+      - title
+      - pack_format
+      - sticker
+    multiple:
+      - sticker
+      - emoji
+      - t
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - *titletag
+      - name: pack_format
+        next:
+          type: free
+          required: true
+        description: pack format marker, e.g. sonar-sticker-pack-v1
+      - *descriptiontag
+      - name: image
+        next:
+          type: url
+          required: true
+          next:
+            type: hex
+            next:
+              type: free
+        description: cover image url, optional sha256, optional WIDTHxHEIGHT
+      - name: license
+        next:
+          type: free
+      - name: sticker
+        next:
+          type: free
+          required: true
+          next:
+            type: url
+            required: true
+            next:
+              type: hex
+              required: true
+              next:
+                type: free
+                required: true
+                next:
+                  type: free
+                  next:
+                    type: free
+                    next:
+                      type: free
+        description: shortcode, url, sha256, mime, optional dim, optional alt, optional emoji
+      - *emojitag
+      - name: t
+        next:
+          type: lowercase
 
   30040:
     description: Curated Publication Index
