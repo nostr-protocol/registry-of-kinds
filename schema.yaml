@@ -1791,6 +1791,16 @@ kinds:
     tags:
       - *ptag
 
+  10021:
+    description: Favorite follow sets
+    in_use: true
+    content:
+      type: free
+    multiple:
+      - a
+    tags:
+      - *atag
+
   10030:
     description: User emoji list
     in_use: true
