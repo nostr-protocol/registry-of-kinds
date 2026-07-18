@@ -998,7 +998,6 @@ kinds:
     content:
       type: free
     required:
-      - P
       - p
     multiple:
       - p
@@ -1598,7 +1597,6 @@ kinds:
     content:
       type: free
     required:
-      - P
       - p
     multiple:
       - p
