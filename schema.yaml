@@ -4154,6 +4154,33 @@ kinds:
         next:
           type: free
 
+  33534:
+    description: Relay Role Definition
+    content:
+      type: empty
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+        description: role id
+      - name: label
+        next:
+          type: free
+        description: label for the role
+      - name: description
+        next:
+          type: free
+        description: description of the role
+      - name: color
+        next:
+          type: free
+        description: hue value from 0 to 360
+      - name: order
+        next:
+          type: free
+        description: order integer for display
+
   33863:
     description: Fundraiser
     content:
