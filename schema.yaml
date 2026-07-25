@@ -2877,6 +2877,31 @@ kinds:
       type: free
     tags: []
 
+  36820:
+    description: Hitchhiking Ride, per the Hitchhiking Data Standard (https://github.com/Hitchwiki/hitchhiking-data-standard)
+    in_use: true
+    content:
+      type: json
+    required:
+      - d
+      - g
+      - published_at
+    multiple:
+      - g
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+        description: unique identifier for the specific ride, recommended format "source-UUIDv4"
+      - *gtag
+      - *publishedattag
+      - name: expiration
+        next:
+          type: timestamp
+          required: true
+        description: set to 0 for test events; otherwise omit this tag
+
   37515:
     description: Geocache listing
     in_use: true
