@@ -2937,6 +2937,26 @@ kinds:
       type: free
     tags: []
 
+  31436:
+    description: Gopherhole Document
+    in_use: true
+    content:
+      type: free
+    required:
+      - d
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - name: type
+        next:
+          type: constrained
+          either:
+           - "0"
+           - "1"
+      - *titletag
+
   31890:
     description: Feed
     content:
