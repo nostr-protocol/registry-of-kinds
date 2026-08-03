@@ -178,7 +178,7 @@ generic_tags:
 
 kinds:
   0:
-    description: User metadata
+    description: User Metadata
     in_use: true
     content:
       type: json
@@ -188,7 +188,7 @@ kinds:
       - *emojitag
 
   1:
-    description: Short text note
+    description: Short Text Note
     in_use: true
     content:
       type: free
@@ -444,7 +444,7 @@ kinds:
       - *ktag
 
   17:
-    description: Reaction to a website
+    description: Reaction to a Website
     content:
       type: free
     required:
@@ -864,7 +864,7 @@ kinds:
         name: close-on-eose
 
   818:
-    description: Wiki merge requests
+    description: Wiki Merge Requests
     in_use: true
     content:
       type: free
@@ -906,7 +906,7 @@ kinds:
       - *etag
 
   1022:
-    description: Bid confirmation
+    description: Bid Confirmation
     content:
       type: json
     tags:
@@ -976,7 +976,7 @@ kinds:
                   type: free
 
   15128:
-    description: Root nsite
+    description: Root Nsite
     in_use: true
     content:
       type: empty
@@ -1102,13 +1102,13 @@ kinds:
     tags: []
 
   1986:
-    description: Relay reviews
+    description: Relay Reviews
     content:
       type: free
     tags: []
 
   1987:
-    description: AI Embeddings / Vector lists
+    description: AI Embeddings / Vector Lists
     content:
       type: free
     tags: []
@@ -1161,7 +1161,7 @@ kinds:
     tags: []
 
   4454:
-    description: Decoupled key client announcement
+    description: Decoupled Key Client Announcement
     content:
       type: empty
     in_use: true
@@ -1181,7 +1181,7 @@ kinds:
           required: true
 
   4455:
-    description: Decoupled encryption key distribution
+    description: Decoupled Encryption Key Distribution
     content:
       type: free
     in_use: true
@@ -1222,13 +1222,13 @@ kinds:
     tags: []
 
   7516:
-    description: Geocache log
+    description: Geocache Log
     content:
       type: free
     tags: []
 
   7517:
-    description: Geocache proof of find
+    description: Geocache Proof of Find
     content:
       type: free
     tags: []
@@ -1255,7 +1255,7 @@ kinds:
       - *ptag
 
   9467:
-    description: Tidal login
+    description: Tidal Login
     content:
       type: free
     tags: []
@@ -1679,7 +1679,7 @@ kinds:
           type: url
           required: true
       -
-        name: method
+        name: Method
         next:
           type: constrained
           either:
@@ -1695,7 +1695,7 @@ kinds:
           type: free
 
   10000:
-    description: Mute list
+    description: Mute List
     in_use: true
     content:
       type: free
@@ -1711,7 +1711,7 @@ kinds:
       - *etag
 
   10001:
-    description: Pin list
+    description: Pin List
     in_use: true
     content:
       type: empty
@@ -1721,7 +1721,7 @@ kinds:
       - *etag
 
   10003:
-    description: Bookmark list
+    description: Bookmark List
     in_use: true
     content:
       type: free
@@ -1733,28 +1733,28 @@ kinds:
       - *atag
 
   10004:
-    description: Communities list
+    description: Communities List
     content:
       type: free
     tags:
       - *atag
 
   10005:
-    description: Public chats list
+    description: Public Chats List
     content:
       type: free
     tags:
       - *etag
 
   10006:
-    description: Blocked relays list
+    description: Blocked Relays List
     content:
       type: free
     tags:
       - *relaytag
 
   10007:
-    description: Search relays list
+    description: Search Relays List
     in_use: true
     content:
       type: free
@@ -1764,7 +1764,7 @@ kinds:
       - *relaytag
 
   10012:
-    description: Favorite relays list
+    description: Favorite Relays List
     in_use: true
     content:
       type: free
@@ -1775,7 +1775,7 @@ kinds:
       - *atag
 
   10015:
-    description: Interests list
+    description: Interests List
     in_use: true
     content:
       type: free
@@ -1783,7 +1783,7 @@ kinds:
       - *atag
 
   10020:
-    description: Media follows
+    description: Media Follows
     content:
       type: free
     multiple:
@@ -1792,7 +1792,7 @@ kinds:
       - *ptag
 
   10021:
-    description: Favorite follow sets
+    description: Favorite Follow Sets
     in_use: true
     content:
       type: free
@@ -1802,7 +1802,7 @@ kinds:
       - *atag
 
   10030:
-    description: User emoji list
+    description: User Emoji List
     in_use: true
     content:
       type: free
@@ -1814,7 +1814,7 @@ kinds:
       - *atag
 
   10044:
-    description: Decoupled key announcement
+    description: Decoupled Key Announcement
     in_use: true
     content:
       type: empty
@@ -1828,7 +1828,7 @@ kinds:
           required: true
 
   10050:
-    description: Relay list to receive DMs
+    description: Relay List to Receive DMs
     in_use: true
     content:
       type: empty
@@ -1848,7 +1848,7 @@ kinds:
       - *ptag
 
   10101:
-    description: Good wiki authors
+    description: Good Wiki Authors
     content:
       type: empty
     multiple:
@@ -1857,7 +1857,7 @@ kinds:
       - *ptag
 
   10102:
-    description: Good wiki relays
+    description: Good Wiki Relays
     content:
       type: empty
     multiple:
@@ -1902,7 +1902,7 @@ kinds:
       - *ptag
 
   10009:
-    description: User groups
+    description: User Groups
     in_use: true
     content:
       type: empty
@@ -1920,7 +1920,7 @@ kinds:
               type: free
 
   10013:
-    description: Private event relay list
+    description: Private Event Relay List
     content:
       type: empty
     tags: []
@@ -1946,7 +1946,7 @@ kinds:
           required: true
 
   10063:
-    description: Blossom server list
+    description: Blossom Server List
     in_use: true
     content:
       type: empty
@@ -1960,7 +1960,7 @@ kinds:
           required: true
 
   10096:
-    description: File storage server list
+    description: File Storage Server List
     content:
       type: empty
     tags:
@@ -1983,7 +1983,7 @@ kinds:
     tags: []
 
   10317:
-    description: User grasp list
+    description: User Grasp List
     content:
       type: empty
     tags:
@@ -2089,19 +2089,19 @@ kinds:
             type: free
 
   30017:
-    description: Create or update a stall
+    description: Create or Update a Stall
     content:
       type: json
     tags: []
 
   30018:
-    description: Create or update a product
+    description: Create or Update a Product
     content:
       type: json
     tags: []
 
   30020:
-    description: Product sold as an auction
+    description: Product Sold as an Auction
     content:
       type: json
     tags: []
@@ -2142,7 +2142,7 @@ kinds:
       - *ptag
 
   35128:
-    description: Named nsite
+    description: Named Nsite
     in_use: true
     content:
       type: empty
@@ -2159,7 +2159,7 @@ kinds:
       - *sourcetag
 
   34128:
-    description: Legacy nsite File (Deprecated)
+    description: Legacy Nsite File (Deprecated)
     in_use: false
     content:
       type: free
@@ -2391,14 +2391,14 @@ kinds:
       - *ptag
 
   31989:
-    description: Handler recommendation
+    description: Handler Recommendation
     content:
       type: empty
     tags:
       - *atag
 
   31990:
-    description: Handler information
+    description: Handler Information
     content:
       type: json
     tags:
@@ -2664,7 +2664,7 @@ kinds:
         description: the most recent common ancestor with the target branch
 
   30000:
-    description: Follow set
+    description: Follow Set
     in_use: true
     content:
       type: empty
@@ -2677,7 +2677,7 @@ kinds:
       - *descriptiontag
 
   30002:
-    description: Relay set
+    description: Relay Set
     in_use: true
     content:
       type: empty
@@ -2690,7 +2690,7 @@ kinds:
       - *descriptiontag
 
   30003:
-    description: Bookmark set
+    description: Bookmark Set
     content:
       type: empty
     multiple:
@@ -2704,7 +2704,7 @@ kinds:
       - *descriptiontag
 
   30004:
-    description: Curation set
+    description: Curation Set
     content:
       type: empty
     multiple:
@@ -2718,7 +2718,7 @@ kinds:
       - *descriptiontag
 
   30005:
-    description: Video set
+    description: Video Set
     content:
       type: empty
     multiple:
@@ -2730,7 +2730,7 @@ kinds:
       - *descriptiontag
 
   30007:
-    description: Kind mute set
+    description: Kind Mute Set
     content:
       type: empty
     tags:
@@ -2740,7 +2740,7 @@ kinds:
       - *descriptiontag
 
   30015:
-    description: Interest set
+    description: Interest Set
     content:
       type: empty
     tags:
@@ -2755,7 +2755,7 @@ kinds:
     tags: []
 
   30030:
-    description: Emoji set
+    description: Emoji Set
     in_use: true
     content:
       type: empty
@@ -2778,7 +2778,7 @@ kinds:
     tags: []
 
   30063:
-    description: Release artifact set
+    description: Release Artifact Set
     content:
       type: empty
     tags:
@@ -2795,7 +2795,7 @@ kinds:
     tags: []
 
   30267:
-    description: App curation set
+    description: App Curation Set
     content:
       type: empty
     tags:
@@ -2830,7 +2830,7 @@ kinds:
     tags: []
 
   30818:
-    description: Wiki article
+    description: Wiki Article
     in_use: true
     content:
       type: free
@@ -2878,7 +2878,7 @@ kinds:
     tags: []
 
   37515:
-    description: Geocache listing
+    description: Geocache Listing
     in_use: true
     content:
       type: free
@@ -2955,7 +2955,7 @@ kinds:
       - *relaytag
 
   37516:
-    description: Geocache log entry
+    description: Geocache Log Entry
     in_use: true
     content:
       type: free
@@ -2996,13 +2996,13 @@ kinds:
     tags: []
 
   38383:
-    description: Peer-to-peer Order events
+    description: Peer-to-peer Order Events
     content:
       type: free
     tags: []
 
   39089:
-    description: Starter packs
+    description: Starter Packs
     in_use: true
     content:
       type: empty
@@ -3015,7 +3015,7 @@ kinds:
       - *descriptiontag
 
   39092:
-    description: Media starter packs
+    description: Media Starter Packs
     content:
       type: empty
     multiple:
@@ -3027,7 +3027,7 @@ kinds:
       - *descriptiontag
 
   39701:
-    description: Web bookmarks
+    description: Web Bookmarks
     in_use: true
     content:
       type: free
@@ -3036,7 +3036,7 @@ kinds:
       - *titletag
 
   9000:
-    description: Put user (add/update user in group)
+    description: Put User (add/update user in group)
     in_use: true
     content:
       type: empty
@@ -3059,7 +3059,7 @@ kinds:
             variadic: true
 
   9001:
-    description: Remove user from group
+    description: Remove User From Group
     in_use: true
     content:
       type: empty
@@ -3079,7 +3079,7 @@ kinds:
           required: true
 
   9002:
-    description: Edit group metadata
+    description: Edit Group Metadata
     in_use: true
     content:
       type: empty
@@ -3104,7 +3104,7 @@ kinds:
         name: closed
 
   9005:
-    description: Delete event from group
+    description: Delete Event From Group
     in_use: true
     content:
       type: empty
@@ -3124,7 +3124,7 @@ kinds:
           required: true
 
   9007:
-    description: Create group
+    description: Create Group
     in_use: true
     content:
       type: empty
@@ -3138,7 +3138,7 @@ kinds:
           required: true
 
   9008:
-    description: Delete group
+    description: Delete Group
     in_use: true
     content:
       type: empty
@@ -3152,7 +3152,7 @@ kinds:
           required: true
 
   9009:
-    description: Create group invite
+    description: Create Group Invite
     in_use: true
     content:
       type: empty
@@ -3166,7 +3166,7 @@ kinds:
           required: true
 
   9021:
-    description: Join request
+    description: Join Request
     in_use: true
     content:
       type: empty
@@ -3185,7 +3185,7 @@ kinds:
           required: true
 
   9022:
-    description: Leave request
+    description: Leave Request
     in_use: true
     content:
       type: empty
@@ -3199,7 +3199,7 @@ kinds:
           required: true
 
   39000:
-    description: Group metadata
+    description: Group Metadata
     in_use: true
     content:
       type: empty
@@ -3217,7 +3217,7 @@ kinds:
         name: closed
 
   39001:
-    description: Group admins
+    description: Group Admins
     in_use: true
     content:
       type: empty
@@ -3234,7 +3234,7 @@ kinds:
             variadic: true
 
   39002:
-    description: Group members
+    description: Group Members
     in_use: true
     content:
       type: empty
@@ -3248,7 +3248,7 @@ kinds:
           required: true
 
   39003:
-    description: Group roles
+    description: Group Roles
     in_use: true
     content:
       type: empty
@@ -3350,7 +3350,7 @@ kinds:
               type: constrained
               either:
                - root
-        description: source stream
+        description: Source Stream
       - name: a
         next:
           type: addr
@@ -4307,7 +4307,7 @@ kinds:
           type: url
 
   36787:
-    description: Music Track
+    description: Music Tracks
     content:
       type: free
     required:
