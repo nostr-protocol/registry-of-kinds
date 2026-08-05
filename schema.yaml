@@ -2925,6 +2925,81 @@ kinds:
       type: free
     tags: []
 
+  30828:
+    description: Timeline Card
+    in_use: true
+    content:
+      type: free
+      # djot; a card carrying no text at all is valid
+    required:
+      - event_date
+      - t
+      - L
+      - l
+    multiple:
+      - t
+      - L
+      - l
+      - g
+      - a
+      - e
+    tags:
+      -
+        name: event_date
+        next:
+          type: date
+          required: true
+        description: the date the card is about, YYYY-MM-DD; distinct from created_at
+      -
+        name: t
+        next:
+          type: lowercase
+          required: true
+        description: corpus discovery marker, and freeform topics; a card carries at least the marker of its corpus
+      -
+        name: L
+        next:
+          type: free
+          required: true
+        description: label namespace; timeline.collection, timeline.date, timeline.location, ISO-3166-1, ISO-3166-2
+      -
+        name: l
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+        description: label value and its namespace; exactly one timeline.collection label, plus date buckets and an optional jurisdiction ladder
+      - *titletag
+      - *summarytag
+      - *publishedattag
+      - *gtag
+      -
+        name: a
+        next:
+          type: addr
+          required: true
+          next:
+            type: free
+            next:
+              type: constrained
+              either:
+                - fork
+        description: parent card this one revises, with the fork marker in the fourth position
+      -
+        name: e
+        next:
+          type: id
+          required: true
+          next:
+            type: free
+            next:
+              type: constrained
+              either:
+                - fork
+        description: the exact parent version this revision was built against
+
   31234:
     description: Draft Event
     content:
