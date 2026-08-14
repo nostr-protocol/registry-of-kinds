@@ -3265,34 +3265,26 @@ kinds:
             variadic: true
 
   1163:
-    description: Profile Gallery Entry
+    description: Exclusive Content Membership
+    in_use: true
     content:
       type: empty
-    required:
-      - url
+    multiple:
+      - p
+      - a
+    tags:
+      - *ptag
+      - *atag
+
+  10163:
+    description: Exclusive Content Announcement
+    content:
+      type: free
     tags:
       - name: url
         next:
           type: url
           required: true
-      - name: m
-        next:
-          type: free
-          required: true
-      - name: x
-        next:
-          type: free
-      - name: size
-        next:
-          type: free
-      - name: dim
-        next:
-          type: free
-      - name: blurhash
-        next:
-          type: free
-      - *summarytag
-      - *etag-bare
 
   1301:
     description: Workout Record
