@@ -2040,7 +2040,12 @@ kinds:
     in_use: true
     content:
       type: free
-    tags: []
+    tags:
+      - *relaytag
+      - name: challenge
+        next:
+          type: free
+          required: true
 
   23194:
     description: Wallet Request
