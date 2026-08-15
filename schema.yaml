@@ -4045,7 +4045,7 @@ kinds:
       - *imagetag
 
   30382:
-    description: Contact Card (NIP-85)
+    description: User Assertion (NIP-85)
     content:
       type: json
     tags:
