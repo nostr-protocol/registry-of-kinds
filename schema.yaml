@@ -1396,6 +1396,39 @@ kinds:
           type: free
           required: true
 
+  1073:
+    description: Music Track Scrobble
+    in_use: true
+    content:
+      type: empty
+    multiple:
+      - artist
+      - i
+    tags:
+      -
+        name: title
+        next:
+          type: free
+          required: true
+        description: track title
+      -
+        name: album
+        next:
+          type: free
+          required: true
+      -
+        name: artist
+        next:
+          type: free
+          required: true
+        description: artist name, repeatable
+      -
+        name: i
+        next:
+          type: free
+          required: true
+        description: external identifier, e.g. spotify:track:<id> or isrc:<ISRC>
+
   1621:
     description: Git Issue
     content:
