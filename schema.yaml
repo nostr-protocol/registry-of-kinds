@@ -2966,7 +2966,6 @@ kinds:
       # djot; a card carrying no text at all is valid
     required:
       - event_date
-      - t
       - L
       - l
     multiple:
@@ -2976,6 +2975,7 @@ kinds:
       - g
       - a
       - e
+      - p
     tags:
       -
         name: event_date
@@ -2988,7 +2988,7 @@ kinds:
         next:
           type: lowercase
           required: true
-        description: corpus discovery marker, and freeform topics; a card carries at least the marker of its corpus
+        description: corpus discovery marker, and freeform topics; a client configured for a corpus admits cards wearing its marker
       -
         name: L
         next:
@@ -3004,6 +3004,12 @@ kinds:
             type: free
             required: true
         description: label value and its namespace; exactly one timeline.collection label, plus date buckets and an optional jurisdiction ladder
+      -
+        name: event_time
+        next:
+          type: free
+          required: true
+        description: time of day refining event_date, HH:MM or HH:MM:SS; bare is UTC, a trailing ±HH:MM offset marks local civil time
       - *titletag
       - *summarytag
       - *publishedattag
@@ -3019,7 +3025,8 @@ kinds:
               type: constrained
               either:
                 - fork
-        description: parent card this one revises, with the fork marker in the fourth position
+                - adopt
+        description: source card, with the marker in the fourth position; fork = built from it, adopt = carried verbatim (at most one adopt)
       -
         name: e
         next:
@@ -3031,7 +3038,21 @@ kinds:
               type: constrained
               either:
                 - fork
-        description: the exact parent version this revision was built against
+                - adopt
+        description: the exact source version, a commitment never dereferenced
+      -
+        name: p
+        next:
+          type: pubkey
+          required: true
+          next:
+            type: free
+            next:
+              type: constrained
+              either:
+                - fork
+                - adopt
+        description: the source's author, for credit; same marker as the a and e it accompanies
 
   31234:
     description: Draft Event
@@ -4586,6 +4607,50 @@ kinds:
           type: url
           required: true
       - *atag
+
+  8828:
+    description: Timeline Act
+    in_use: true
+    content:
+      type: free
+      # byte-exact copy of the accepted card version's content when content is in scope, else empty or a revoke reason
+    required:
+      - e
+    multiple:
+      - e
+    tags:
+      -
+        name: a
+        next:
+          type: addr
+          required: true
+        description: the accepted card (kind 30828 coordinate); absent on a revoke
+      -
+        name: e
+        next:
+          type: id
+          required: true
+          next:
+            type: free
+            next:
+              type: constrained
+              either:
+                - supersede
+                - revoke
+        description: unmarked = the exact card version accepted; supersede = the signer's prior act this one replaces; revoke = the signer's act withdrawn
+      - *ptag
+      -
+        name: title
+        next:
+          type: free
+          required: true
+        description: byte-exact copy of the accepted version's title; presence puts title in scope
+      -
+        name: summary
+        next:
+          type: free
+          required: true
+        description: byte-exact copy of the accepted version's summary; presence puts summary in scope
 
   5129:
     description: Napplet Snapshot
