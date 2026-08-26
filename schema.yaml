@@ -3003,7 +3003,7 @@ kinds:
           next:
             type: free
             required: true
-        description: label value and its namespace; exactly one timeline.collection label, plus date buckets and an optional jurisdiction ladder
+        description: label value and its namespace; exactly one timeline.collection label; timeline.date buckets (YYYY, YYYY-MM) SHOULD; optional jurisdiction ladder
       -
         name: event_time
         next:
@@ -3024,9 +3024,10 @@ kinds:
             next:
               type: constrained
               either:
+                - cite
                 - fork
                 - adopt
-        description: source card, with the marker in the fourth position; fork = built from it, adopt = carried verbatim (at most one adopt)
+        description: source card, marker cite in the fourth position (at most one); whether it carries, takes, or revises the source is derived from the bytes, not declared; fork and adopt are legacy spellings read as cite
       -
         name: e
         next:
@@ -3037,6 +3038,7 @@ kinds:
             next:
               type: constrained
               either:
+                - cite
                 - fork
                 - adopt
         description: the exact source version, a commitment never dereferenced
@@ -3050,6 +3052,7 @@ kinds:
             next:
               type: constrained
               either:
+                - cite
                 - fork
                 - adopt
         description: the source's author, for credit; same marker as the a and e it accompanies
