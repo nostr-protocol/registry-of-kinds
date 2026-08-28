@@ -2966,12 +2966,8 @@ kinds:
       # djot; a card carrying no text at all is valid
     required:
       - event_date
-      - L
-      - l
     multiple:
       - t
-      - L
-      - l
       - g
       - a
       - e
@@ -2984,27 +2980,6 @@ kinds:
           required: true
         description: the date the card is about, YYYY-MM-DD; distinct from created_at
       -
-        name: t
-        next:
-          type: lowercase
-          required: true
-        description: corpus discovery marker, and freeform topics; a client configured for a corpus admits cards wearing its marker
-      -
-        name: L
-        next:
-          type: free
-          required: true
-        description: label namespace; timeline.collection, timeline.date, timeline.location, ISO-3166-1, ISO-3166-2
-      -
-        name: l
-        next:
-          type: free
-          required: true
-          next:
-            type: free
-            required: true
-        description: label value and its namespace; exactly one timeline.collection label; timeline.date buckets (YYYY, YYYY-MM) SHOULD; optional jurisdiction ladder
-      -
         name: event_time
         next:
           type: free
@@ -3013,7 +2988,18 @@ kinds:
       - *titletag
       - *summarytag
       - *publishedattag
-      - *gtag
+      -
+        name: t
+        next:
+          type: lowercase
+          required: true
+        description: freeform topics; discovery runs through the notary (kind 30829), which carries the corpus marker
+      -
+        name: g
+        next:
+          type: geohash
+          required: true
+        description: point events only, as prefix rungs; a card carrying none takes its notary's
       -
         name: a
         next:
@@ -3027,7 +3013,7 @@ kinds:
                 - cite
                 - fork
                 - adopt
-        description: source card, marker cite in the fourth position (at most one); whether it carries, takes, or revises the source is derived from the bytes, not declared; fork and adopt are legacy spellings read as cite
+        description: unmarked, a kind 30829 coordinate = the notary this card is submitted to (at most two); marked cite, a kind 30828 coordinate = source card, whether it carries, takes, or revises the source derived from the bytes, not declared; fork and adopt are legacy spellings read as cite
       -
         name: e
         next:
@@ -3056,6 +3042,57 @@ kinds:
                 - fork
                 - adopt
         description: the source's author, for credit; same marker as the a and e it accompanies
+
+  30829:
+    description: Timeline Notary
+    in_use: true
+    content:
+      type: free
+      # empty or a djot description
+    required:
+      - d
+      - title
+      - t
+      - passes
+    multiple:
+      - t
+      - g
+    tags:
+      -
+        name: d
+        next:
+          type: free
+          required: true
+        description: opaque identifier
+      - *titletag
+      - *descriptiontag
+      -
+        name: t
+        next:
+          type: lowercase
+          required: true
+        description: the corpus marker (discovery filter for a corpus's notaries), and freeform topics
+      -
+        name: passes
+        next:
+          type: constrained
+          required: true
+          either:
+            - accept
+            - auto
+        description: accept = a submitted card passes while this key holds a kind 8828 acceptance whose content copy is live; auto = every submitted card passes
+      -
+        name: g
+        next:
+          type: geohash
+          required: true
+        description: geohash prefix rungs; inherited by submitted cards that carry none
+      -
+        name: a
+        next:
+          type: addr
+          required: true
+        description: the kind 30829 notary this one submits to; a notary never names a card, what it passes is derived from its own acceptances
 
   31234:
     description: Draft Event
@@ -3796,6 +3833,50 @@ kinds:
         next:
           type: free
           required: true
+
+  8828:
+    description: Timeline Act
+    in_use: true
+    content:
+      type: free
+      # byte-exact copy of the accepted card version's content when content is in scope, else empty or a revoke reason
+    required:
+      - e
+    multiple:
+      - e
+    tags:
+      -
+        name: a
+        next:
+          type: addr
+          required: true
+        description: the accepted card (kind 30828 coordinate); absent on a revoke
+      -
+        name: e
+        next:
+          type: id
+          required: true
+          next:
+            type: free
+            next:
+              type: constrained
+              either:
+                - supersede
+                - revoke
+        description: unmarked = the exact card version accepted; supersede = the signer's prior act this one replaces; revoke = the signer's act withdrawn
+      - *ptag
+      -
+        name: title
+        next:
+          type: free
+          required: true
+        description: byte-exact copy of the accepted version's title; presence puts title in scope
+      -
+        name: summary
+        next:
+          type: free
+          required: true
+        description: byte-exact copy of the accepted version's summary; presence puts summary in scope
 
   9733:
     description: Private Zap
@@ -4610,50 +4691,6 @@ kinds:
           type: url
           required: true
       - *atag
-
-  8828:
-    description: Timeline Act
-    in_use: true
-    content:
-      type: free
-      # byte-exact copy of the accepted card version's content when content is in scope, else empty or a revoke reason
-    required:
-      - e
-    multiple:
-      - e
-    tags:
-      -
-        name: a
-        next:
-          type: addr
-          required: true
-        description: the accepted card (kind 30828 coordinate); absent on a revoke
-      -
-        name: e
-        next:
-          type: id
-          required: true
-          next:
-            type: free
-            next:
-              type: constrained
-              either:
-                - supersede
-                - revoke
-        description: unmarked = the exact card version accepted; supersede = the signer's prior act this one replaces; revoke = the signer's act withdrawn
-      - *ptag
-      -
-        name: title
-        next:
-          type: free
-          required: true
-        description: byte-exact copy of the accepted version's title; presence puts title in scope
-      -
-        name: summary
-        next:
-          type: free
-          required: true
-        description: byte-exact copy of the accepted version's summary; presence puts summary in scope
 
   5129:
     description: Napplet Snapshot
