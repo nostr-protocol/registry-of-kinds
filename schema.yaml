@@ -3827,11 +3827,17 @@ kinds:
     description: Payment Targets
     content:
       type: empty
+    multiple:
+      - payto
     tags:
       - name: payto
         next:
-          type: free
+          type: lowercase
           required: true
+          next:
+            type: free
+            required: true
+        description: second item is the network or platform type, third is the address
 
   11871:
     description: Attestor Proficiency
