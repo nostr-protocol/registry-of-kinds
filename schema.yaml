@@ -4702,3 +4702,53 @@ kinds:
       - name: closed_at
         next:
           type: timestamp
+
+  20787:
+    description: fount P2P Network Signal (encrypted node-to-node signaling in the fount network)
+    content:
+      type: free
+    tags:
+      - name: t
+        next:
+          type: free
+          required: true
+      - name: x
+        next:
+          type: free
+          required: true
+      - name: p
+        next:
+          type: free
+          required: true
+
+  30787:
+    description: fount P2P Network Advert (encrypted node presence announcement in the fount network)
+    content:
+      type: free
+    tags:
+      - name: t
+        next:
+          type: free
+          required: true
+      - name: x
+        next:
+          type: free
+          required: true
+      - name: d
+        next:
+          type: free
+          required: true
+
+  30789:
+    description: Population Census
+    content:
+      type: json
+    tags:
+      - name: t
+        next:
+          type: free
+          required: true
+      - name: x
+        next:
+          type: free
+          required: true
