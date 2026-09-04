@@ -975,6 +975,176 @@ kinds:
                 next:
                   type: free
 
+  11801:
+    description: Mesh Node Descriptor
+    content:
+      type: free
+    multiple:
+      - key
+      - endpoint
+      - mediator
+      - c
+    required:
+      - class
+      - protocol
+      - c
+      - expiration
+    tags:
+      - name: class
+        next:
+          type: constrained
+          either:
+            - leaf
+            - edge
+            - anchor
+          required: true
+        description: what the node can be relied on for
+      - name: protocol
+        next:
+          type: free
+          required: true
+          next:
+            type: hex
+            required: true
+        description: protocol version name, then the digest of its machine-readable schema
+      - name: software
+        next:
+          type: url
+          next:
+            type: free
+      - name: key
+        next:
+          type: constrained
+          either:
+            - agreement
+            - transport
+          required: true
+          next:
+            type: free
+            required: true
+            next:
+              type: timestamp
+        description: multibase-encoded key bound to this node, with optional expiry
+      - name: endpoint
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+            next:
+              type: free
+        description: transport name, address, then a preference value, low first
+      - name: mediator
+        next:
+          type: free
+          required: true
+        description: DID of a node that holds messages for this one
+      - name: c
+        next:
+          type: free
+          required: true
+        description: one capability actually installed, not merely supported; repeated, and single-letter so relays index it. A meshstr protocol identifier as the value declares the node implements that protocol; peering/1.0 and budget/1.0 are required of every class
+      - name: nips
+        next:
+          type: free
+          required: true
+      - name: coverage
+        next:
+          type: hex
+          required: true
+        description: digest of this node's coverage claim set
+      - name: policy
+        next:
+          type: hex
+          required: true
+          next:
+            type: url
+        description: digest of the operator's policy document, and where to read it
+      - name: operator
+        next:
+          type: pubkey
+          required: true
+      - name: nonce
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+        description: NIP-13 proof of work, nonce then target difficulty
+      - name: expiration
+        next:
+          type: timestamp
+          required: true
+
+  11802:
+    description: Mesh Node Revocation
+    content:
+      type: free
+    required:
+      - reason
+    tags:
+      - name: reason
+        next:
+          type: free
+          required: true
+      - name: successor
+        next:
+          type: pubkey
+          required: true
+        description: advisory only; a successor inherits no standing
+
+  11803:
+    description: Mesh Compute Offer
+    content:
+      type: empty
+    multiple:
+      - executor
+      - limit
+      - pay
+    required:
+      - executor
+      - expiration
+    tags:
+      - name: executor
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+            next:
+              type: free
+              required: true
+        description: executor name, price unit, price
+      - name: limit
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+      - name: pay
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+      - name: runtime
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            next:
+              type: hex
+        description: engine, version, and the digest of its capability profile
+      - name: expiration
+        next:
+          type: timestamp
+          required: true
+
   15128:
     description: Root Nsite
     in_use: true
@@ -1700,6 +1870,59 @@ kinds:
         next:
           type: free
 
+  21801:
+    description: Mesh Node Heartbeat
+    content:
+      type: empty
+    required:
+      - class
+    tags:
+      - name: class
+        next:
+          type: constrained
+          either:
+            - leaf
+            - edge
+            - anchor
+          required: true
+      - name: endpoints
+        next:
+          type: hex
+          required: true
+        description: digest of the node's current endpoint set, so a stale descriptor is detectable
+      - name: load
+        next:
+          type: free
+          required: true
+
+  21802:
+    description: Mesh Diagnostic Telemetry
+    content:
+      type: empty
+    multiple:
+      - metric
+    required:
+      - sample_window
+    tags:
+      - name: metric
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+            variadic: true
+        description: metric name, then coarse-binned counters as colon-separated key:value words
+      - name: sample_window
+        next:
+          type: free
+          required: true
+        description: aggregation window in seconds; counters are node-wide with no per-peer attribution
+      - name: expiration
+        next:
+          type: timestamp
+          required: true
+
   27235:
     description: HTTP Auth
     in_use: true
@@ -2188,6 +2411,282 @@ kinds:
       - *qtag
       - *atag
       - *ptag
+
+  30801:
+    description: Mesh Peer Grant Envelope
+    content:
+      type: free
+    required:
+      - d
+      - commit
+      - scheme
+      - window
+      - epoch
+      - expiration
+    tags:
+      - name: d
+        next:
+          type: hex
+          required: true
+        description: blinded pair identifier; only the two parties can derive it
+      - name: commit
+        next:
+          type: hex
+          required: true
+        description: SHA256(blinding || canonical grant); the grant itself is encrypted in content
+      - name: scheme
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+        description: commitment scheme, then content encryption scheme
+      - name: window
+        next:
+          type: free
+          required: true
+      - name: epoch
+        next:
+          type: free
+          required: true
+      - name: expiration
+        next:
+          type: timestamp
+          required: true
+
+  30802:
+    description: Mesh Conformance Report
+    content:
+      type: free
+    multiple:
+      - evidence
+      - observed
+      - claimed
+    required:
+      - d
+      - outcome
+      - grant
+      - windows
+      - evidence
+      - expiration
+    tags:
+      - name: d
+        next:
+          type: pubkey
+          required: true
+        description: the subject of the finding
+      - name: outcome
+        next:
+          type: constrained
+          either:
+            - S1
+            - S2
+            - S3
+            - S4
+          required: true
+        description: adverse only; there is no positive attestation
+      - name: grant
+        next:
+          type: id
+          required: true
+        description: a grant the reporter itself issued to the subject
+      - name: windows
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+      - name: observed
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+            next:
+              type: free
+      - name: claimed
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+      - name: evidence
+        next:
+          type: free
+          required: true
+          next:
+            type: hex
+            required: true
+        description: must resolve to something the subject itself signed
+      - name: notice
+        next:
+          type: free
+          required: true
+          next:
+            type: timestamp
+      - name: expiration
+        next:
+          type: timestamp
+          required: true
+
+  30803:
+    description: Mesh Coverage Claim
+    content:
+      type: empty
+    required:
+      - d
+      - filter
+      - completeness
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+        description: stable shard identifier
+      - name: filter
+        next:
+          type: json
+          required: true
+      - name: completeness
+        next:
+          type: constrained
+          either:
+            - asserted
+            - best-effort
+          required: true
+      - name: since
+        next:
+          type: timestamp
+          required: true
+      - name: until
+        next:
+          type: timestamp
+          required: true
+      - name: fingerprint
+        next:
+          type: hex
+          required: true
+          next:
+            type: timestamp
+      - name: count
+        next:
+          type: free
+          required: true
+
+  30810:
+    description: Mesh Compute Ask
+    content:
+      type: empty
+    required:
+      - d
+      - commit
+      - executor
+      - bid
+      - deadline
+      - fuel_max
+      - verify
+      - expiration
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - name: commit
+        next:
+          type: hex
+          required: true
+        description: commitment to the job specification, which is not published; the module and input reach only the seller that wins the quote
+      - name: executor
+        next:
+          type: constrained
+          either:
+            - wasm
+            - bacalhau
+          required: true
+      - name: runtime
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            next:
+              type: hex
+        description: engine, version, and the digest of its capability profile; quotes are never compared across engines
+      - name: bid
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+        description: price unit, then price
+      - name: deadline
+        next:
+          type: timestamp
+          required: true
+      - name: fuel_max
+        next:
+          type: free
+          required: true
+        description: the ceiling the buyer will pay for, and what a quote is priced against
+      - name: input_size
+        next:
+          type: free
+          required: true
+        description: input length in bytes, so work can be priced without being described
+      - name: verify
+        next:
+          type: constrained
+          either:
+            - sample
+            - dual
+            - proof
+            - none
+          required: true
+          next:
+            type: free
+        description: verification mode, declared before the work, which fixes what evidence a dispute admits; the second element parameterises it
+      - name: expiration
+        next:
+          type: timestamp
+          required: true
+
+  30811:
+    description: Mesh Compute Job Receipt
+    content:
+      type: free
+    required:
+      - d
+      - commit
+      - scheme
+      - expiration
+    tags:
+      - name: d
+        next:
+          type: hex
+          required: true
+        description: blinded job identifier; only the buyer and the seller can derive it
+      - name: commit
+        next:
+          type: hex
+          required: true
+        description: SHA256(blinding || canonical receipt); the receipt itself is encrypted in content
+      - name: scheme
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+        description: commitment scheme, then content encryption scheme
+      - name: expiration
+        next:
+          type: timestamp
+          required: true
 
   35128:
     description: Named Nsite
