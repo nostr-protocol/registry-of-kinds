@@ -987,6 +987,7 @@ kinds:
     required:
       - class
       - protocol
+      - c
       - expiration
     tags:
       - name: class
@@ -1041,9 +1042,9 @@ kinds:
         description: DID of a node that holds messages for this one
       - name: c
         next:
-          type: lowercase
+          type: free
           required: true
-        description: one capability actually installed, not merely supported; repeated, and single-letter so relays index it
+        description: one capability actually installed, not merely supported; repeated, and single-letter so relays index it. A meshstr protocol identifier as the value declares the node implements that protocol; peering/1.0 and budget/1.0 are required of every class
       - name: nips
         next:
           type: free
