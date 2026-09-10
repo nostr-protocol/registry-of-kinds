@@ -2976,15 +2976,15 @@ kinds:
       -
         name: event_date
         next:
-          type: date
+          type: free
           required: true
-        description: the date the card is about, YYYY-MM-DD; distinct from created_at
+        description: the date the card is about, YYYY-MM-DD, or a closed range YYYY-MM-DD/YYYY-MM-DD when the day is unknown; distinct from created_at
       -
         name: event_time
         next:
           type: free
           required: true
-        description: time of day refining event_date, HH:MM or HH:MM:SS; bare is UTC, a trailing ±HH:MM offset marks local civil time
+        description: time of day refining event_date, HH:MM or HH:MM:SS, or a range HH:MM/HH:MM refining each end of a date range; bare is UTC, a trailing ±HH:MM offset marks local civil time
       - *titletag
       - *summarytag
       - *publishedattag
@@ -3013,7 +3013,7 @@ kinds:
                 - cite
                 - fork
                 - adopt
-        description: unmarked, a kind 30829 coordinate = the notary this card is submitted to (at most two); marked cite, a kind 30828 coordinate = source card, whether it carries, takes, or revises the source derived from the bytes, not declared; fork and adopt are legacy spellings read as cite
+        description: unmarked, a kind 30829 coordinate = the notary this card is submitted to, repeatable; marked cite, a kind 30828 coordinate = source card, whether it carries, takes, or revises the source derived from the bytes, not declared; fork and adopt are legacy spellings read as cite
       -
         name: e
         next:
@@ -3053,10 +3053,10 @@ kinds:
       - d
       - title
       - t
-      - passes
     multiple:
       - t
       - g
+      - a
     tags:
       -
         name: d
@@ -3073,15 +3073,6 @@ kinds:
           required: true
         description: the corpus marker (discovery filter for a corpus's notaries), and freeform topics
       -
-        name: passes
-        next:
-          type: constrained
-          required: true
-          either:
-            - accept
-            - auto
-        description: accept = a submitted card passes while this key holds a kind 8828 acceptance whose content copy is live; auto = every submitted card passes
-      -
         name: g
         next:
           type: geohash
@@ -3092,7 +3083,7 @@ kinds:
         next:
           type: addr
           required: true
-        description: the kind 30829 notary this one submits to; a notary never names a card, what it passes is derived from its own acceptances
+        description: a notary source, look here for candidate material; unordered, no rank or delegation; a notary never names a card, its projection is derived only from its own kind 8828 acts
 
   31234:
     description: Draft Event
@@ -3838,19 +3829,26 @@ kinds:
     description: Timeline Act
     in_use: true
     content:
-      type: free
-      # byte-exact copy of the accepted card version's content when content is in scope, else empty or a revoke reason
+      type: empty
     required:
+      - a
       - e
     multiple:
-      - e
+      - select
+      - p
     tags:
       -
         name: a
         next:
           type: addr
           required: true
-        description: the accepted card (kind 30828 coordinate); absent on a revoke
+          next:
+            type: free
+            next:
+              type: constrained
+              either:
+                - context
+        description: the kind 30829 notary coordinate this act decides for; the signer must be that notary's pubkey
       -
         name: e
         next:
@@ -3861,22 +3859,41 @@ kinds:
             next:
               type: constrained
               either:
-                - supersede
+                - source
                 - revoke
-        description: unmarked = the exact card version accepted; supersede = the signer's prior act this one replaces; revoke = the signer's act withdrawn
-      - *ptag
+        description: source = the exact kind 30828 version accepted, must equal the snapshot's id; revoke = the signer's own acceptance withdrawn, same context; an act carries exactly one
       -
-        name: title
+        name: snapshot
         next:
           type: free
           required: true
-        description: byte-exact copy of the accepted version's title; presence puts title in scope
+        description: the complete signed source card as JSON, the value store; acceptance only
       -
-        name: summary
+        name: select
         next:
-          type: free
+          type: constrained
           required: true
-        description: byte-exact copy of the accepted version's summary; presence puts summary in scope
+          either:
+            - card
+            - content
+            - tag:title
+            - tag:summary
+            - tag:event_date
+            - tag:event_time
+            - tag:g
+        description: which blocks of the snapshot this act writes; card = all six, else one or more distinct field selectors; absent on a revoke
+      -
+        name: p
+        next:
+          type: pubkey
+          required: true
+          next:
+            type: free
+            next:
+              type: constrained
+              either:
+                - credit
+        description: optional public credit; provenance is the snapshot, not this tag
 
   9733:
     description: Private Zap
