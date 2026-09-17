@@ -2467,6 +2467,76 @@ kinds:
           type: free
           required: true
 
+  31992:
+    description: Slash Command Definition
+    content:
+      type: empty
+    required:
+      - d
+      - command
+      - title
+      - description
+    multiple:
+      - arg
+      - s
+      - ignore
+    tags:
+      -
+        name: d
+        next:
+          type: free
+          required: true
+      -
+        name: command
+        next:
+          type: free
+          required: true
+        description: trigger without a leading slash
+      - *titletag
+      - *descriptiontag
+      -
+        name: arg
+        next:
+          type: free
+          required: true
+          next:
+            type: constrained
+            either:
+              - pubkey
+              - event
+              - address
+              - relay
+              - number
+              - bool
+              - enum
+              - word
+              - text
+            required: true
+            next:
+              type: constrained
+              either:
+                - required
+                - optional
+              required: true
+              next:
+                type: free
+                next:
+                  type: free
+                  variadic: true
+        description: '["arg", <name>, <type>, "required" | "optional", <label>, <choice>...], choices apply to type enum only; arguments are positional, optional/text arguments come after required ones, at most one of either'
+      -
+        name: s
+        next:
+          type: free
+          required: true
+        description: 'scope, one of kind:<kind>, relay:<url>, author:<pubkey>, tag:<tag>:<value>; same-type scopes are alternatives, different types must all match, absent type is unrestricted'
+      -
+        name: ignore
+        next:
+          type: free
+          required: true
+        description: subtractive scope in the same format as s, final set is filters minus ignored scopes
+
   30617:
     description: Git Repository Announcement
     in_use: true
