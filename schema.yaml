@@ -2206,6 +2206,65 @@ kinds:
       - *descriptiontag
       - *sourcetag
 
+  35130:
+    description: Napp
+    in_use: true
+    content:
+      type: empty
+    required:
+      - d
+      - path
+    multiple:
+      - path
+      - server
+      - action
+      - requires
+      - mode
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - name: path
+        next:
+          type: lowercase
+          required: true
+          next:
+            type: hex
+            required: true
+            next:
+              type: free  # MIME type
+      - *servertag
+      - *titletag
+      - *descriptiontag
+      - name: action
+        next:
+          type: free
+          required: true
+      - name: requires
+        next:
+          type: free
+          required: true
+      - name: mode
+        next:
+          type: constrained
+          either:
+            - normal
+            - auxiliary
+            - headless
+          required: true
+      - name: initial_size
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+      - name: singleton
+      - name: icon
+        next:
+          type: free
+
   34128:
     description: Legacy Nsite File (Deprecated)
     in_use: false
@@ -3945,6 +4004,9 @@ kinds:
     description: Root Napplet
     content:
       type: empty
+    multiple:
+      - server
+      - requires
     required:
       - d
     tags:
@@ -3957,12 +4019,24 @@ kinds:
       - *descriptiontag
       - *sourcetag
       - *pathtag
+      - name: x
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+          next:
+            type: constrained
+            either:
+              - aggregate
+            required: true
       - name: requires
         next:
           type: free
+          required: true
       - name: icon
         next:
-          type: url
+          type: free
 
   21001:
     description: CLINK Offer
@@ -4606,6 +4680,9 @@ kinds:
     description: Named Napplet
     content:
       type: empty
+    multiple:
+      - server
+      - requires
     required:
       - d
       - path
@@ -4619,12 +4696,24 @@ kinds:
       - *titletag
       - *descriptiontag
       - *sourcetag
+      - name: x
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+          next:
+            type: constrained
+            either:
+              - aggregate
+            required: true
       - name: requires
         next:
           type: free
+          required: true
       - name: icon
         next:
-          type: url
+          type: free
 
   36787:
     description: Music Tracks
@@ -4732,6 +4821,10 @@ kinds:
     description: Napplet Snapshot
     content:
       type: empty
+    multiple:
+      - path
+      - server
+      - requires
     tags:
       - *pathtag
       - *servertag
@@ -4743,9 +4836,16 @@ kinds:
           type: hex
           min: 64
           max: 64
+          required: true
+          next:
+            type: constrained
+            either:
+              - aggregate
+            required: true
       - name: requires
         next:
           type: free
+          required: true
 
   6969:
     description: Zap Poll
