@@ -126,7 +126,7 @@ _servertag: &servertag
 _pathtag: &pathtag
   name: path
   next:
-    type: lowercase
+    type: free
     required: true
     next:
       type: hex
@@ -715,94 +715,6 @@ kinds:
     description: Medical Data (FHIR)
     content:
       type: free
-    tags: []
-
-  444:
-    description: MLS Welcome
-    content:
-      type: free
-    required:
-      - e
-      - relays
-      - encoding
-    tags:
-      - *etag-bare
-      - *relaytag
-      -
-        name: encoding
-        next:
-          type: free
-          required: true
-      -
-        name: h
-        next:
-          type: hex
-          min: 64
-          max: 64
-
-  445:
-    description: MLS Encrypted Group Message
-    content:
-      type: free
-    required:
-      - h
-    tags:
-      -
-        name: h
-        next:
-          type: hex
-          min: 64
-          max: 64
-          required: true
-
-  446:
-    description: MLS Notification Request
-    content:
-      type: free
-    required:
-      - v
-      - encoding
-    tags:
-      -
-        name: v
-        next:
-          type: free
-          required: true
-      -
-        name: encoding
-        next:
-          type: free
-          required: true
-
-  447:
-    description: MLS Token Request
-    content:
-      type: empty
-    tags:
-      -
-        name: token
-        next:
-          type: free
-          required: true
-          variadic: true
-
-  448:
-    description: MLS Token List
-    content:
-      type: empty
-    tags:
-      - *etag-bare
-      -
-        name: token
-        next:
-          type: free
-          required: true
-          variadic: true
-
-  449:
-    description: MLS Token Removal
-    content:
-      type: empty
     tags: []
 
   777:
@@ -2212,7 +2124,6 @@ kinds:
     content:
       type: empty
     required:
-      - d
       - path
     multiple:
       - path
@@ -2221,19 +2132,7 @@ kinds:
       - requires
       - mode
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
-      - name: path
-        next:
-          type: lowercase
-          required: true
-          next:
-            type: hex
-            required: true
-            next:
-              type: free  # MIME type
+      - *pathtag
       - *servertag
       - *titletag
       - *descriptiontag
@@ -2264,27 +2163,6 @@ kinds:
       - name: icon
         next:
           type: free
-
-  34128:
-    description: Legacy Nsite File (Deprecated)
-    in_use: false
-    content:
-      type: free
-    tags:
-      -
-        name: d
-        next:
-          type: lowercase
-          required: true
-        description: file path
-      -
-        name: x
-        next:
-          type: hex
-          min: 64
-          max: 64
-          required: true
-        description: sha256 hash of file
 
   30078:
     description: Application-specific Data
@@ -2531,7 +2409,6 @@ kinds:
     content:
       type: empty
     required:
-      - d
       - command
       - title
       - description
@@ -2540,11 +2417,6 @@ kinds:
       - s
       - ignore
     tags:
-      -
-        name: d
-        next:
-          type: free
-          required: true
       -
         name: command
         next:
@@ -2948,7 +2820,6 @@ kinds:
     content:
       type: empty
     required:
-      - d
       - title
       - pack_format
       - sticker
@@ -2957,10 +2828,6 @@ kinds:
       - emoji
       - t
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *titletag
       - name: pack_format
         next:
@@ -3200,13 +3067,7 @@ kinds:
     in_use: true
     content:
       type: free
-    required:
-      - d
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - name: type
         next:
           type: constrained
@@ -3239,7 +3100,6 @@ kinds:
     content:
       type: json
     required:
-      - d
       - g
       - published_at
     multiple:
@@ -3672,14 +3532,9 @@ kinds:
     content:
       type: free
     required:
-      - d
       - t
       - duration
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *titletag
       - name: t
         next:
@@ -4010,10 +3865,6 @@ kinds:
     required:
       - d
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *servertag
       - *titletag
       - *descriptiontag
@@ -4243,10 +4094,6 @@ kinds:
       - *titletag
       - *etag
       - *atag
-      - name: d
-        next:
-          type: free
-          required: true
 
   30006:
     description: Picture Set
@@ -4258,20 +4105,12 @@ kinds:
       - *imagetag
       - *etag
       - *atag
-      - name: d
-        next:
-          type: free
-          required: true
 
   30053:
     description: NNS Name
     content:
       type: free
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - name: ip4
         next:
           type: free
@@ -4290,10 +4129,6 @@ kinds:
       - d
       - title
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *titletag
       - name: option
         next:
@@ -4311,10 +4146,6 @@ kinds:
       - d
       - title
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *titletag
       - name: option
         next:
@@ -4332,10 +4163,6 @@ kinds:
       - d
       - s
     tags:
-      - name: d
-        next:
-          type: addr
-          required: true
       - *atag
       - name: s
         next:
@@ -4388,87 +4215,14 @@ kinds:
           type: free
           required: true
 
-  30443:
-    description: MLS Key Package
-    content:
-      type: free
-    required:
-      - d
-      - mls_protocol_version
-      - mls_ciphersuite
-      - mls_extensions
-      - mls_proposals
-      - encoding
-      - i
-    tags:
-      - name: d
-        next:
-          type: free
-          required: true
-      - name: mls_protocol_version
-        next:
-          type: free
-          required: true
-      - name: mls_ciphersuite
-        next:
-          type: free
-          required: true
-      - name: mls_extensions
-        next:
-          type: free
-          required: true
-      - name: mls_proposals
-        next:
-          type: free
-          required: true
-      - name: encoding
-        next:
-          type: free
-          required: true
-      - name: i
-        next:
-          type: hex
-          min: 64
-          max: 64
-          required: true
-      - *relaytag
-      - name: client
-        next:
-          type: free
-
-  30817:
-    description: NIP Text
-    content:
-      type: free
-    multiple:
-      - k
-      - e
-      - a
-      - q
-    tags:
-      - name: d
-        next:
-          type: free
-          required: true
-      - *titletag
-      - *ktag
-      - *etag
-      - *atag
-      - *qtag
-
   31337:
     description: Audio Track
     content:
       type: empty
     required:
-      - d
       - type
       - media
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - name: subject
         next:
           type: free
@@ -4579,13 +4333,7 @@ kinds:
     description: Fundraiser
     content:
       type: free
-    required:
-      - d
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *titletag
       - *imagetag
       - *imetatag
@@ -4607,13 +4355,8 @@ kinds:
     content:
       type: free
     required:
-      - d
       - title
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *titletag
       - *imagetag
       - *descriptiontag
@@ -4629,15 +4372,9 @@ kinds:
     description: Video Event (Horizontal)
     content:
       type: free
-    required:
-      - d
     multiple:
       - imeta
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *imetatag
       - name: alt
         next:
@@ -4647,15 +4384,9 @@ kinds:
     description: Video Event (Vertical)
     content:
       type: free
-    required:
-      - d
     multiple:
       - imeta
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *imetatag
       - name: alt
         next:
@@ -4684,13 +4415,8 @@ kinds:
       - server
       - requires
     required:
-      - d
       - path
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *pathtag
       - *servertag
       - *titletag
@@ -4720,15 +4446,10 @@ kinds:
     content:
       type: free
     required:
-      - d
       - title
       - artist
       - url
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *titletag
       - name: artist
         next:
@@ -4759,13 +4480,8 @@ kinds:
     content:
       type: free
     required:
-      - d
       - k
     tags:
-      - name: d
-        next:
-          type: free
-          required: true
       - *ktag
       - name: mint
         next:
