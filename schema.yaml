@@ -2255,6 +2255,64 @@ kinds:
       - *etag
       - *atag
 
+  30404:
+    description: Want-to-buy Listing
+    content:
+      type: free
+    tags:
+      -
+        name: d
+        next:
+          type: free
+          required: true
+      - *titletag
+      - *summarytag
+      - *publishedattag
+      -
+        name: price
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+            next:
+              type: free
+      -
+        name: status
+        next:
+          type: constrained
+          either:
+           - active
+           - awarded
+           - fulfilled
+           - cancelled
+      -
+        name: t
+        next:
+          type: free
+          required: true
+      -
+        name: m
+        next:
+          type: free
+      - *imagetag
+      -
+        name: expiration
+        next:
+          type: free
+      -
+        name: alt
+        next:
+          type: free
+          required: true
+      -
+        name: nenya
+        next:
+          type: constrained
+          either:
+           - "1"
+
   31922:
     description: Date-Based Calendar Event
     in_use: true
