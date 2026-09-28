@@ -3224,6 +3224,88 @@ kinds:
         next:
           type: timestamp
 
+  37197:
+    description: Domain Service Binding claim — the author serves an Internet domain over a key-addressed overlay (NIP-DB)
+    in_use: true
+    content:
+      type: free
+    required:
+      - d
+      - service
+    multiple:
+      - service
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+        description: the domain, lowercase ASCII (IDNs as A-labels), no trailing dot
+      - name: service
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+        description: the service the author offers for the domain ("fips-dns") and the port it listens on
+      - name: dnssec
+        next:
+          type: free
+        description: optional; base64 RFC 9102 chain (RRsets and RRSIGs to the root) for the _<service>.<domain> TXT RRset, for offline verification
+
+  37198:
+    description: Domain Service Binding attestation — a witness verified a claim (NIP-DB)
+    in_use: true
+    content:
+      type: free
+    required:
+      - d
+      - p
+      - method
+      - verified_at
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+        description: the domain, as in the claim
+      - *ptag
+      - name: method
+        next:
+          type: constrained
+          either:
+           - dnssec
+           - dns
+          required: true
+        description: how the witness verified the binding
+      - name: verified_at
+        next:
+          type: timestamp
+          required: true
+
+  37199:
+    description: Domain Service Binding zone record — the names under a domain and the keys that serve them (NIP-DB)
+    in_use: true
+    content:
+      type: free
+    required:
+      - d
+    multiple:
+      - name
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+        description: the domain, as in the claim
+      - name: name
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+        description: a hostname label under the domain ("*" wildcard, "@" apex) and the pubkey serving it ("self" for the author, "legacy" for a name that stays on the Internet)
+
   38172:
     description: Cashu Mint Announcement
     content:
