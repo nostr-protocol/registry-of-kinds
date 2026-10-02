@@ -30,6 +30,25 @@ _kind: &kind
   type: kind
   required: true
 
+_nip73k: &nip73k
+  required: true
+  type: constrained
+  either:
+   - web
+   - isbn
+   - geo
+   - iso3166
+   - isan
+   - doi
+   - '#'
+   - podcast:guid 
+   - podcast:item:guid
+   - podcast:publisher:guid
+   - bitcoin:tx
+   - bitcoin:address
+   - ethereum:tx
+   - ethereum:address
+
 _rtag: &rtag
   name: r
   next:
@@ -937,9 +956,7 @@ kinds:
         next: *kind
       -
         name: K
-        next:
-          type: free
-          required: true
+        next: *nip73k
       - *ktag
       -
         name: P
@@ -1564,6 +1581,9 @@ kinds:
         name: K
         next: *kind
         description: kind of the thread root
+      -
+        name: K
+        next: *nip73k
       - *ktag
       -
         name: P
