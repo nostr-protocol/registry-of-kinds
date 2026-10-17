@@ -285,16 +285,28 @@ kinds:
 
   5:
     description: Event Deletion Request
-    summary: "Author asks relays and clients to delete/hide their own events. `e` targets regular events, `a` targets replaceable/addressable coordinates; `k` tags identify targeted kinds; content can explain reason. It is a request, not globally enforceable erasure."
+    summary: "Author asks relays and clients to delete/hide their own events. `e` targets regular events, `a` targets replaceable/addressable coordinates, and `k` identifies target kind; content may explain reason. Concord also uses kind 5 as an in-stream semantic deletion rumor, with `channel`/`epoch`/`ms` binding."
     in_use: true
     content:
-      type: empty
+      type: free
     multiple:
       - e
       - a
     tags:
       - *etag-bare
       - *atag-bare
+      - *ktag
+      - name: channel
+        next:
+          type: hex
+          min: 64
+          max: 64
+      - name: epoch
+        next:
+          type: free
+      - name: ms
+        next:
+          type: free
 
   6:
     description: Repost
@@ -310,14 +322,39 @@ kinds:
 
   7:
     description: Reaction
-    summary: "Reacts to native Nostr event. Content `+` or empty means like/upvote; `-` means dislike/downvote; emoji means emoji reaction."
+    summary: "Reacts to native Nostr event. Content `+` or empty means like/upvote; `-` means dislike/downvote; emoji means emoji reaction. As a rumor inside NIP-17 wraps it may carry `e`/`p` targeting the parent; under NIP-171 groups it also carries `h`/`epoch`/`invited_at`/`invitation_proof` group tags."
     in_use: true
     content:
       type: free
     tags:
       - *etag
       - *ptag
+      - *ktag
       - *emojitag
+      - name: channel
+        next:
+          type: hex
+          min: 64
+          max: 64
+      - name: epoch
+        next:
+          type: free
+      - name: ms
+        next:
+          type: free
+      - name: h
+        next:
+          type: hex
+          min: 64
+          max: 64
+      - name: invited_at
+        next:
+          type: timestamp
+      - name: invitation_proof
+        next:
+          type: hex
+          min: 128
+          max: 128
 
   8:
     description: Badge Award
@@ -331,7 +368,7 @@ kinds:
 
   9:
     description: Chat Message
-    summary: "Public chat message, not private DM. Messages may stand alone or reply/quote earlier kind-9 events via `q`."
+    summary: "Chat message, used mainly by NIP-29. Also used as Concord encrypted-channel message rumor. Concord binds it to `channel` and `epoch`, adds `ms` for sub-second ordering, and uses `q` for inline quotes; outer kind-1059 stream wrap hides it."
     in_use: true
     content:
       type: free
@@ -370,6 +407,17 @@ kinds:
           next:
             type: relay
       - *ptag
+      - name: channel
+        next:
+          type: hex
+          min: 64
+          max: 64
+      - name: epoch
+        next:
+          type: free
+      - name: ms
+        next:
+          type: free
 
   11:
     description: Forum Thread
@@ -395,29 +443,65 @@ kinds:
 
   14:
     description: Direct Message
-    summary: "Plaintext “rumor” message payload for encrypted NIP-17 chats. `p` tags identify recipients; `e` may identify direct parent; `subject` names conversation. Normally unsigned, sealed as kind 13 and gift-wrapped as kind 1059 per recipient."
+    summary: "Plaintext “rumor” message payload for encrypted NIP-17 chats. `p` tags identify recipients; `e` may identify direct parent; `subject` names conversation. Normally unsigned, sealed as kind 13 and gift-wrapped as kind 1059 per recipient. Under NIP-171 groups, single `p` names the epoch pubkey, `h` the group identity pubkey, and `invited_at`/`invitation_proof` carry the sender's epoch ticket; group-identity announcements use `member` tags and content `+`/`-`."
     in_use: true
     content:
       type: free
     multiple:
       - p
       - q
+      - member
     tags:
       - *ptag
       - *etag
       - *qtag
       -
+        name: member
+        next:
+          type: pubkey
+          required: true
+      -
         name: subject
         next:
           type: free
           required: true
+      -
+        name: h
+        next:
+          type: hex
+          min: 64
+          max: 64
+      -
+        name: epoch
+        next:
+          type: free
+      -
+        name: invited_at
+        next:
+          type: timestamp
+      -
+        name: invitation_proof
+        next:
+          type: hex
+          min: 128
+          max: 128
 
   15:
     description: File Message
-    summary: "NIP-17 private-chat file attachment. Content is encrypted file URL; tags carry recipient(s), MIME type, encryption algorithm/key/nonce, and SHA-256 of encrypted file (`x`), with optional size/dimensions/thumb/fallback metadata."
+    summary: "NIP-17 private-chat file attachment rumor. Content is the encrypted file URL; required tags carry recipient(s), MIME type, encryption algorithm/key/nonce and SHA-256 of encrypted file (`x`). Optional `ox`, size, dimensions, thumbhash/blurhash, thumbnail and fallback URLs describe original file or previews. Under NIP-171 groups it additionally carries `h`/`epoch`/`invited_at`/`invitation_proof`."
     in_use: true
     content:
-      type: free
+      type: url
+    required:
+      - p
+      - file-type
+      - encryption-algorithm
+      - decryption-key
+      - decryption-nonce
+      - x
+    multiple:
+      - p
+      - fallback
     tags:
       - *ptag
       -
@@ -444,7 +528,9 @@ kinds:
       -
         name: encryption-algorithm
         next:
-          type: free
+          type: constrained
+          either:
+            - aes-gcm
           required: true
       -
         name: decryption-key
@@ -459,8 +545,60 @@ kinds:
       -
         name: x
         next:
-          type: free
+          type: hex
+          min: 64
+          max: 64
           required: true
+      -
+        name: ox
+        next:
+          type: hex
+          min: 64
+          max: 64
+      -
+        name: size
+        next:
+          type: free
+      -
+        name: dim
+        next:
+          type: free
+      -
+        name: thumbhash
+        next:
+          type: free
+      -
+        name: blurhash
+        next:
+          type: free
+      -
+        name: thumb
+        next:
+          type: url
+      -
+        name: fallback
+        next:
+          type: url
+      -
+        name: h
+        next:
+          type: hex
+          min: 64
+          max: 64
+      -
+        name: epoch
+        next:
+          type: free
+      -
+        name: invited_at
+        next:
+          type: timestamp
+      -
+        name: invitation_proof
+        next:
+          type: hex
+          min: 128
+          max: 128
 
   16:
     description: Generic Repost
@@ -842,6 +980,29 @@ kinds:
       - *etag-bare
       - *ptag-bare
       - name: summary
+        next:
+          type: free
+          required: true
+
+  1014:
+    description: Epoch Ticket
+    summary: "NIP-171 private group invitation. Group identity key signs ticket naming member (`p`) and epoch number (`epoch`); content is the 32-byte hex epoch private key. Delivered wrapped to the member; receivers rebuild the ticket from message proof tags and verify the signature."
+    in_use: true
+    content:
+      type: hex
+      min: 64
+      max: 64
+    required:
+      - p
+      - epoch
+    tags:
+      -
+        name: p
+        next:
+          type: pubkey
+          required: true
+      -
+        name: epoch
         next:
           type: free
           required: true
@@ -1247,12 +1408,13 @@ kinds:
 
   1059:
     description: Gift Wrap
-    summary: "NIP-59 outer encrypted wrapper. Content contains encrypted signed seal (kind 13); ephemeral random pubkey and `p` recipient tag hide original sender, event kind and message."
+    summary: "Outer encrypted wrapper. Standard NIP-59 uses ephemeral author and recipient `p`; Concord CORD-01 stream wraps reverse this (fixed derived stream author, random ephemeral `p`) and contain kind-20013/20014 seal. Optional `k` indexes direct invites."
     in_use: true
     content:
       type: free
     tags:
       - *ptag
+      - *ktag
 
   1063:
     description: File Metadata
@@ -1536,6 +1698,24 @@ kinds:
       - *etag
       - *atag
 
+  19004:
+    description: Room Creation Permission
+    summary: "Replaceable permission grant (flotilla, alongside NIP-29) listing pubkeys allowed to create rooms on the relay that publishes it. `p` tags carry the granted pubkeys with an optional role. Relay-signed; clients query by `#p` to decide whether to offer room creation."
+    in_use: true
+    content:
+      type: empty
+    multiple:
+      - p
+    tags:
+      -
+        name: p
+        next:
+          type: pubkey
+          required: true
+          next:
+            type: free
+            variadic: true
+
   9041:
     description: Zap Goal
     summary: "NIP-75 addressable goal/crowdfunding target. Tags describe amount, accepted relays, close time, artwork/summary, target event/address, and zap service pubkey/relay/config."
@@ -1627,7 +1807,7 @@ kinds:
 
   1111:
     description: Comment
-    summary: "NIP-22 generic comment/reply to events and external content. Uppercase tags (`A/E/I/K/P`) mark thread root context; lowercase (`a/e/i/k/p`) mark direct parent/subject; `K` can classify root as NIP-73 external resource."
+    summary: "NIP-22 generic comment/reply, also Concord threaded reply rumor. Uppercase `K/E/P` mark immutable thread root; lowercase `k/e/p` mark immediate parent. Concord additionally binds `channel`/`epoch` with `ms`; rumor ID, not outer wrap ID, is referenced."
     in_use: true
     content:
       type: free
@@ -1664,6 +1844,17 @@ kinds:
         description: author of the original event
       - *ptag
       - *emojitag
+      - name: channel
+        next:
+          type: hex
+          min: 64
+          max: 64
+      - name: epoch
+        next:
+          type: free
+      - name: ms
+        next:
+          type: free
 
   10002:
     description: Relay List Metadata
@@ -1785,7 +1976,7 @@ kinds:
 
   10005:
     description: Public Chats List
-    summary: "NIP-51 user-curated list of public chat/channel events (`e`). Helps clients discover chat streams; channel definitions/messages are separate kinds (legacy NIP-28 or NIP-29 groups)."
+    summary: "NIP-51 user-curated list of public chat/channel events (`e`). Helps clients discover chat streams; channel definitions/messages are separate kinds (legacy NIP-28 groups)."
     content:
       type: free
     tags:
@@ -2093,6 +2284,14 @@ kinds:
       type: free
     tags: []
 
+  13303:
+    description: Concord Invite List
+    summary: "Replaceable, self-encrypted creator-side list of Concord invite links. NIP-44-encrypted JSON content stores link tokens, signer secrets, Community IDs, URLs, labels and tombstones; no tags."
+    in_use: true
+    content:
+      type: free
+    tags: []
+
   17375:
     description: Cashu Wallet Event
     summary: "NIP-60 encrypted replaceable wallet state event. Holds wallet configuration and mint/proof state in NIP-44 encrypted content; used as user’s recoverable Cashu wallet data on relays."
@@ -2260,8 +2459,55 @@ kinds:
       - *sourcetag
 
   35130:
-    description: Napp
-    summary: "Registry defines 35130 as addressable “Napp” with path/server/title/description, action, dependencies, mode (`normal`/`auxiliary`/`headless`), initial size, singleton and icon. Do not conflate this with NIP-5D Napplet manifest kind 35129."
+    description: Web Napp
+    summary: "Addressable manifest for a web app: a static site of HTML, CSS and JavaScript that a Nostr app launcher runs in a sandboxed iframe. `path` tags identify the site's files; `action`, `requires`, `mode` (`normal`/`auxiliary`/`headless`), initial size, singleton and icon describe its capabilities and presentation. Kind 35131 identifies a WASM napp instead."
+    in_use: true
+    content:
+      type: empty
+    required:
+      - path
+    multiple:
+      - path
+      - server
+      - action
+      - requires
+      - mode
+    tags:
+      - *pathtag
+      - *servertag
+      - *titletag
+      - *descriptiontag
+      - name: action
+        next:
+          type: free
+          required: true
+      - name: requires
+        next:
+          type: free
+          required: true
+      - name: mode
+        next:
+          type: constrained
+          either:
+            - normal
+            - auxiliary
+            - headless
+          required: true
+      - name: initial_size
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+      - name: singleton
+      - name: icon
+        next:
+          type: free
+
+  35131:
+    description: Wasm Napp
+    summary: "Addressable manifest for a WASM app: one `app.wasm` module, run by a Nostr app launcher with a canvas and no DOM, iframe or JavaScript. Uses the same manifest tags as web napp kind 35130; `path` tags identify the module and any accompanying files."
     in_use: true
     content:
       type: empty
@@ -2558,7 +2804,7 @@ kinds:
 
   31992:
     description: Slash Command Definition
-    summary: "Addressable command manifest. Schema defines command name/title/description, typed positional arguments, enum choices, scopes (`s`) and subtractive scopes (`ignore`)."
+    summary: "NIP-CD addressable command manifest. Schema defines command trigger/name/description, typed positional arguments and scope filters (`s`) limiting which events trigger the command. Invocations are plain text at index 0 of any event content with no tags."
     content:
       type: empty
     required:
@@ -2568,7 +2814,6 @@ kinds:
     multiple:
       - arg
       - s
-      - ignore
     tags:
       -
         name: command
@@ -2613,13 +2858,7 @@ kinds:
         next:
           type: free
           required: true
-        description: 'scope, one of kind:<kind>, relay:<url>, author:<pubkey>, tag:<tag>:<value>; same-type scopes are alternatives, different types must all match, absent type is unrestricted'
-      -
-        name: ignore
-        next:
-          type: free
-          required: true
-        description: subtractive scope in the same format as s, final set is filters minus ignored scopes
+        description: 'scope, one of kind:<kind>, relay:<url>, author:<pubkey>, tag:<tag> (non-empty tag required) or tag:<tag>:<value>; same-type scopes are alternatives, different types must all match, absent type is unrestricted'
 
   30617:
     description: Git Repository Announcement
@@ -3065,6 +3304,29 @@ kinds:
       - *titletag
       - *imagetag
       - *descriptiontag
+
+  30067:
+    description: Pinboard
+    summary: "Addressable curated board (flotilla/Welshman Pinboards draft). Unique `d` minted at creation, writer-validates required `title`; `description`, `image`, `t` topics and bare `collaborative` flag describe it. Kind-39067 pins cite it by address."
+    content:
+      type: empty
+    required:
+      - d
+      - title
+    tags:
+      -
+        name: d
+        next:
+          type: free
+          required: true
+      - *titletag
+      - *descriptiontag
+      - *imagetag
+      - name: t
+        next:
+          type: lowercase
+      -
+        name: collaborative
 
   30166:
     description: Relay Discovery
@@ -3713,6 +3975,100 @@ kinds:
             type: free
             variadic: true
 
+  39004:
+    description: Livekit Participants
+    summary: "NIP-29 relay-published (optional) list of who is live in an AV room; relay regenerates it whenever participants join or leave, and clients subscribe to it live. `d` names the group, `participant` tags carry participant pubkeys in lowercase hex; content is empty."
+    in_use: true
+    content:
+      type: empty
+    required:
+      - d
+    tags:
+      -
+        name: d
+        next:
+          type: free
+          required: true
+      -
+        name: participant
+        next:
+          type: pubkey
+          required: true
+
+  39005:
+    description: Group Pinned Events
+    summary: "NIP-29 relay-published ordered list of events pinned in a group, regenerated to mirror each accepted kind-9010 `update-pin-list` moderation event. `d` names the group; ordered `e` (event id hex) and `a` (address) tags are the pins in display order."
+    in_use: true
+    content:
+      type: empty
+    required:
+      - d
+    multiple:
+      - e
+      - a
+    tags:
+      -
+        name: d
+        next:
+          type: free
+          required: true
+      -
+        name: e
+        next:
+          type: id
+          required: true
+      -
+        name: a
+        next:
+          type: addr
+          required: true
+
+  39067:
+    description: Pin
+    summary: "Addressable single pinned item (flotilla/Welshman Pinboards draft). Unique per-pin `d` keeps addresses from colliding. Exactly one reference tag — `e` event id, `a` address (relay hints optional) or `i` external id with optional `k` kind; `A` tags name the boards it sits on (none = profile pin); `title`, `t` topics and free text content label it."
+    content:
+      type: free
+    required:
+      - d
+    tags:
+      -
+        name: d
+        next:
+          type: free
+          required: true
+      -
+        name: e
+        next:
+          type: id
+          required: true
+          next:
+            type: relay
+      -
+        name: a
+        next:
+          type: addr
+          required: true
+          next:
+            type: relay
+      -
+        name: i
+        next:
+          type: free
+          required: true
+      -
+        name: k
+        next:
+          type: free
+      -
+        name: A
+        next:
+          type: addr
+          required: true
+      - *titletag
+      - name: t
+        next:
+          type: lowercase
+
   1163:
     description: Exclusive Content Membership
     summary: "Replaceable membership/access list associating users (`p`) and content addresses (`a`) with exclusive content. Likely subscription/paywall access-control metadata; schema does not define proof/payment/grant policy."
@@ -3881,6 +4237,32 @@ kinds:
       - *ptag
       - *qtag
 
+  1740:
+    description: Concord Timer Notice
+    summary: "Concord Chat-plane notice that staff changed Community disappearing-message timer. Empty content; `channel`, `epoch`, `ms` bind notice to Channel and `timer` gives seconds (`0` disables). Not subject to expiry itself."
+    in_use: true
+    content:
+      type: empty
+    tags:
+      - name: channel
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      - name: epoch
+        next:
+          type: free
+          required: true
+      - name: ms
+        next:
+          type: free
+          required: true
+      - name: timer
+        next:
+          type: free
+          required: true
+
   1808:
     description: Audio Header
     summary: "Audio media header/metadata event. Requires download URL; optional streaming URL and JSON waveform support audio playback UI."
@@ -3942,6 +4324,34 @@ kinds:
       - name: variant
         next:
           type: free
+
+  3302:
+    description: Concord Edit
+    summary: "Chat-plane edit rumor that replaces author's own kind-9 or kind-1111 message text. Concord pins fields but not full edit-fold semantics; rumor binds to `channel`/`epoch` and includes sub-second `ms` plus target `e` rumor ID."
+    in_use: true
+    content:
+      type: free
+    required:
+      - channel
+      - epoch
+      - ms
+      - e
+    tags:
+      - name: channel
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      - name: epoch
+        next:
+          type: free
+          required: true
+      - name: ms
+        next:
+          type: free
+          required: true
+      - *etag-bare
 
   4312:
     description: Nests Admin Command
@@ -4119,6 +4529,22 @@ kinds:
         next:
           type: free
 
+  20013:
+    description: Encrypted Stream Seal
+    summary: "Concord CORD-01 encrypted seal inside a stream's kind-1059 wrap. Its NIP-44-encrypted content contains unsigned functional rumor; never publish standalone."
+    in_use: true
+    content:
+      type: free
+    tags: []
+
+  20014:
+    description: Plaintext Stream Seal
+    summary: "Concord CORD-01 plaintext seal used only for Control Plane editions that must survive re-wrapping across epochs. Content is byte-verbatim serialized signed rumor; never publish standalone."
+    in_use: true
+    content:
+      type: free
+    tags: []
+
   21001:
     description: CLINK Offer
     summary: "CLINK protocol offer event. Schema has recipient `p`, event reference `e`, version tag and free-form content."
@@ -4160,7 +4586,7 @@ kinds:
 
   21059:
     description: Ephemeral Gift Wrap
-    summary: "Ephemeral variant of NIP-59 gift wrap (same 1059 wrapping purpose with ephemeral kind range). Intended to transport wrapped encrypted event without durable relay storage; recipient tag routes it."
+    summary: "Ephemeral variant of kind-1059 wrapper, not stored by relays. Standard use is recipient-routed; Concord ephemeral stream wrap uses fixed derived Channel author and random ephemeral `p`, carrying typing and voice-presence rumors."
     content:
       type: free
     tags:
@@ -4181,6 +4607,59 @@ kinds:
       type: free
     tags:
       - *ptag
+
+  23311:
+    description: Concord Typing Indicator
+    summary: "Concord ephemeral Chat-plane typing signal. Empty-content rumor binds to `channel` and `epoch` with `ms`; transported in outer kind-21059 ephemeral stream wrap."
+    in_use: true
+    content:
+      type: empty
+    tags:
+      - name: channel
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      - name: epoch
+        next:
+          type: free
+          required: true
+      - name: ms
+        next:
+          type: free
+          required: true
+
+  23313:
+    description: Concord Voice Presence
+    summary: "Concord ephemeral call-presence heartbeat. `joined` includes Channel, epoch, SFU identity, broker origin and ms; `left` carries Channel, epoch and ms. Outer kind-21059 wrap is not stored."
+    in_use: true
+    content:
+      type: constrained
+      either:
+        - joined
+        - left
+    tags:
+      - name: channel
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      - name: epoch
+        next:
+          type: free
+          required: true
+      - name: identity
+        next:
+          type: free
+      - name: broker
+        next:
+          type: url
+      - name: ms
+        next:
+          type: free
+          required: true
 
   23333:
     description: Ephemeral Chat Room
@@ -4546,6 +5025,248 @@ kinds:
           type: pubkey
           required: true
       - *ktag
+
+  3303:
+    description: Concord Rekey Blobs
+    summary: "Encrypted-sealed Concord key-rotation package. JSON-array content carries recipient-located NIP-44-wrapped key blobs; tags identify scope, new/previous epochs, prior-key commitment and chunk index/count. The outer kind-1059 event is published at a derived rekey stream address."
+    in_use: true
+    content:
+      type: json
+    required:
+      - scope
+      - newepoch
+      - prevepoch
+      - prevcommit
+      - chunk
+    tags:
+      - name: scope
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      - name: newepoch
+        next:
+          type: free
+          required: true
+      - name: prevepoch
+        next:
+          type: free
+          required: true
+      - name: prevcommit
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      - name: chunk
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+
+  3306:
+    description: Concord Join or Leave
+    summary: "Self-signed Guestbook-plane membership motion. Content is `join` or `leave`; `ms` gives sub-second ordering. A Join may include `invite` creator pubkey and human label attribution."
+    in_use: true
+    content:
+      type: constrained
+      either:
+        - join
+        - leave
+    required:
+      - ms
+    tags:
+      - name: ms
+        next:
+          type: free
+          required: true
+      - name: invite
+        next:
+          type: pubkey
+          required: true
+          next:
+            type: free
+            required: true
+
+  3308:
+    description: Concord Control Edition
+    summary: "Concord Control Plane versioned entity edition; `vsk` selects Community metadata, Role, Channel metadata, Grant, Banlist, invite registry, dissolved tombstone or Pin List. `eid` identifies entity; `ev`/`ep` chain editions; `vac` cites actor's authority Grant. Dissolution vsk 10 is owner-signed and chainless."
+    in_use: true
+    content:
+      type: free
+    required:
+      - vsk
+      - eid
+    tags:
+      - name: vsk
+        next:
+          type: constrained
+          either:
+            - "0"
+            - "1"
+            - "2"
+            - "3"
+            - "4"
+            - "8"
+            - "10"
+            - "11"
+          required: true
+      - name: eid
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      - name: ev
+        next:
+          type: free
+      - name: ep
+        next:
+          type: hex
+          min: 64
+          max: 64
+      - name: vac
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+          next:
+            type: free
+            required: true
+            next:
+              type: hex
+              min: 64
+              max: 64
+              required: true
+
+  3309:
+    description: Concord Kick
+    summary: "Authorized Guestbook-plane cooperative removal directive. Empty content; `p` names target, `ms` orders event, and `vac` cites exact Grant edition author relies on. Unlike Ban/Rekey, Kick requests client cooperation and does not revoke keys."
+    in_use: true
+    content:
+      type: empty
+    required:
+      - p
+      - ms
+    tags:
+      - *ptag-bare
+      - name: ms
+        next:
+          type: free
+          required: true
+      - name: vac
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+          next:
+            type: free
+            required: true
+            next:
+              type: hex
+              min: 64
+              max: 64
+              required: true
+
+  3310:
+    description: Concord WebXDC Peer Signal
+    summary: "Opaque app-level WebXDC peer-signaling rumor in a Concord Chat Plane. Content and any payload fields are application-defined; `channel`, `epoch` and `ms` bind/order it."
+    in_use: true
+    content:
+      type: free
+    required:
+      - channel
+      - epoch
+      - ms
+    tags:
+      - name: channel
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+      - name: epoch
+        next:
+          type: free
+          required: true
+      - name: ms
+        next:
+          type: free
+          required: true
+
+  3312:
+    description: Concord Guestbook Snapshot
+    summary: "Refounder-signed, chunked seed of present Community members in new epoch's Guestbook. Content is JSON array of pubkeys; all chunks share `snap` ID and timestamp, with `ms` plus chunk index/count."
+    in_use: true
+    content:
+      type: json
+    required:
+      - ms
+      - snap
+    tags:
+      - name: ms
+        next:
+          type: free
+          required: true
+      - name: snap
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+            next:
+              type: free
+              required: true
+
+  3313:
+    description: Concord Direct Invite
+    summary: "Encrypted kind-1059 standard NIP-59 direct-invite rumor, addressed to recipient rather than a Concord plane. Content is JSON CommunityInvite bundle; outer wrap uses `p` recipient and `k=3313` index tag."
+    in_use: true
+    content:
+      type: json
+    tags: []
+
+  33301:
+    description: Concord Public Invite Bundle
+    summary: "Addressable invite bundle at coordinate (kind 33301, per-link signer, empty `d`). Live `vsk=6` content is NIP-44-encrypted CommunityInvite JSON; `vsk=9` with empty content is revocation tombstone."
+    in_use: true
+    content:
+      type: free
+    required:
+      - d
+      - vsk
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
+      - name: vsk
+        next:
+          type: constrained
+          either:
+            - "6"
+            - "9"
+          required: true
+
+  33302:
+    description: Concord Community List
+    summary: "Addressable member-owned device-sync fragment, NIP-44-encrypted to self. `d` is decimal fragment index; decrypted JSON unions memberships and tombstones across fragments. Not authoritative Community state."
+    in_use: true
+    content:
+      type: free
+    required:
+      - d
+    tags:
+      - name: d
+        next:
+          type: free
+          required: true
 
   33401:
     description: Exercise Template
