@@ -277,6 +277,7 @@ kinds:
 
   4:
     description: Encrypted Direct Messages
+    summary: "Legacy encrypted one-to-one DM. Event content is AES-256-CBC ciphertext plus base64 IV; `p` identifies recipient."
     content:
       type: free
     tags:
@@ -284,6 +285,7 @@ kinds:
 
   5:
     description: Event Deletion Request
+    summary: "Author asks relays and clients to delete/hide their own events. `e` targets regular events, `a` targets replaceable/addressable coordinates; `k` tags identify targeted kinds; content can explain reason. It is a request, not globally enforceable erasure."
     in_use: true
     content:
       type: empty
@@ -296,6 +298,7 @@ kinds:
 
   6:
     description: Repost
+    summary: "Reshares a kind-1 text note to the author’s followers. Content is usually stringified JSON of reposted note (may be empty); `e` points to note and should carry relay hint; `p` points to original author."
     in_use: true
     content:
       type: json
@@ -307,6 +310,7 @@ kinds:
 
   7:
     description: Reaction
+    summary: "Reacts to native Nostr event. Content `+` or empty means like/upvote; `-` means dislike/downvote; emoji means emoji reaction."
     in_use: true
     content:
       type: free
@@ -317,6 +321,7 @@ kinds:
 
   8:
     description: Badge Award
+    summary: "Badge issuer awards a NIP-58 badge defined by kind 30009. One `a` tag references badge definition; one or more `p` tags name recipients."
     in_use: true
     content:
       type: empty
@@ -326,6 +331,7 @@ kinds:
 
   9:
     description: Chat Message
+    summary: "Public chat message, not private DM. Messages may stand alone or reply/quote earlier kind-9 events via `q`."
     in_use: true
     content:
       type: free
@@ -367,6 +373,7 @@ kinds:
 
   11:
     description: Forum Thread
+    summary: "Creates public forum topic/thread; `title` is recommended, content carries opening post. Replies should be kind-1111 comments linked to root rather than nested kind-11 events."
     in_use: true
     content:
       type: free
@@ -380,6 +387,7 @@ kinds:
 
   13:
     description: Seal
+    summary: "NIP-59 encrypted envelope holding signed inner rumor. Seal is encrypted to recipient with NIP-44, signed by real author, and deliberately omits recipient `p` tag; public observer sees signer but not recipient or message."
     in_use: true
     content:
       type: free
@@ -387,6 +395,7 @@ kinds:
 
   14:
     description: Direct Message
+    summary: "Plaintext “rumor” message payload for encrypted NIP-17 chats. `p` tags identify recipients; `e` may identify direct parent; `subject` names conversation. Normally unsigned, sealed as kind 13 and gift-wrapped as kind 1059 per recipient."
     in_use: true
     content:
       type: free
@@ -405,6 +414,7 @@ kinds:
 
   15:
     description: File Message
+    summary: "NIP-17 private-chat file attachment. Content is encrypted file URL; tags carry recipient(s), MIME type, encryption algorithm/key/nonce, and SHA-256 of encrypted file (`x`), with optional size/dimensions/thumb/fallback metadata."
     in_use: true
     content:
       type: free
@@ -454,6 +464,7 @@ kinds:
 
   16:
     description: Generic Repost
+    summary: "Repost of any event kind other than kind 1. Usually has `e`, `p`, and `k` tags; addressable reposts should include `a`."
     in_use: true
     content:
       type: json
@@ -464,6 +475,7 @@ kinds:
 
   17:
     description: Reaction to a Website
+    summary: "Reaction to non-Nostr resources, unlike kind 7. NIP-73 `k` names identifier scheme (`web`, podcast GUID, Bitcoin, etc.) and `i` carries external identifier/URL; content is reaction value."
     content:
       type: free
     required:
@@ -473,6 +485,7 @@ kinds:
 
   20:
     description: Photo
+    summary: "NIP-68 Picture event. User-facing image/photo post: event text is caption; one or more `imeta` tags describe media URL, MIME, hash/dimensions and optional alt/blurhash; tags can add title, warning, author mentions and location/geohash."
     in_use: true
     content:
       type: free
@@ -518,6 +531,7 @@ kinds:
 
   21:
     description: Normal Video Event
+    summary: "NIP-71 addressable video post in horizontal/normal format. Caption in content; `imeta` carries video/poster URLs and metadata; title, published time, content warning, segments, text tracks, people and source URL are optional."
     in_use: true
     content:
       type: free
@@ -559,6 +573,7 @@ kinds:
 
   22:
     description: Short Video Event
+    summary: "NIP-71 addressable short-video post, intended for vertical/short-form video. Content carries caption; `imeta` describes media items; title, publication time, warnings, segments and text tracks add presentation metadata."
     in_use: true
     content:
       type: free
@@ -600,6 +615,7 @@ kinds:
 
   24:
     description: Public Message
+    summary: "Public-message rumor used by NIP-17 message conventions; unlike kind 14 DM, this is intended for public messaging. Schema requires one or more recipient/participant `p` tags and allows quoted events (`q`) and media metadata (`imeta`)."
     in_use: true
     content:
       type: free
@@ -615,6 +631,7 @@ kinds:
 
   30:
     description: Jester Chess Event
+    summary: "Jester UI uses kind 30 for its own JSON chess-game protocol, separate from kind 64 PGN. Start events anchor to an `e` hash of initial FEN; move events reference game-start and prior-move event IDs."
     content:
       type: json
     multiple:
@@ -626,12 +643,14 @@ kinds:
 
   40:
     description: Channel Creation
+    summary: "Creates public chat channel under legacy NIP-28. Content is JSON channel metadata (`name`, `about`, `picture`, relays); event ID anchors later kind-41 metadata and kind-42 messages."
     content:
       type: json
     tags: []
 
   41:
     description: Channel Metadata
+    summary: "Updates metadata for kind-40 channel without changing its ID. Content is JSON; an `e` tag identifies root channel event."
     content:
       type: json
     tags:
@@ -649,6 +668,7 @@ kinds:
 
   42:
     description: Channel Message
+    summary: "Public message in NIP-28 channel. `e` tags identify root channel and optionally reply; `p` tags identify reply participants. Content is plain text."
     content:
       type: free
     tags:
@@ -668,6 +688,7 @@ kinds:
 
   43:
     description: Channel Hide Message
+    summary: "Client-side moderation event saying author no longer wants to see a kind-42 message. `e` points to hidden message; JSON content may explain reason. Clients may use one user’s hide only locally or aggregate multiple hides by policy."
     content:
       type: json
     tags:
@@ -679,6 +700,7 @@ kinds:
 
   44:
     description: Channel Mute User
+    summary: "Client-side moderation event saying author no longer wants to see a user’s kind-42 channel messages. `p` identifies muted user; optional JSON content may state reason. Clients choose whether to apply only for author or aggregate moderation."
     content:
       type: json
     tags:
@@ -686,6 +708,7 @@ kinds:
 
   54:
     description: Podcast Episode
+    summary: "NIP-F4 podcast episode event, authored by podcast's own pubkey. Tags describe title, optional image, description, and repeated `audio` URL plus optional media type; content is Markdown show notes."
     in_use: true
     content:
       type: free
@@ -705,6 +728,7 @@ kinds:
 
   62:
     description: Request to Vanish
+    summary: "NIP-62 event asks relays to remove all events by signing pubkey. Relay list can be constrained with `relay` tags; no content needed."
     content:
       type: free
     multiple:
@@ -714,6 +738,7 @@ kinds:
 
   64:
     description: Chess (PGN)
+    summary: "Chess game record expressed as PGN text; schema permits opponent `p` tag. Intended for publishing replayable chess games, with content carrying portable game notation rather than chat-style moves."
     content:
       type: free
     tags:
@@ -721,6 +746,7 @@ kinds:
 
   78:
     description: Application Data
+    summary: "NIP-78 replaceable application-specific user data. `d` tag groups an app’s data records; content is app-defined, and relays should protect it with AUTH and serve only owner. Use kind 30078 for addressable records where multiple named records are needed."
     content:
       type: free
     tags:
@@ -732,12 +758,14 @@ kinds:
 
   82:
     description: Medical Data (FHIR)
+    summary: "Schema reserves kind 82 for healthcare data using FHIR-style content. No canonical kind-82 NIP or source repository confirmed in current NIPs tree; event may contain sensitive health data, so inspect intended encryption/access-control scheme before handling."
     content:
       type: free
     tags: []
 
   777:
     description: Spell
+    summary: "Schema models a NIP-55-style “spell”: a signed query instruction (`cmd=REQ`) with kinds, IDs, authors, tags, relay list, name and optional close-on-EOSE. It serializes a reusable relay request, not user-post content."
     content:
       type: free
     in_use: true
@@ -796,6 +824,7 @@ kinds:
 
   818:
     description: Wiki Merge Requests
+    summary: "Schema identifies a wiki merge request referencing target address (`a`), people, and events. This is a project-level request to merge wiki edits, distinct from NIP-34 Git pull requests (kinds 1618/1619)."
     in_use: true
     content:
       type: free
@@ -806,6 +835,7 @@ kinds:
 
   1010:
     description: Text Note Edit
+    summary: "Schema describes an edit event referring to original event ID (`e`) and author (`p`), with `summary`; content carries edited text. No canonical current NIP source confirmed; beware interoperability ambiguity with replaceable notes and deletion/repost patterns."
     content:
       type: free
     tags:
@@ -818,6 +848,7 @@ kinds:
 
   1018:
     description: Poll Response
+    summary: "Schema: empty-content response linked to poll via `e`, with required `response` tag. Likely one user’s answer to a poll, but poll/answer cardinality and edit rules need source confirmation; NIP-88 kind 1068 defines the newer poll event."
     in_use: true
     content:
       type: empty
@@ -831,6 +862,7 @@ kinds:
 
   1021:
     description: Bid
+    summary: "Schema labels event “Bid”; free-form content and `e` target. Likely marketplace bid tied to auction event, but no authoritative spec or tag grammar confirmed."
     content:
       type: free
     tags:
@@ -838,6 +870,7 @@ kinds:
 
   1022:
     description: Bid Confirmation
+    summary: "Schema labels JSON event “Bid Confirmation”, linked with `e`. Likely confirms bid acceptance/state in a marketplace auction flow; issuer, trust model and JSON schema are not specified here."
     content:
       type: json
     tags:
@@ -845,6 +878,7 @@ kinds:
 
   1040:
     description: OpenTimestamps
+    summary: "Schema labels this kind for OpenTimestamps data, linked to timestamped target by `e` and categorized with `k`. Used to attach proof/attestation that event content existed by a given time; proof format is not described in schema."
     in_use: false
     content:
       type: free
@@ -854,6 +888,7 @@ kinds:
 
   1222:
     description: Voice Message
+    summary: "NIP-A0 root voice message, generally a short audio clip (recommended ≤60 seconds). Content MUST be direct audio URL; `audio/mp4` with AAC/Opus recommended."
     in_use: true
     content:
       type: free
@@ -864,6 +899,7 @@ kinds:
 
   1227:
     description: Scroll
+    summary: "Schema’s addressable “Scroll” definition describes an application/navigation surface with `name`, `description`, `icon`, and repeatable `param` declarations. Params define types such as public key, event, string, number, timestamp or relay, plus requiredness and optional free-form details."
     in_use: true
     content:
       type: free
@@ -908,6 +944,7 @@ kinds:
 
   15128:
     description: Root Nsite
+    summary: "NIP-5A root-site manifest: one replaceable event per author; MUST NOT include `d`. One or more `path` tags map absolute paths to SHA-256 blob hashes (`['path','/absolute/path','sha256']`); `x` aggregate hash is recommended but optional. `server`, title, description, source, icon and app references are optional."
     in_use: true
     content:
       type: empty
@@ -925,6 +962,7 @@ kinds:
 
   1244:
     description: Voice Message Comment
+    summary: "NIP-A0 voice-message reply. Uses NIP-22 kind-1111 root/parent references, but content itself MUST be direct audio URL (not ordinary prose); ≤60 seconds recommended, `audio/mp4` preferred."
     in_use: true
     content:
       type: free
@@ -965,6 +1003,7 @@ kinds:
 
   1311:
     description: Live Chat Message
+    summary: "Chat message attached to live event/stream. Schema lists no tags; event likely belongs to NIP-53 live activities where kind 1311 is chat during a live event, with stream association convention supplied outside this minimal schema."
     in_use: true
     content:
       type: free
@@ -972,6 +1011,7 @@ kinds:
 
   1337:
     description: Code Snippet
+    summary: "Code-snippet event. Content contains snippet text; tags can label language, filename/name, extension, runtime, license, repeatable dependencies, repository and description."
     in_use: true
     content:
       type: free
@@ -1026,24 +1066,28 @@ kinds:
 
   1971:
     description: Problem Tracker
+    summary: "Registry names kind 1971 “Problem Tracker” (historical Nostrocket mapping), but current Nostrocket NIP-1971 draft uses **kind 31971** for addressable problem snapshots. Problems form revision and parent DAGs; comments, claims and solutions use NIP-22 kind 1111."
     content:
       type: free
     tags: []
 
   1986:
     description: Relay Reviews
+    summary: "Schema label indicates a relay review/rating event, with free-form content and no structured tags. Likely describes relay quality or experience; author identity and review timestamp are available from normal event envelope."
     content:
       type: free
     tags: []
 
   1987:
     description: AI Embeddings / Vector Lists
+    summary: "NKBIP-02 draft defines kind 1987 as embedding annotation for another event. Required tags: `e` target, `model` name/version/source, `type` modality, and `vector`; optional `dims`, `norm`, model hash/hash_type and `source`."
     content:
       type: free
     tags: []
 
   2003:
     description: Torrent
+    summary: "NIP-35 torrent index event. Publishes searchable metadata and magnet construction inputs, not torrent payload itself."
     in_use: true
     content:
       type: free
@@ -1072,6 +1116,7 @@ kinds:
 
   2004:
     description: Torrent Comment
+    summary: "Comment on kind-2003 torrent listing. NIP-35 says it behaves like kind-1 text note and should follow NIP-10 reply tagging; registry schema accepts `e` reference."
     content:
       type: free
     tags:
@@ -1079,18 +1124,21 @@ kinds:
 
   2022:
     description: Coinjoin Pool
+    summary: "Registry names this “Coinjoin Pool”; schema has free-form content and no tags. Likely describes a collaborative Bitcoin transaction/pool, but no payload format, coordinator role, or security model is captured here."
     content:
       type: free
     tags: []
 
   4550:
     description: Community Post Approval
+    summary: "NIP-72 event by community moderator approving a post for a community. Includes one or more community `a` coordinates, an `e` or `a` target post reference, and author `p` tag; clients can notify authors and use approval state for moderated feeds."
     content:
       type: free
     tags: []
 
   4454:
     description: Decoupled Key Client Announcement
+    summary: "NIP-4e draft client-key announcement. Event is signed by user's identity pubkey; `P` is that client installation's local public key, and `client` is a human-readable client label."
     content:
       type: empty
     in_use: true
@@ -1111,6 +1159,7 @@ kinds:
 
   4455:
     description: Decoupled Encryption Key Distribution
+    summary: "NIP-4e draft encrypted key transfer. Identity-key-signed event addresses receiving client with `p`; `P` is sender's temporary transfer pubkey; content is NIP-44 ciphertext containing shared encryption key."
     content:
       type: free
     in_use: true
@@ -1131,6 +1180,7 @@ kinds:
 
   7374:
     description: Reserved Cashu Wallet Tokens
+    summary: "NIP-60 replaceable wallet state event for reserved Cashu tokens. Client-wallet state intended to be encrypted/private to owner; exact records are application wallet data."
     in_use: true
     content:
       type: free
@@ -1138,6 +1188,7 @@ kinds:
 
   7375:
     description: Cashu Wallet Tokens
+    summary: "NIP-60 wallet state event stores Cashu proofs/tokens for a user’s wallet. Treat content as sensitive wallet material; implementations use NIP-44 encryption and NIP-60 wallet backup conventions rather than public profile data."
     in_use: true
     content:
       type: free
@@ -1145,6 +1196,7 @@ kinds:
 
   7376:
     description: Cashu Wallet History
+    summary: "NIP-60 wallet history event records transaction/history data for the user’s Cashu wallet, complementing token events 7374/7375. It is private user wallet state, not a public payment receipt."
     in_use: true
     content:
       type: free
@@ -1152,18 +1204,21 @@ kinds:
 
   7516:
     description: Geocache Log
+    summary: "Geocaching activity/log event referencing a cache listing; logs may capture find/not-found/notes and associated location/media. Current NIP-CC geocaching draft adds proof-verification fields; exact relationship should follow draft version."
     content:
       type: free
     tags: []
 
   7517:
     description: Geocache Proof of Find
+    summary: "Signed geocache proof event, used to demonstrate physical presence at a cache. NIP-CC describes cache verification keys and embedding/reference of proof within kind-7516 found logs; proof validity depends on cache configuration."
     content:
       type: free
     tags: []
 
   9321:
     description: Nutzap
+    summary: "NIP-61 Cashu ecash zap event. Proof(s) and mint URL identify ecash payment; `e`, `k`, `p` can bind zap to target event kind/author."
     in_use: true
     content:
       type: free
@@ -1185,12 +1240,14 @@ kinds:
 
   9467:
     description: Tidal Login
+    summary: "Schema label “Tidal Login”; free-form content with no tags. Likely app-specific login/session exchange for Tidal integration, but exact account binding, secrets and lifecycle not available in registry."
     content:
       type: free
     tags: []
 
   1059:
     description: Gift Wrap
+    summary: "NIP-59 outer encrypted wrapper. Content contains encrypted signed seal (kind 13); ephemeral random pubkey and `p` recipient tag hide original sender, event kind and message."
     in_use: true
     content:
       type: free
@@ -1199,6 +1256,7 @@ kinds:
 
   1063:
     description: File Metadata
+    summary: "NIP-94 file metadata event describes an external file for discovery/sharing. Tags provide URL, MIME, hash, original hash, size, dimensions, magnet/info, blurhash, thumbnail, image/summary/fallback/service data; content can be caption/context."
     content:
       type: free
     tags:
@@ -1267,12 +1325,14 @@ kinds:
 
   1064:
     description: Blob Data (NIP-95)
+    summary: "NIP-95 embedded blob event stores file bytes in event content (base64-encoded binary) for relay-hosted file delivery. Schema’s free-form type reflects encoded payload rather than prose."
     content:
       type: free
     tags: []
 
   1065:
     description: Blob Header (NIP-95)
+    summary: "NIP-95 metadata/header for an embedded blob. `e` references kind-1064 blob; MIME type, SHA-256 hash and size describe data so clients can validate and handle it."
     content:
       type: free
     tags:
@@ -1295,6 +1355,7 @@ kinds:
 
   1068:
     description: Poll
+    summary: "NIP-88 poll event. Content provides question/context; repeated `option` tags provide option IDs and labels; `polltype` sets single/multiple choice, `endsAt` gives close time, optional relay tags direct answer submissions."
     in_use: true
     content:
       type: free
@@ -1327,6 +1388,7 @@ kinds:
 
   1073:
     description: Music Track Scrobble
+    summary: "Scrobble/listening record: empty content; tags record title, album, repeatable artist, and external track identifier such as Spotify track ID or ISRC. Intended to publish a user’s listening activity."
     in_use: true
     content:
       type: empty
@@ -1360,6 +1422,7 @@ kinds:
 
   1621:
     description: Git Issue
+    summary: "NIP-34 Git issue event. Addressable repo reference (`a`) and required `subject` identify issue; `p` may identify participants."
     content:
       type: free
     required:
@@ -1376,6 +1439,7 @@ kinds:
 
   1630:
     description: Git Issue Status Open
+    summary: "NIP-34 status event marks a Git issue open and references issue event (`e`) plus repo/participant tags. It is a status transition event rather than editing original issue content."
     content:
       type: free
     required:
@@ -1390,6 +1454,7 @@ kinds:
 
   1631:
     description: Git Issue Applied/Merged/Resolved
+    summary: "NIP-34 status event records that referenced issue is resolved by applied/merged patch. Schema supports `q` patch event, merge commit hash and applied-as-commits hashes in addition to issue `e`/participant tags."
     content:
       type: free
     required:
@@ -1422,6 +1487,7 @@ kinds:
 
   1632:
     description: Git Issue Status Closed
+    summary: "NIP-34 status event marks referenced Git issue closed without the schema’s applied/merged metadata. `e` identifies issue, `p` may identify involved people."
     content:
       type: free
     required:
@@ -1436,6 +1502,7 @@ kinds:
 
   1633:
     description: Git Issue Status Draft
+    summary: "NIP-34 status event marks Git issue as draft; `e` references issue and `p` can identify participants. Distinct status kind helps repository clients filter issue lifecycle."
     content:
       type: free
     required:
@@ -1450,6 +1517,7 @@ kinds:
 
   1984:
     description: Reporting
+    summary: "NIP-56 report event flags pubkey (`p`), event (`e`) or addressable event (`a`) as objectionable. Content may state report reason; `l` label and `L` namespace tags can classify."
     in_use: true
     content:
       type: free
@@ -1460,6 +1528,7 @@ kinds:
 
   1985:
     description: Label
+    summary: "NIP-32 label event associates machine-readable labels with events, users, or addresses. Labels use `L` namespace and `l` value; `e`, `p`, and `a` identify subjects."
     content:
       type: free
     tags:
@@ -1469,6 +1538,7 @@ kinds:
 
   9041:
     description: Zap Goal
+    summary: "NIP-75 addressable goal/crowdfunding target. Tags describe amount, accepted relays, close time, artwork/summary, target event/address, and zap service pubkey/relay/config."
     content:
       type: free
     tags:
@@ -1503,6 +1573,7 @@ kinds:
 
   9734:
     description: Zap Request
+    summary: "NIP-57 unsigned/embedded zap request. Identifies recipient with `p`, optional target event/address with `e`/`a`, target kind with `k`, amount/LNURL metadata and relays for invoice-service callback."
     in_use: true
     content:
       type: free
@@ -1528,6 +1599,7 @@ kinds:
 
   9735:
     description: Zap
+    summary: "NIP-57 zap receipt published by Lightning service after successful payment. Event content empty; tags include recipient, optional target, invoice (`bolt11`), zap request JSON (`description`) and optional preimage."
     in_use: true
     content:
       type: empty
@@ -1555,6 +1627,7 @@ kinds:
 
   1111:
     description: Comment
+    summary: "NIP-22 generic comment/reply to events and external content. Uppercase tags (`A/E/I/K/P`) mark thread root context; lowercase (`a/e/i/k/p`) mark direct parent/subject; `K` can classify root as NIP-73 external resource."
     in_use: true
     content:
       type: free
@@ -1613,6 +1686,7 @@ kinds:
 
   9802:
     description: Highlights
+    summary: "NIP-84 highlight/bookmark quote. Content carries selected quotation; `e`/`a` or `r` point to source, `context` gives surrounding text, `comment` adds author’s note, and `p` can identify source author."
     in_use: true
     content:
       type: free
@@ -1634,6 +1708,7 @@ kinds:
 
   27235:
     description: HTTP Auth
+    summary: "NIP-98 HTTP authorization event. Signed event binds URL (`u`), HTTP method (`Method`) and optionally payload hash; client Base64-encodes it into `Authorization: Nostr …` header."
     in_use: true
     content:
       type: free
@@ -1661,6 +1736,7 @@ kinds:
 
   10000:
     description: Mute List
+    summary: "NIP-51 replaceable mute list. Tags identify muted pubkeys (`p`), words (`word`), events (`e`), and potentially other supported targets."
     in_use: true
     content:
       type: free
@@ -1677,6 +1753,7 @@ kinds:
 
   10001:
     description: Pin List
+    summary: "NIP-51 replaceable list of events (`e`) user pins/highlights on profile. Order may matter to display; content is unused by this schema."
     in_use: true
     content:
       type: empty
@@ -1687,6 +1764,7 @@ kinds:
 
   10003:
     description: Bookmark List
+    summary: "NIP-51 replaceable user bookmark list. Tags can bookmark regular events (`e`) and addressable events (`a`); private bookmark content may be encrypted by clients."
     in_use: true
     content:
       type: free
@@ -1699,6 +1777,7 @@ kinds:
 
   10004:
     description: Communities List
+    summary: "NIP-51 user list of NIP-72 communities, referenced by address (`a`). Used to surface/organize communities a user follows or recommends; not itself community definition or membership."
     content:
       type: free
     tags:
@@ -1706,6 +1785,7 @@ kinds:
 
   10005:
     description: Public Chats List
+    summary: "NIP-51 user-curated list of public chat/channel events (`e`). Helps clients discover chat streams; channel definitions/messages are separate kinds (legacy NIP-28 or NIP-29 groups)."
     content:
       type: free
     tags:
@@ -1713,6 +1793,7 @@ kinds:
 
   10006:
     description: Blocked Relays List
+    summary: "NIP-51 user preference list of relays to avoid, represented as `relay` tags. Clients may use it when selecting relays; it is an advisory user list, distinct from relay lists in kind 10002."
     content:
       type: free
     tags:
@@ -1720,6 +1801,7 @@ kinds:
 
   10007:
     description: Search Relays List
+    summary: "NIP-51 user list of relays suitable for NIP-50 search queries. Repeated `relay` tags; separates search providers from ordinary read/write relay selection."
     in_use: true
     content:
       type: free
@@ -1730,6 +1812,7 @@ kinds:
 
   10012:
     description: Favorite Relays List
+    summary: "NIP-51 user-selected favorite relays, using repeated `relay` tags and optionally addresses (`a`). Distinct from NIP-65 read/write relay metadata and search relay list."
     in_use: true
     content:
       type: free
@@ -1741,6 +1824,7 @@ kinds:
 
   10015:
     description: Interests List
+    summary: "NIP-51 replaceable user list of topic/interest addresses (`a` tags), primarily used for discovery and personalization. Schema permits NIP-73-style or other addressable interest references."
     in_use: true
     content:
       type: free
@@ -1749,6 +1833,7 @@ kinds:
 
   10020:
     description: Media Follows
+    summary: "NIP-51 list of followed media creators/accounts (`p` tags), supporting a media-focused follow graph separate from general kind-3 follows."
     content:
       type: free
     multiple:
@@ -1758,6 +1843,7 @@ kinds:
 
   10021:
     description: Favorite Follow Sets
+    summary: "NIP-51 list of favorite follow-set addresses (`a`, typically kind 30000). Lets a user select preferred named follow lists without copying their member tags."
     in_use: true
     content:
       type: free
@@ -1768,6 +1854,7 @@ kinds:
 
   10030:
     description: User Emoji List
+    summary: "NIP-51 replaceable user emoji list. `emoji` tags map shortcodes to image URLs; `a` tags can reference emoji sets. Often surfaces custom emoji to compose/rendering clients."
     in_use: true
     content:
       type: free
@@ -1780,6 +1867,7 @@ kinds:
 
   10031:
     description: User sticker pack list
+    summary: "NIP-51 replaceable list of sticker-pack addresses (`a` tags), allowing user profile to publish favorite/available sticker packs. Pack definitions are addressable kind 30031 in this schema."
     in_use: true
     content:
       type: empty
@@ -1790,6 +1878,7 @@ kinds:
 
   10044:
     description: Decoupled Key Announcement
+    summary: "Replaceable NIP-4e draft announcement of a separate NIP-44 encryption public key. The event is signed by user's identity key; required `n` tag carries encryption pubkey."
     in_use: true
     content:
       type: empty
@@ -1804,6 +1893,7 @@ kinds:
 
   10050:
     description: Relay List to Receive DMs
+    summary: "NIP-17 replaceable list of relays where author accepts private gift-wrapped messages. Recipients’ kind-10050 event is authoritative routing input; senders should not publish DMs elsewhere by default."
     in_use: true
     content:
       type: empty
@@ -1814,6 +1904,7 @@ kinds:
 
   10054:
     description: Favorite Podcasts
+    summary: "NIP-51-style replaceable list of podcast hosts/accounts (`p`). Supports podcast listening client’s followed/favorite show authors; show/episode metadata uses separate podcast event kinds."
     in_use: true
     content:
       type: empty
@@ -1824,6 +1915,7 @@ kinds:
 
   10101:
     description: Good Wiki Authors
+    summary: "User-curated list of trusted wiki authors (`p` tags), intended to guide wiki clients’ author trust/ranking. Complementary kind 10102 lists wiki relays."
     content:
       type: empty
     multiple:
@@ -1833,6 +1925,7 @@ kinds:
 
   10102:
     description: Good Wiki Relays
+    summary: "User-curated preferred wiki relays (`relay` tags). NIP-54 wiki clients can query these relays first and rank their wiki articles above results from other sources."
     content:
       type: empty
     multiple:
@@ -1842,6 +1935,7 @@ kinds:
 
   10154:
     description: Podcast Metadata
+    summary: "NIP-F4 replaceable podcast-show metadata event. `title`, `image`, and `description` identify show; optional/repeated `website` tags link web properties; `p` tags list host/cohost/editor pubkeys. Podcast listeners can read show metadata directly without treating profile kind 0 as authoritative."
     in_use: true
     content:
       type: empty
@@ -1868,6 +1962,7 @@ kinds:
 
   10164:
     description: Authored Podcasts
+    summary: "NIP-F4 replaceable “Authored Podcasts” list. User's `p` tags identify podcast pubkeys they claim to author."
     in_use: true
     content:
       type: empty
@@ -1878,6 +1973,7 @@ kinds:
 
   10009:
     description: User Groups
+    summary: "Replaceable user list of NIP-29 groups. Repeated `group` tags encode group identifier, relay and optional metadata; allows users to publish which groups they belong to or follow."
     in_use: true
     content:
       type: empty
@@ -1896,12 +1992,14 @@ kinds:
 
   10013:
     description: Private Event Relay List
+    summary: "Replaceable user preference for relays used to receive private events, schema currently has no tags/content. Unlike kind 10050 (NIP-17 DM relays) this likely covers a broader privacy-oriented event category."
     content:
       type: empty
     tags: []
 
   10019:
     description: Nutzap Mint Recommendation
+    summary: "Replaceable list of preferred Cashu mints for receiving/sending Nutzaps, with `mint` URLs and optional pubkey; relay tags may signal related relay service. Wallets use this when resolving recipient mint compatibility."
     in_use: true
     content:
       type: empty
@@ -1922,6 +2020,7 @@ kinds:
 
   10063:
     description: Blossom Server List
+    summary: "Replaceable user list of preferred Blossom media servers (`server` URLs). Clients can use this to upload media or discover user-associated media hosts."
     in_use: true
     content:
       type: empty
@@ -1936,6 +2035,7 @@ kinds:
 
   10096:
     description: File Storage Server List
+    summary: "Replaceable preference event listing file-storage server URLs. Distinct from Blossom’s kind 10063 in schema; likely NIP-96 upload server selection."
     content:
       type: empty
     tags:
@@ -1947,18 +2047,21 @@ kinds:
 
   10166:
     description: Relay Monitor Announcement
+    summary: "NIP-66 event announces that author publishes periodic relay-monitor results (kind 30166). Tags include `frequency`, optional `timeout` and checks `c`, plus optional geohash."
     content:
       type: empty
     tags: []
 
   10312:
     description: Room Presence
+    summary: "Presence announcement for an ephemeral/real-time room; schema has empty content and no tags, so room identity/expiry may be supplied by event timing or an external application protocol."
     content:
       type: empty
     tags: []
 
   10317:
     description: User Grasp List
+    summary: "Replaceable “grasp” relay list according to schema: `g` tags carry relay URLs. Purpose and “grasp” term are not explained by schema; could be discovery/relay reachability metadata."
     content:
       type: empty
     tags:
@@ -1970,18 +2073,21 @@ kinds:
 
   10377:
     description: Proxy Announcement
+    summary: "Replaceable proxy/service announcement; schema has no tags or content constraints. Likely declares a proxy endpoint or service identity, but payload is not specified here."
     content:
       type: empty
     tags: []
 
   11111:
     description: Transport Method Announcement
+    summary: "Replaceable announcement of supported transport methods; current schema gives no fields. Likely application-level capability negotiation for Nostr transport/proxy features."
     content:
       type: empty
     tags: []
 
   13194:
     description: Wallet Info
+    summary: "NIP-47 wallet service information response/announcement, describing capabilities supported by connected Lightning wallet. Used during Nostr Wallet Connect setup; exact content fields are NIP-47-defined."
     in_use: true
     content:
       type: free
@@ -1989,6 +2095,7 @@ kinds:
 
   17375:
     description: Cashu Wallet Event
+    summary: "NIP-60 encrypted replaceable wallet state event. Holds wallet configuration and mint/proof state in NIP-44 encrypted content; used as user’s recoverable Cashu wallet data on relays."
     in_use: true
     content:
       type: free
@@ -1996,12 +2103,14 @@ kinds:
 
   21000:
     description: Lightning Pub RPC
+    summary: "Schema calls this “Lightning Pub RPC”, with free-form content and no tags. Likely a remote procedure call/public notification related to Lightning; neither request grammar nor reply kind appears here."
     content:
       type: free
     tags: []
 
   22242:
     description: Client Authentication
+    summary: "NIP-42 ephemeral client AUTH event signed to a relay challenge. `relay` tag identifies relay; `challenge` copies challenge string. Relay uses it to authenticate connection, not as ordinary feed content."
     in_use: true
     content:
       type: free
@@ -2014,30 +2123,35 @@ kinds:
 
   23194:
     description: Wallet Request
+    summary: "NIP-47 encrypted Nostr Wallet Connect request from client to wallet service. Contains RPC request (e.g. `pay_invoice`, `get_balance`) and is encrypted with shared connection secret; published to NWC relay(s)."
     content:
       type: free
     tags: []
 
   23195:
     description: Wallet Response
+    summary: "NIP-47 encrypted wallet-service response to kind-23194 request. Carries RPC result/error and request correlation tag; response is encrypted with connection key and returned over configured relays."
     content:
       type: free
     tags: []
 
   24133:
     description: Nostr Connect
+    summary: "NIP-46 remote-signer request/response event. Clients and signers exchange encrypted RPC commands over relays; connection URI establishes signer key, relays and secret."
     content:
       type: free
     tags: []
 
   24242:
     description: Blobs stored on mediaservers
+    summary: "Schema labels kind as media-server blob record; free-form content, no tags. Potential link to Blossom/NIP-96 media uploads, but no standardized payload represented here."
     content:
       type: free
     tags: []
 
   30008:
     description: Profile Badges
+    summary: "NIP-58 addressable badge set/profile-badge event. Contains ordered `a` badge-definition and `e` badge-award pairs; allows users to accept/reject and order displayed badges."
     in_use: true
     content:
       type: empty
@@ -2050,6 +2164,7 @@ kinds:
 
   30009:
     description: Badge Definition
+    summary: "NIP-58 addressable event defines a badge. `d` uniquely identifies issuer’s badge; `name`, `description`, `image`, and thumbnails describe it. Award events kind 8 reference its coordinate."
     in_use: true
     content:
       type: free
@@ -2070,24 +2185,28 @@ kinds:
 
   30017:
     description: Create or Update a Stall
+    summary: "NIP-15 marketplace addressable event defining merchant/stall metadata and configuration. Content is JSON; products (kind 30018) and purchase flows refer to stall coordinates."
     content:
       type: json
     tags: []
 
   30018:
     description: Create or Update a Product
+    summary: "NIP-15 marketplace addressable product listing, JSON content describes product, pricing, inventory and shipping; coordinate identifies versioned listing. Products belong to kind-30017 stalls."
     content:
       type: json
     tags: []
 
   30020:
     description: Product Sold as an Auction
+    summary: "Marketplace auction listing. Schema says JSON content; NIP-15 defines auction-style product sale with bids and confirmation events."
     content:
       type: json
     tags: []
 
   30023:
     description: Long-form Content
+    summary: "NIP-23 addressable long-form article. `d` identifier defines article coordinate; content is Markdown; title, summary, image, publication time, and `a/q/p` references support feeds and citations. Replies use NIP-22 kind 1111."
     in_use: true
     content:
       type: free
@@ -2106,6 +2225,7 @@ kinds:
 
   30024:
     description: Draft Long-form Content
+    summary: "Addressable private/local draft form of NIP-23 article; same metadata/reference shape as kind 30023, but intended as draft rather than published content. Clients may encrypt drafts and restrict relay access."
     content:
       type: free
     multiple:
@@ -2123,6 +2243,7 @@ kinds:
 
   35128:
     description: Named Nsite
+    summary: "NIP-5A named-site manifest: addressable event requiring `d` identifier (canonical URL IDs are 1–13 lowercase alphanumeric/hyphen characters, not ending in `-`). Uses same absolute `path`→SHA-256 mapping as root kind 15128; `x` aggregate is recommended, while server/title/description/source/icon/app links are optional. `d` names subsite within author namespace."
     in_use: true
     content:
       type: empty
@@ -2140,6 +2261,7 @@ kinds:
 
   35130:
     description: Napp
+    summary: "Registry defines 35130 as addressable “Napp” with path/server/title/description, action, dependencies, mode (`normal`/`auxiliary`/`headless`), initial size, singleton and icon. Do not conflate this with NIP-5D Napplet manifest kind 35129."
     in_use: true
     content:
       type: empty
@@ -2186,6 +2308,7 @@ kinds:
 
   30078:
     description: Application-specific Data
+    summary: "NIP-78 addressable app-specific data record. `d` identifier selects per-app record; content is app-defined. NIP-78 recommends encryption/authentication for private user data and relays should only serve owner’s events."
     in_use: true
     content:
       type: free
@@ -2193,6 +2316,7 @@ kinds:
 
   30315:
     description: User Statuses
+    summary: "NIP-38 addressable user status. Content is status text; optional `r/e/a/p` tags attach URL/event/address/person; emoji tags support status emoji. `d` commonly indicates status type (e.g. general/music/reading) per NIP-38."
     content:
       type: free
     tags:
@@ -2204,6 +2328,7 @@ kinds:
 
   30402:
     description: Classified Listing
+    summary: "NIP-99 addressable marketplace classified ad. Content is description; title, summary, price/currency, location, status, image, geohash and references structure listing."
     content:
       type: free
     tags:
@@ -2242,6 +2367,7 @@ kinds:
 
   30403:
     description: Draft Classified Listing
+    summary: "Draft of NIP-99 classified listing; same metadata family as kind 30402, used before publishing. Schema includes title/summary/price/location/status/images and event/address references."
     content:
       type: free
     tags:
@@ -2277,6 +2403,7 @@ kinds:
 
   31922:
     description: Date-Based Calendar Event
+    summary: "NIP-52 addressable all-day/date calendar event. `start`/`end` are dates; title/location required in this schema; tags can include description/image/geohash/participants and calendar address."
     in_use: true
     content:
       type: free
@@ -2311,6 +2438,7 @@ kinds:
 
   31923:
     description: Time-Based Calendar Event
+    summary: "NIP-52 addressable timed calendar event. `start`/`end` are timestamps; timezone IDs preserve civil-time intent; title/location and optional summary/image/geohash/participants describe event."
     in_use: true
     content:
       type: free
@@ -2353,6 +2481,7 @@ kinds:
           required: true
   31924:
     description: Calendar
+    summary: "NIP-52 addressable calendar collection. Title and metadata describe calendar; repeated `a` tags include date- or time-based calendar events."
     in_use: true
     content:
       type: free
@@ -2368,6 +2497,7 @@ kinds:
 
   31925:
     description: Calendar Event RSVP
+    summary: "NIP-52 replaceable RSVP to calendar event. `a` identifies calendar event; `status` is accepted/declined/tentative; optional `fb` indicates free/busy and `p` tags attendees."
     in_use: true
     content:
       type: free
@@ -2397,6 +2527,7 @@ kinds:
 
   31989:
     description: Handler Recommendation
+    summary: "NIP-89 handler recommendation event. References addressable application handler (`a`) clients should use for a kind/content type; allows authors to recommend preferred apps/handlers."
     content:
       type: empty
     tags:
@@ -2404,6 +2535,7 @@ kinds:
 
   31990:
     description: Handler Information
+    summary: "NIP-89 addressable handler metadata announcement. Describes application handler for one or more kinds, web URI templates and platform-specific links; discovery data lets clients route unsupported events to external apps."
     content:
       type: json
     tags:
@@ -2426,6 +2558,7 @@ kinds:
 
   31992:
     description: Slash Command Definition
+    summary: "Addressable command manifest. Schema defines command name/title/description, typed positional arguments, enum choices, scopes (`s`) and subtractive scopes (`ignore`)."
     content:
       type: empty
     required:
@@ -2490,6 +2623,7 @@ kinds:
 
   30617:
     description: Git Repository Announcement
+    summary: "NIP-34 addressable Git repository announcement. `d` is repo identifier; `clone` URLs locate Git repository, `web` links homepage, `r` declares default branch hash, maintainers/relays/topics describe repo."
     in_use: true
     content:
       type: empty
@@ -2542,6 +2676,7 @@ kinds:
 
   30618:
     description: Git Repository State Announcement
+    summary: "NIP-34 addressable snapshot of repository refs and HEAD. `refs/<name>` tags map branch/tag refs to commit hashes; `HEAD` names current default reference."
     in_use: true
     content:
       type: empty
@@ -2564,6 +2699,7 @@ kinds:
 
   1617:
     description: Git Patch
+    summary: "NIP-34 patch event carries Git-format patch/commit information in content. Required repo address and `t` root/root-revision role link patch to project; commit, parent, committer and signature tags capture Git provenance."
     in_use: true
     content:
       type: free
@@ -2625,6 +2761,7 @@ kinds:
 
   1618:
     description: Git Pull Request
+    summary: "NIP-34 Git pull request event. References repo coordinate, subject/branch, branch tip commit, clone URLs and merge base; optional `e` links related events."
     in_use: true
     content:
       type: free
@@ -2681,6 +2818,7 @@ kinds:
 
   1619:
     description: Git Pull Request Update
+    summary: "NIP-34 update to an existing Git PR. Links repo, prior PR/update events, branch tip and clone/merge-base data; content explains changes."
     in_use: true
     content:
       type: free
@@ -2734,6 +2872,7 @@ kinds:
 
   30000:
     description: Follow Set
+    summary: "NIP-51 addressable named list of pubkeys (`p`); `d` identifies set; title/image/description support sharing and client rendering. Useful for curated sub-graphs independent from global follow list."
     in_use: true
     content:
       type: empty
@@ -2747,6 +2886,7 @@ kinds:
 
   30002:
     description: Relay Set
+    summary: "NIP-51 addressable named set of relays. Repeated `relay` tags list members; title/image/description label collection."
     in_use: true
     content:
       type: empty
@@ -2760,6 +2900,7 @@ kinds:
 
   30003:
     description: Bookmark Set
+    summary: "NIP-51 addressable named collection of event (`e`) and address (`a`) bookmarks. Supports multiple named collections with titles/images/descriptions, unlike simple kind-10003 bookmark list."
     content:
       type: empty
     multiple:
@@ -2774,6 +2915,7 @@ kinds:
 
   30004:
     description: Curation Set
+    summary: "NIP-51 addressable user-curated collection of events/addressable events (`e`/`a`), with descriptive metadata. Used for custom lists such as reading queues or topic collections."
     content:
       type: empty
     multiple:
@@ -2788,6 +2930,7 @@ kinds:
 
   30005:
     description: Video Set
+    summary: "NIP-51 addressable collection of video events (`e`), with title/image/description. Clients use it to curate/share playlists or video collections."
     content:
       type: empty
     multiple:
@@ -2800,6 +2943,7 @@ kinds:
 
   30007:
     description: Kind Mute Set
+    summary: "NIP-51 addressable named set for muting kinds/author groups, according to schema’s title/image/description fields and `p` tags. Exact list semantics should be confirmed against current NIP-51 text before client support."
     content:
       type: empty
     tags:
@@ -2810,6 +2954,7 @@ kinds:
 
   30015:
     description: Interest Set
+    summary: "NIP-51 addressable named set of interest labels/topics; schema includes title/image/description and no explicit members. Likely represents an interest taxonomy/curation grouping."
     content:
       type: empty
     tags:
@@ -2819,12 +2964,14 @@ kinds:
 
   30019:
     description: Marketplace UI/UX
+    summary: "JSON event describing marketplace interface/UX configuration, likely extensions for NIP-15 marketplace clients. Schema has no tags, so payload structure and security implications need source confirmation."
     content:
       type: json
     tags: []
 
   30030:
     description: Emoji Set
+    summary: "NIP-51 addressable custom emoji set. `d` identifies set; repeated `emoji` tags map shortcode to image URL; title/image/description describe collection. Profile emoji list kind 10030 may reference it."
     in_use: true
     content:
       type: empty
@@ -2836,6 +2983,7 @@ kinds:
 
   30031:
     description: Sticker pack
+    summary: "Addressable sticker-pack manifest. Tags carry title, pack format marker, cover, license, repeated sticker records (shortcode, URL, hash, MIME, dimensions/alt/emoji) and topic tags."
     in_use: true
     content:
       type: empty
@@ -2894,18 +3042,21 @@ kinds:
 
   30040:
     description: Curated Publication Index
+    summary: "NKBIP-01 addressable publication index: ordered, optionally nested table of contents for books, magazines, reading lists or documentation. MUST have empty content, normalized `d`, `title`, ordered `a` references, and `auto-update` policy (`yes`/`ask`/`no`)."
     content:
       type: free
     tags: []
 
   30041:
     description: Curated Publication Content
+    summary: "NKBIP-01 publication section/content, often book chapter, episode or zettel. Addressable event MUST contain `d` and `title`; content is reader-facing text and MAY use AsciiDoc or wikilinks."
     content:
       type: free
     tags: []
 
   30063:
     description: Release Artifact Set
+    summary: "Registry calls kind 30063 a replaceable artifact set containing `e`/`a` references and list presentation metadata. Open draft NIP-82 instead defines kind 30063 as a software release with app ID, version, channel, release notes, and `e` references to kind-3063 assets."
     content:
       type: empty
     tags:
@@ -2917,12 +3068,14 @@ kinds:
 
   30166:
     description: Relay Discovery
+    summary: "NIP-66 parameterized-replaceable relay-discovery record. Required `d` is normalized relay URL (or relay pubkey); optional content may contain NIP-11 JSON, and tags report latency, network, supported NIPs, limits, topic, accepted kinds and location."
     content:
       type: empty
     tags: []
 
   30267:
     description: App Curation Set
+    summary: "Addressable set of app references (`a`) with title/image/description; likely lets users curate apps/application manifests. Related handler and app announcements may use NIP-89/NIP-82."
     content:
       type: empty
     tags:
@@ -2933,6 +3086,7 @@ kinds:
 
   30311:
     description: Live Event
+    summary: "NIP-53 addressable live activity/stream announcement. Metadata identifies title/status/stream URL/host, participants and event timing; clients use it to discover/watch ongoing streams and later recordings."
     in_use: true
     content:
       type: free
@@ -2940,24 +3094,28 @@ kinds:
 
   30312:
     description: Interactive Room
+    summary: "Schema names an addressable interactive room; NIP-53 describes live activities and streaming-room metadata. Likely identifies real-time voice/video room; schema itself has only free content."
     content:
       type: free
     tags: []
 
   30313:
     description: Conference Event
+    summary: "Schema names an addressable conference event. Likely extends NIP-53 live/event announcements with conference schedule/session data; tag grammar is not shown in schema."
     content:
       type: free
     tags: []
 
   30388:
     description: Slide Set
+    summary: "Addressable “slide set” record; schema allows free-form content but defines no slide ordering/media tags. Likely presentation/deck content, with exact format client-specific."
     content:
       type: free
     tags: []
 
   30818:
     description: Wiki Article
+    summary: "NIP-54 addressable wiki article. Content contains article markup; title/summary tags describe it; `a/e` can reference related wiki pages or source events. `d` identifies page; editors publish later versions under same coordinate."
     in_use: true
     content:
       type: free
@@ -2969,6 +3127,7 @@ kinds:
 
   30819:
     description: Wiki Redirects
+    summary: "NIP-54 addressable wiki redirect record. Content identifies target wiki article/address; lets clients resolve moved/renamed pages and preserve existing links."
     in_use: true
     content:
       type: free
@@ -2976,6 +3135,7 @@ kinds:
 
   30828:
     description: Timeline Card
+    summary: "Addressable timeline card in schema’s project-specific calendar/timeline model. Content is Djot; required `event_date`, corpus/topics, label namespace/value, optional event time, locations and fork/adopt source references control indexing and provenance."
     in_use: true
     content:
       type: free
@@ -3072,18 +3232,21 @@ kinds:
 
   31234:
     description: Draft Event
+    summary: "Addressable draft event with free-form content. Schema gives no tags or policy, so “draft” use and confidentiality are not guaranteed by the event kind alone."
     content:
       type: free
     tags: []
 
   31388:
     description: Link Set
+    summary: "Addressable collection of links; schema only defines free-form content, no URL tags. Likely stores a curated collection/manifest, but encoding and link metadata are unspecified."
     content:
       type: free
     tags: []
 
   31436:
     description: Gopherhole Document
+    summary: "Addressable Gopher document. Content carries document body; `type` tag distinguishes Gopher item type `0` (text file) or `1` (directory/menu); title tag is optional."
     in_use: true
     content:
       type: free
@@ -3098,24 +3261,28 @@ kinds:
 
   31890:
     description: Feed
+    summary: "Addressable feed definition with free-form content; schema does not specify filter syntax, feed members, or discovery metadata. Could describe a user/app-defined feed."
     content:
       type: free
     tags: []
 
   32267:
     description: Software Application
+    summary: "NIP-82 addressable software application record; draft describes app identity/name, summary, icon, images, website, repo, license, tags and supported platforms. Content is Markdown description."
     content:
       type: free
     tags: []
 
   34550:
     description: Community Definition
+    summary: "NIP-72 addressable community definition. Coordinate (`kind:pubkey:d`) identifies community; metadata describes name/about/picture, moderation configuration, relays and moderators."
     content:
       type: free
     tags: []
 
   36820:
     description: Hitchhiking Ride, per the Hitchhiking Data Standard (https://github.com/Hitchwiki/hitchhiking-data-standard)
+    summary: "Addressable ride-offer event using Hitchhiking Data Standard JSON. Schema requires geohash and `published_at`, supports repeated geohashes, unique `d` ride ID and optional expiration."
     in_use: true
     content:
       type: json
@@ -3140,6 +3307,7 @@ kinds:
 
   37515:
     description: Geocache Listing
+    summary: "Addressable listing for a geocache. Required name, geohash, human-readable location, difficulty, terrain, size and cache type; optional hint/image/status/publication time/relay. `d` provides listing identifier."
     in_use: true
     content:
       type: free
@@ -3217,6 +3385,7 @@ kinds:
 
   37516:
     description: Geocache Log Entry
+    summary: "Addressable geocache log entry references cache via `a`; `log-type` classifies found, DNF, note, maintenance, disabled/enabled/archived; optional media, geohash and timestamp document visit/update."
     in_use: true
     content:
       type: free
@@ -3246,24 +3415,28 @@ kinds:
 
   38172:
     description: Cashu Mint Announcement
+    summary: "Addressable announcement for a Cashu mint/service. Schema leaves content free-form and tags empty; mint URL, keysets, fees and capabilities must come from the actual proposal/source."
     content:
       type: free
     tags: []
 
   38173:
     description: Fedimint Announcement
+    summary: "Addressable announcement for a Fedimint federation/service. Schema has free-form content and no tags; federation identity, guardians, endpoints and trust rules are not given."
     content:
       type: free
     tags: []
 
   38383:
     description: Peer-to-peer Order Events
+    summary: "Addressable P2P order event used by NIP-69-style marketplace/exchange flows. Content and lifecycle are application-defined; inspect tags/proposal for order side, currency, amount, status and counterparty."
     content:
       type: free
     tags: []
 
   39089:
     description: Starter Packs
+    summary: "Addressable curated starter pack of pubkeys (`p`) plus title/image/description. Used to bootstrap follow graph for new users."
     in_use: true
     content:
       type: empty
@@ -3277,6 +3450,7 @@ kinds:
 
   39092:
     description: Media Starter Packs
+    summary: "Addressable list of media-oriented accounts (`p`) with title/image/description, helping users discover/follow creators across video, audio and other media. Distinct from general starter packs kind 39089."
     content:
       type: empty
     multiple:
@@ -3289,6 +3463,7 @@ kinds:
 
   39701:
     description: Web Bookmarks
+    summary: "Addressable web bookmark event. Schema uses title and published time; content likely stores URL/annotation."
     in_use: true
     content:
       type: free
@@ -3298,6 +3473,7 @@ kinds:
 
   9000:
     description: Put User (add/update user in group)
+    summary: "NIP-29 group-admin event adds/updates member. `h` identifies group, `p` identifies member; optional role data may follow. Relay/group server enforces authorization and membership state."
     in_use: true
     content:
       type: empty
@@ -3321,6 +3497,7 @@ kinds:
 
   9001:
     description: Remove User From Group
+    summary: "NIP-29 admin command removes a member from a group. `h` identifies group and `p` target member; relay validates signer authority."
     in_use: true
     content:
       type: empty
@@ -3341,6 +3518,7 @@ kinds:
 
   9002:
     description: Edit Group Metadata
+    summary: "NIP-29 admin command updates group metadata/settings. `h` identifies group; title/image/description and flags such as private/restricted/hidden/closed change group configuration."
     in_use: true
     content:
       type: empty
@@ -3366,6 +3544,7 @@ kinds:
 
   9005:
     description: Delete Event From Group
+    summary: "NIP-29 admin event removes/hides event within group. `h` identifies group and `e` identifies event to delete; relay must apply group-specific authorization."
     in_use: true
     content:
       type: empty
@@ -3386,6 +3565,7 @@ kinds:
 
   9007:
     description: Create Group
+    summary: "NIP-29 admin command creates group identified by `h` tag. Relays implementing NIP-29 interpret this as group lifecycle operation rather than ordinary content event."
     in_use: true
     content:
       type: empty
@@ -3400,6 +3580,7 @@ kinds:
 
   9008:
     description: Delete Group
+    summary: "NIP-29 admin command deletes group identified by `h`. Group relay handles deletion and associated availability/metadata according to its NIP-29 implementation."
     in_use: true
     content:
       type: empty
@@ -3414,6 +3595,7 @@ kinds:
 
   9009:
     description: Create Group Invite
+    summary: "NIP-29 admin event creates/invites to group identified by `h`; invite distribution/authentication details depend on relay implementation and group settings."
     in_use: true
     content:
       type: empty
@@ -3428,6 +3610,7 @@ kinds:
 
   9021:
     description: Join Request
+    summary: "NIP-29 member’s request to join group. `h` names group and `code` can carry invite/authorization code; group relay or admins decide acceptance."
     in_use: true
     content:
       type: empty
@@ -3447,6 +3630,7 @@ kinds:
 
   9022:
     description: Leave Request
+    summary: "NIP-29 member asks to leave group identified by `h`. Relay updates membership state and may publish member-list change."
     in_use: true
     content:
       type: empty
@@ -3461,6 +3645,7 @@ kinds:
 
   39000:
     description: Group Metadata
+    summary: "NIP-29 addressable group metadata event; title/image/description plus private/restricted/hidden/closed flags describe group. Group identifier is encoded by `d`/relay convention in NIP-29."
     in_use: true
     content:
       type: empty
@@ -3479,6 +3664,7 @@ kinds:
 
   39001:
     description: Group Admins
+    summary: "NIP-29 replaceable list of group administrators (`p` tags), potentially including role metadata. Group relay uses this to authorize group-management events."
     in_use: true
     content:
       type: empty
@@ -3496,6 +3682,7 @@ kinds:
 
   39002:
     description: Group Members
+    summary: "NIP-29 replaceable membership list (`p` tags) published/maintained by group relay. Clients can use it to display roster; relay’s current list is not a globally authoritative identity proof."
     in_use: true
     content:
       type: empty
@@ -3510,6 +3697,7 @@ kinds:
 
   39003:
     description: Group Roles
+    summary: "NIP-29 addressable role definitions for group membership; `role` tags include role identifier and optional permissions/details. Schema records role definitions, not which member holds each role."
     in_use: true
     content:
       type: empty
@@ -3527,6 +3715,7 @@ kinds:
 
   1163:
     description: Exclusive Content Membership
+    summary: "Replaceable membership/access list associating users (`p`) and content addresses (`a`) with exclusive content. Likely subscription/paywall access-control metadata; schema does not define proof/payment/grant policy."
     in_use: true
     content:
       type: empty
@@ -3539,6 +3728,7 @@ kinds:
 
   10163:
     description: Exclusive Content Announcement
+    summary: "Announcement describing exclusive content via required URL. Schema content is free-form; intended to advertise gated/subscriber-only resource, but payment and authorization workflow are unspecified."
     content:
       type: free
     tags:
@@ -3549,6 +3739,7 @@ kinds:
 
   1301:
     description: Workout Record
+    summary: "Workout/fitness activity record. `t` categorizes activity and `duration` is required; optional distance, calories, source, type, and start/end timestamps support fitness tracking clients."
     content:
       type: free
     required:
@@ -3585,6 +3776,7 @@ kinds:
 
   1312:
     description: Live Activity Raid
+    summary: "Event links one live stream/community address as raid source (`root`) to another target stream (`mention`). Likely announces audience handoff/raid between NIP-53 live activities."
     content:
       type: free
     tags:
@@ -3613,6 +3805,7 @@ kinds:
 
   1313:
     description: Live Activity Clip
+    summary: "Clip/highlight from live activity. Schema requires creator `p`, source URL `r`, and title; optional `a` references source stream."
     content:
       type: free
     required:
@@ -3627,6 +3820,7 @@ kinds:
 
   1315:
     description: Road Event Report
+    summary: "NIP-F7 draft road-event report for nearby alerts: police, speed cameras, jams, accidents, closures, construction, hazards, fog, ice and potholes. `t` classifies event; repeated `g` tags index 4/5/6-character geohashes; `lat`/`lon` are seven-decimal coordinates; `expiration` governs relay retention; optional `maxspeed` gives posted limit in km/h and `alt` supplies accessible fallback; content is optional comment."
     content:
       type: free
     required:
@@ -3656,6 +3850,7 @@ kinds:
 
   1316:
     description: Road Event Confirmation
+    summary: "NIP-F7 confirmation/denial for a kind-1315 report. `e` references report; `status` is `still_there` or `no_longer_there`; `expiration` governs relay retention. Optional repeated `g` tags and `lat`/`lon` duplicate report location, enabling shared geospatial filtering; when present, values must match referenced report. `alt` may label confirmed/denied."
     content:
       type: empty
     required:
@@ -3675,6 +3870,7 @@ kinds:
 
   1622:
     description: Git Reply
+    summary: "NIP-34 reply/comment on repository issue/patch/PR, tied to repository address (`a`) and optionally parent event, quoted event, or participant tags. Content is text."
     content:
       type: free
     required:
@@ -3687,6 +3883,7 @@ kinds:
 
   1808:
     description: Audio Header
+    summary: "Audio media header/metadata event. Requires download URL; optional streaming URL and JSON waveform support audio playback UI."
     content:
       type: free
     required:
@@ -3705,6 +3902,7 @@ kinds:
 
   3063:
     description: Software Asset
+    summary: "NIP-82 draft defines regular non-replaceable asset event binding downloadable software to SHA-256, MIME type, app identifier, version and optional platform/runtime constraints. Schema has extra/alternate fields (`size`, `f`, `variant`) and omits draft fields such as `version_code`, platform-version limits, and `supported_nip`."
     content:
       type: empty
     required:
@@ -3747,6 +3945,7 @@ kinds:
 
   4312:
     description: Nests Admin Command
+    summary: "Nests-specific administrative command referencing optional group/community address and target pubkey, plus required `action`. No standardized action vocabulary or authorization semantics in schema."
     content:
       type: empty
     tags:
@@ -3759,6 +3958,7 @@ kinds:
 
   8000:
     description: Relay Add Member
+    summary: "NIP-43 relay membership event published by relay to announce member addition; `p` identifies member. Typically signed by relay’s NIP-11 `self` pubkey."
     content:
       type: empty
     multiple:
@@ -3768,6 +3968,7 @@ kinds:
 
   8001:
     description: Relay Remove Member
+    summary: "NIP-43 relay membership event announces member removal; `p` identifies former member. Relay-signed event can update clients’ cached membership state."
     content:
       type: empty
     multiple:
@@ -3777,6 +3978,7 @@ kinds:
 
   8333:
     description: Onchain Zap
+    summary: "On-chain Bitcoin payment/zap reference. Required `i` identifies Bitcoin transaction; `amount` gives amount, and `p/e/a/k` can associate recipient and target."
     content:
       type: free
     required:
@@ -3800,6 +4002,7 @@ kinds:
 
   9733:
     description: Private Zap
+    summary: "Private zap-related event referencing recipient/event/address; likely intended to hide zap activity via encrypted delivery. Schema alone does not specify encryption, invoice verification, or relation to kind-9734/9735."
     content:
       type: free
     tags:
@@ -3809,6 +4012,7 @@ kinds:
 
   10011:
     description: External Identities
+    summary: "Replaceable list of external identity claims (`i` tags) associated with author. Tag values may encode platform/user identifiers; schema permits multiple values but no verification method."
     content:
       type: empty
     tags:
@@ -3820,6 +4024,7 @@ kinds:
 
   10112:
     description: Nests Server List
+    summary: "Replaceable list of Nests service/server URLs (`server`). Lets clients discover or select Nests instances."
     content:
       type: empty
     multiple:
@@ -3829,6 +4034,7 @@ kinds:
 
   10133:
     description: Payment Targets
+    summary: "Replaceable list of payment destinations. Repeated `payto` tags contain scheme/network in second field and address in third, enabling clients to render supported payment targets."
     content:
       type: empty
     multiple:
@@ -3845,6 +4051,7 @@ kinds:
 
   11871:
     description: Attestor Proficiency
+    summary: "Attestation-related event with `k` tag identifying subject kind; content likely describes proficiency/attestor rating. Schema lacks score, subject identity and issuer constraints."
     content:
       type: free
     tags:
@@ -3852,6 +4059,7 @@ kinds:
 
   12473:
     description: Birdex
+    summary: "Addressable Birdex record with optional name (`n`), URL (`i`) and alt text. No meaning or payload standard established by schema; likely a project/app-specific bird reference/index."
     content:
       type: empty
     tags:
@@ -3867,6 +4075,7 @@ kinds:
 
   13534:
     description: Relay Membership List
+    summary: "NIP-43 relay-signed replaceable roster of member pubkeys (`member`). Useful as relay’s current membership snapshot; NIP-43 cautions it is not sole authoritative proof, and users can also announce membership."
     content:
       type: empty
     tags:
@@ -3877,6 +4086,7 @@ kinds:
 
   15129:
     description: Root Napplet
+    summary: "NIP-5D root napplet manifest is replaceable and MUST NOT have `d`. Current draft requires a single `x` hash of `/index.html` and non-empty plain-text description in content; optional title, source, icon, server; `z` archetypes, `i` accepted intents, `R` required NAP domains and `O` optional domains."
     content:
       type: empty
     multiple:
@@ -3911,6 +4121,7 @@ kinds:
 
   21001:
     description: CLINK Offer
+    summary: "CLINK protocol offer event. Schema has recipient `p`, event reference `e`, version tag and free-form content."
     content:
       type: free
     tags:
@@ -3923,6 +4134,7 @@ kinds:
 
   21002:
     description: CLINK Debit
+    summary: "CLINK debit event, related to offer kind 21001 and manage kind 21003. Schema records `p`, `e` and `clink_version`; payload/state transitions are not defined here."
     content:
       type: free
     tags:
@@ -3935,6 +4147,7 @@ kinds:
 
   21003:
     description: CLINK Manage
+    summary: "CLINK management/control event. Schema allows recipient/related-event references, protocol version and free-form content; action authorization and semantics require external CLINK spec."
     content:
       type: free
     tags:
@@ -3947,6 +4160,7 @@ kinds:
 
   21059:
     description: Ephemeral Gift Wrap
+    summary: "Ephemeral variant of NIP-59 gift wrap (same 1059 wrapping purpose with ephemeral kind range). Intended to transport wrapped encrypted event without durable relay storage; recipient tag routes it."
     content:
       type: free
     tags:
@@ -3954,6 +4168,7 @@ kinds:
 
   23196:
     description: NWC Notification (Legacy)
+    summary: "Legacy NIP-47 wallet notification event, encrypted for NWC client. Wallet service can push asynchronous payment/status updates over relay; this schema does not express request correlation."
     content:
       type: free
     tags:
@@ -3961,6 +4176,7 @@ kinds:
 
   23197:
     description: NWC Notification
+    summary: "NIP-47 wallet-service push notification to connected client. Encrypted asynchronous event can report wallet activity without client polling."
     content:
       type: free
     tags:
@@ -3968,6 +4184,7 @@ kinds:
 
   23333:
     description: Ephemeral Chat Room
+    summary: "Ephemeral chat-room message with required `d` room ID and `relay` tag. Likely short-lived room chat; schema does not specify expiry, encryption or message ordering."
     content:
       type: free
     required:
@@ -3985,6 +4202,7 @@ kinds:
 
   23903:
     description: Wake Up
+    summary: "Ephemeral “wake up” event references event ID (`e`), pubkey (`p`) and kind (`k`); likely signals a client/service to resume or notify about an event. Exact recipient and relay semantics are unknown."
     content:
       type: empty
     tags:
@@ -3994,6 +4212,7 @@ kinds:
 
   25050:
     description: Call Offer
+    summary: "Ephemeral call-signaling event initiating voice/video call. Required target pubkey, call ID and call type (`voice`/`video`); content likely carries SDP offer."
     content:
       type: free
     required:
@@ -4016,6 +4235,7 @@ kinds:
 
   25051:
     description: Call Answer
+    summary: "Ephemeral response to call offer. Required recipient `p` and same `call-id`; content likely carries SDP answer for voice/video signaling."
     content:
       type: free
     required:
@@ -4030,6 +4250,7 @@ kinds:
 
   25052:
     description: Call ICE Candidate
+    summary: "Ephemeral call signaling event carrying ICE candidate JSON for a call ID and recipient. Candidate data helps peers establish direct media path; schema does not specify trickle/SDP format."
     content:
       type: json
     required:
@@ -4044,6 +4265,7 @@ kinds:
 
   25053:
     description: Call Hangup
+    summary: "Ephemeral call termination event addressed to peer with call ID. Content can carry reason/status; exact call-state handling is protocol-specific."
     content:
       type: free
     required:
@@ -4058,6 +4280,7 @@ kinds:
 
   25054:
     description: Call Reject
+    summary: "Ephemeral call rejection event addressed to peer and associated call ID. Content may communicate refusal reason; schema does not define standard reason codes."
     content:
       type: free
     required:
@@ -4072,6 +4295,7 @@ kinds:
 
   25055:
     description: Call Renegotiate
+    summary: "Ephemeral call renegotiation signaling event with target and call ID; likely updates SDP/session parameters after initial connection. Content format and ordering are not specified in schema."
     content:
       type: free
     required:
@@ -4086,6 +4310,7 @@ kinds:
 
   28934:
     description: Relay Join Request
+    summary: "NIP-43 user request to join a relay/member-only service. Optional `claim` carries invite code; event should be recent and sent only to relay advertising NIP-43 support."
     content:
       type: empty
     tags:
@@ -4095,18 +4320,21 @@ kinds:
 
   28935:
     description: Relay Invite Request
+    summary: "NIP-43 invite-related relay request; schema has no tags, likely used for obtaining/using a relay invitation. Exact issuer/claim flow should be read from NIP-43 and relay implementation."
     content:
       type: empty
     tags: []
 
   28936:
     description: Relay Leave Request
+    summary: "NIP-43 request to revoke membership/leave relay. Request is recent; NIP-43 specifies `-` tag requirement in newer spec revisions, while this registry schema currently allows no tags—check schema/spec version mismatch."
     content:
       type: empty
     tags: []
 
   30001:
     description: Old Bookmark Set
+    summary: "Legacy NIP-51 addressable bookmark set. Tags include title and event/address references; newer NIP-51 conventions use kind 30003 for bookmark set and kind 10003 for simple bookmark list."
     in_use: true
     content:
       type: empty
@@ -4117,6 +4345,7 @@ kinds:
 
   30006:
     description: Picture Set
+    summary: "NIP-51 addressable curated picture collection; title/description/image plus `e/a` references. Used to group photo events or addressable picture posts."
     content:
       type: empty
     tags:
@@ -4128,6 +4357,7 @@ kinds:
 
   30053:
     description: NNS Name
+    summary: "Addressable NNS/Namecoin-style name record. `ip4`, `ip6`, and version tags advertise network endpoint/name resolution data; content may carry name/record payload."
     content:
       type: free
     tags:
@@ -4143,6 +4373,7 @@ kinds:
 
   30296:
     description: Interactive Story Prologue
+    summary: "Addressable opening/prologue of interactive story. Required `d` identifier and title; repeated `option` tags map choice labels to next scene identifiers."
     content:
       type: free
     required:
@@ -4160,6 +4391,7 @@ kinds:
 
   30297:
     description: Interactive Story Scene
+    summary: "Addressable scene within interactive story; title and `d` identify scene, `option` tags offer choices/next scene IDs. Content holds narrative text."
     content:
       type: free
     required:
@@ -4177,6 +4409,7 @@ kinds:
 
   30298:
     description: Interactive Story Reading State
+    summary: "Addressable per-user story state with `d` identifier, required state `s` (`active`/`completed`), and story address (`a`). Metadata can show reading progress context."
     content:
       type: empty
     required:
@@ -4197,6 +4430,7 @@ kinds:
 
   30382:
     description: User Assertion (NIP-85)
+    summary: "NIP-85 trusted assertion about a user pubkey. `d` identifies subject; JSON content carries provider-generated metrics/rank/score. Consumers decide which providers to trust."
     content:
       type: json
     tags:
@@ -4207,6 +4441,7 @@ kinds:
 
   30383:
     description: Event Assertion (NIP-85)
+    summary: "NIP-85 replaceable assertion about a specific event ID. `d` identifies subject event; event has no content in schema, so assertion metrics are encoded through tags."
     content:
       type: empty
     tags:
@@ -4217,6 +4452,7 @@ kinds:
 
   30384:
     description: Addressable Assertion (NIP-85)
+    summary: "NIP-85 assertion about an addressable event coordinate. `d` identifies subject address; tags carry provider-defined metrics. Consumers should treat values as claims from assertion provider."
     content:
       type: empty
     tags:
@@ -4227,6 +4463,7 @@ kinds:
 
   30385:
     description: External ID Assertion (NIP-85)
+    summary: "NIP-85 trusted assertion about external identifier (e.g. web/podcast/ISBN according to NIP-73 types). `d` contains external subject; tags encode asserted metrics."
     content:
       type: empty
     tags:
@@ -4237,6 +4474,7 @@ kinds:
 
   31337:
     description: Audio Track
+    summary: "Addressable audio track record. Schema requires track `type` and media URI, with optional subject, price, cover and participant."
     content:
       type: empty
     required:
@@ -4266,6 +4504,7 @@ kinds:
 
   31871:
     description: Attestation
+    summary: "Addressable attestation record with `d`, optional event (`e`) or address (`a`) subject, and optional score/status (`s`). Content carries attestation statement/proof."
     content:
       type: free
     tags:
@@ -4281,6 +4520,7 @@ kinds:
 
   31872:
     description: Attestation Request
+    summary: "Addressable request for an attestation. Schema links event/address/pubkey and allows optional Cashu token; content likely explains claim/evidence being attested."
     content:
       type: free
     tags:
@@ -4297,6 +4537,7 @@ kinds:
 
   31873:
     description: Attestor Recommendation
+    summary: "Addressable recommendation of an attestor pubkey (`d`), optionally scoped to event kind (`k`). Lets users/clients discover attestors for relevant claim categories."
     content:
       type: free
     tags:
@@ -4308,6 +4549,7 @@ kinds:
 
   33401:
     description: Exercise Template
+    summary: "Addressable exercise template with identifier, title, difficulty and equipment tags; content likely holds exercise instructions or structured routine. Intended for fitness/workout apps."
     content:
       type: free
     tags:
@@ -4324,6 +4566,7 @@ kinds:
 
   33534:
     description: Relay Role Definition
+    summary: "NIP-43 addressable role definition for relay membership. `d` is role ID; label, description, hue/color and order support display/permissions in relay roster."
     content:
       type: empty
     tags:
@@ -4351,6 +4594,7 @@ kinds:
 
   33863:
     description: Fundraiser
+    summary: "Addressable fundraiser/campaign event. Title, image, media metadata, goal, deadline, tags and publication time describe campaign; content provides narrative."
     content:
       type: free
     tags:
@@ -4372,6 +4616,7 @@ kinds:
 
   34139:
     description: Music Playlist
+    summary: "Addressable music playlist. Requires title; tags can include artwork/description, referenced tracks (`a`), and access/collaboration flags (`public`, `private`, `collaborative`)."
     content:
       type: free
     required:
@@ -4390,6 +4635,7 @@ kinds:
 
   34235:
     description: Video Event (Horizontal)
+    summary: "Addressable horizontal-format video event. Repeated `imeta` tags describe media; `alt` offers accessible description."
     content:
       type: free
     multiple:
@@ -4402,6 +4648,7 @@ kinds:
 
   34236:
     description: Video Event (Vertical)
+    summary: "Addressable vertical-format video event, with `imeta` media metadata and optional `alt` text. Suited to short-form/mobile portrait video; clients should use dimensions/media metadata rather than kind alone to render."
     content:
       type: free
     multiple:
@@ -4414,6 +4661,7 @@ kinds:
 
   34551:
     description: Community Rules
+    summary: "Addressable rules document for a NIP-72 community. `d` identifies rule set; `a` references community; `k` can scope rules to kind; `p` can identify rule authors/moderators. Content carries rule text."
     content:
       type: free
     tags:
@@ -4429,6 +4677,7 @@ kinds:
 
   35129:
     description: Named Napplet
+    summary: "NIP-5D named napplet manifest is addressable and requires `d`. Current draft requires a single `x` hash of `/index.html` and non-empty plain-text description content; optional title/source/icon/server; `z` archetypes, `i` intents, `R` required NAP domains and `O` optional domains."
     content:
       type: empty
     multiple:
@@ -4463,6 +4712,7 @@ kinds:
 
   36787:
     description: Music Tracks
+    summary: "Addressable music track/post. Requires title, artist and URL; optional cover image, album, duration, format and topics describe playable track."
     content:
       type: free
     required:
@@ -4497,6 +4747,7 @@ kinds:
 
   38000:
     description: Mint Recommendation
+    summary: "Mint recommendation event associates mint URL with kind (`k`) and optional target address (`a`). Used in Cashu/ecash discovery to recommend compatible mint for relevant content/action."
     content:
       type: free
     required:
@@ -4511,6 +4762,7 @@ kinds:
 
   8828:
     description: Timeline Act
+    summary: "Replaceable timeline curation/decision event for kind-30828 card. `e` marks exact card version accepted/revoked/superseded; optional `a` identifies card coordinate; copied title/summary put fields in scope. Acts preserve provenance and revision history."
     in_use: true
     content:
       type: free
@@ -4555,6 +4807,7 @@ kinds:
 
   5129:
     description: Napplet Snapshot
+    summary: "NIP-5D regular immutable snapshot of root/named napplet version. Carries the same direct artifact `x` hash and content/metadata as source manifest, plus `a` to immediate parent and optional `A` for original lineage."
     content:
       type: empty
     multiple:
@@ -4585,6 +4838,7 @@ kinds:
 
   6969:
     description: Zap Poll
+    summary: "Poll/vote-like event associated with zaps; schema allows poll options, minimum/maximum choice counts and close time, plus references to poll/event/author. Likely zap-weighted voting or poll response format."
     content:
       type: free
     tags:
