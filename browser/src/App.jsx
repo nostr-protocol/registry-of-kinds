@@ -25,6 +25,7 @@ function App() {
         kindsList.push({
           number: parseInt(key),
           description: value.description || "No description",
+          summary: value.summary || null,
           content: value.content?.type || "unknown",
           tags: value.tags || [],
           required: value.required || [],
@@ -94,6 +95,7 @@ function App() {
       kind =>
         kind.number.toString().includes(term) ||
         kind.description.toLowerCase().includes(term) ||
+        (kind.summary && kind.summary.toLowerCase().includes(term)) ||
         kind.tags
           .map(t => t.name)
           .join("")
@@ -224,9 +226,7 @@ function App() {
                           }`}
                           onClick={() => selectKind(kind)}
                         >
-                          <td class="px-4 py-2">
-                            <span class="font-bold">{kind.number}</span>
-                          </td>
+                          <td class="px-4 py-2 font-bold">{kind.number}</td>
                           <td class="px-4 py-2">{kind.description}</td>
                         </tr>
                       )}
@@ -248,6 +248,13 @@ function App() {
                 <h2 class="text-2xl font-bold mb-6">Kind {selectedKind().number}</h2>
 
                 <div class="space-y-6">
+                  <Show when={selectedKind().summary}>
+                    <div>
+                      <h3 class="text-sm font-bold mb-2">Summary:</h3>
+                      <p>{selectedKind().summary}</p>
+                    </div>
+                  </Show>
+
                   <div>
                     <h3 class="text-sm font-bold mb-2">Description:</h3>
                     <p class="text-lg">{selectedKind().description}</p>
