@@ -208,7 +208,7 @@ function App() {
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="bg-white border-2 border-black">
+            <div class="bg-white border-2 border-black self-start">
               <div class="max-h-[70vh] overflow-y-auto">
                 <table class="w-full">
                   <thead class="sticky top-0 bg-white border-b-2 border-black">
