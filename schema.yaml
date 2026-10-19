@@ -5559,7 +5559,8 @@ kinds:
 
   6969:
     description: Zap Poll
-    summary: "Poll/vote-like event associated with zaps; schema allows poll options, minimum/maximum choice counts and close time, plus references to poll/event/author. Likely zap-weighted voting or poll response format."
+    summary: "Paid poll (NIP-B9 draft). Voters zap one of the poll's `p` recipients; the zap request names the chosen option index in a `poll_option` tag. Tags: `poll_option` (index + label, at least two), `value_minimum`/`value_maximum` sat bounds on a counted vote, `consensus_threshold` (0-100), `closed_at` tally deadline. Results are satoshi-weighted."
+    in_use: true
     content:
       type: free
     tags:
@@ -5567,17 +5568,20 @@ kinds:
       - *ptag
       - *qtag
       - *atag
-      - name: option
+      - name: poll_option
         next:
           type: free
           required: true
           next:
             type: free
             required: true
-      - name: minimum
+      - name: value_minimum
         next:
           type: free
-      - name: maximum
+      - name: value_maximum
+        next:
+          type: free
+      - name: consensus_threshold
         next:
           type: free
       - name: closed_at
