@@ -1170,6 +1170,66 @@ kinds:
       type: free
     tags: []
 
+  # Proposed by Open Markets specification PR #12; not a deployed-use claim.
+  # https://github.com/OpenMarketsFoundation/specification/pull/12
+  # Unsigned inner rumor, authenticated through the NIP-59 kind-13 seal and
+  # transported in a kind-1059 gift wrap. Not a directly publishable signed event.
+  # Version/type select the JSON payload schema; content is the payload object,
+  # not a mandatory signed child event or an additional {type, payload} wrapper.
+  1327:
+    description: Private Structured Commerce Message
+    in_use: false
+    content:
+      type: json
+    required:
+      - p
+      - conversation
+      - order
+      - operation
+      - type
+      - version
+    tags:
+      -
+        name: p
+        next:
+          type: pubkey
+          required: true
+          next:
+            type: relay
+        description: Counterparty; exactly one in the version 1 two-party profile
+      -
+        name: conversation
+        next:
+          type: free
+          required: true
+        description: Stable private conversation identifier
+      -
+        name: order
+        next:
+          type: free
+          required: true
+        description: Stable private order identifier; does not imply acceptance
+      -
+        name: operation
+        next:
+          type: hex
+          min: 32
+          max: 32
+          required: true
+        description: Immutable logical operation identifier; 32 lowercase hex characters in version 1
+      -
+        name: type
+        next:
+          type: free
+          required: true
+        description: Registered named operation; lowercase snake_case
+      -
+        name: version
+        next:
+          type: free
+          required: true
+        description: Envelope and operation-schema version; version 1 is proposed
+
   1337:
     description: Code Snippet
     summary: "Code-snippet event. Content contains snippet text; tags can label language, filename/name, extension, runtime, license, repeatable dependencies, repository and description."
