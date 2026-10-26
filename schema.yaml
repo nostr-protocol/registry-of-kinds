@@ -2269,6 +2269,17 @@ kinds:
       type: empty
     tags: []
 
+  10992:
+    description: Installed Slash Commands
+    summary: "NIP-51 list of the NIP-CD slash command definitions (`a`, kind 31992) a user has installed. Clients use it as the source for command autocomplete and for rendering invocations as chips."
+    in_use: true
+    content:
+      type: free
+    multiple:
+      - a
+    tags:
+      - *atag
+
   11111:
     description: Transport Method Announcement
     summary: "Replaceable announcement of supported transport methods; current schema gives no fields. Likely application-level capability negotiation for Nostr transport/proxy features."
@@ -2805,6 +2816,7 @@ kinds:
   31992:
     description: Slash Command Definition
     summary: "NIP-CD addressable command manifest. Schema defines command trigger/name/description, typed positional arguments and scope filters (`s`) limiting which events trigger the command. Invocations are plain text at index 0 of any event content with no tags."
+    in_use: true
     content:
       type: empty
     required:
