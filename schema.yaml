@@ -175,6 +175,33 @@ _atag-bare: &atag-bare
     type: addr
     required: true
 
+_platformtag: &platformtag
+  name: f
+  next:
+    type: constrained
+    required: true
+    either:
+     - android-arm64-v8a
+     - android-armeabi-v7a
+     - android-x86
+     - android-x86_64
+     - darwin-arm64
+     - darwin-x86_64
+     - linux-aarch64
+     - linux-x86_64
+     - linux-armv7l
+     - linux-riscv64
+     - windows-aarch64
+     - windows-x86_64
+     - ios-arm64
+     - freebsd-x86_64
+     - freebsd-aarch64
+     - wasm32
+     - wasm64
+     - wasi-wasm32
+     - wasi-wasm64
+  description: platform identifier (OS + architecture)
+
 generic_tags:
   t:
     type: lowercase
@@ -1875,6 +1902,25 @@ kinds:
              - read
              - write
 
+  10067:
+    description: App Catalog Relays
+    summary: "NIP-82 replaceable list of relays to fetch software applications (32267, 30063, 3063, 30267) from. `r` tags with optional `read`/`write` markers as in NIP-65; private relays may be NIP-44-encrypted in content per NIP-51."
+    in_use: true
+    content:
+      type: free
+    multiple:
+      - r
+    tags:
+      - name: r
+        next:
+          type: relay
+          required: true
+          next:
+            type: constrained
+            either:
+             - read
+             - write
+
   9802:
     description: Highlights
     summary: "NIP-84 highlight/bookmark quote. Content carries selected quotation; `e`/`a` or `r` point to source, `context` gives surrounding text, `comment` adds author’s note, and `p` can identify source author."
@@ -2658,6 +2704,38 @@ kinds:
       - *etag
       - *atag
 
+  30509:
+    description: Identity Proof
+    summary: "NIP-82 proof that the owner of an X.509 certificate (e.g. an APK signing certificate) controls this Nostr key. `d` is the SHA-256 of the DER certificate, `signature` the base64 certificate-key signature over `Verifying at <created_at> until <expiry> that I control the following Nostr public key: <pubkey>`, `expiry` a timestamp; optional `revoked` with reason."
+    in_use: true
+    content:
+      type: empty
+    required:
+      - d
+      - signature
+      - expiry
+    tags:
+      - name: d
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+        description: SHA-256 of the DER-encoded certificate
+      - name: signature
+        next:
+          type: free
+          required: true
+        description: base64 signature made with the certificate private key
+      - name: expiry
+        next:
+          type: timestamp
+          required: true
+      - name: revoked
+        next:
+          type: free
+        description: reason for revocation
+
   31922:
     description: Date-Based Calendar Event
     summary: "NIP-52 addressable all-day/date calendar event. `start`/`end` are dates; title/location required in this schema; tags can include description/image/geohash/participants and calendar address."
@@ -3306,16 +3384,43 @@ kinds:
     tags: []
 
   30063:
-    description: Release Artifact Set
-    summary: "Registry calls kind 30063 a replaceable artifact set containing `e`/`a` references and list presentation metadata. Open draft NIP-82 instead defines kind 30063 as a software release with app ID, version, channel, release notes, and `e` references to kind-3063 assets."
+    description: Software Release
+    summary: "NIP-82 addressable software release. `i` is the app identifier (`d` of kind 32267), `version` the release version, `d` MUST be `<i>@<version>`, `c` the channel (main/beta/nightly/dev or custom), `f` the union of asset platforms and `e` points to every kind-3063 asset of the release. Content is Markdown release notes; `created_at` MUST be the release date."
+    in_use: true
     content:
-      type: empty
+      type: free
+    required:
+      - i
+      - version
+      - c
+      - f
+      - e
+    multiple:
+      - f
+      - e
     tags:
-      - *etag
-      - *atag
-      - *titletag
-      - *imagetag
-      - *descriptiontag
+      - name: i
+        next:
+          type: free
+          required: true
+        description: app identifier, same as the `d` tag of the kind 32267
+      - name: version
+        next:
+          type: free
+          required: true
+      - name: c
+        next:
+          type: free
+          required: true
+        description: release channel, "main", "beta", "nightly", "dev" or custom
+      - *platformtag
+      - name: e
+        next:
+          type: id
+          required: true
+          next:
+            type: relay
+        description: kind 3063 software asset
 
   30067:
     description: Pinboard
@@ -3349,14 +3454,22 @@ kinds:
 
   30267:
     description: App Curation Set
-    summary: "Addressable set of app references (`a`) with title/image/description; likely lets users curate apps/application manifests. Related handler and app announcements may use NIP-89/NIP-82."
+    summary: "NIP-51/NIP-82 addressable set of kind-32267 applications (`a`, in order) with title/description/image and a required `f` for the platform it was made for. Private items are NIP-44-encrypted in content as a stringified JSON array of `a` tags, per NIP-51."
+    in_use: true
     content:
-      type: empty
+      type: free
+    required:
+      - f
+    multiple:
+      - a
     tags:
-      - *atag
       - *titletag
-      - *imagetag
       - *descriptiontag
+      - *imagetag
+      - *platformtag
+      - name: a
+        next: *addr
+        description: kind 32267 software application
 
   30311:
     description: Live Event
@@ -3542,10 +3655,51 @@ kinds:
 
   32267:
     description: Software Application
-    summary: "NIP-82 addressable software application record; draft describes app identity/name, summary, icon, images, website, repo, license, tags and supported platforms. Content is Markdown description."
+    summary: "NIP-82 addressable software application. `d` is the app identifier (reverse-domain recommended), `name` required, `f` lists every platform with available assets so clients can filter by `#f`. Optional summary, icon, images, `t` tags, website, repository URL, NIP-34 repo `a` pointer and SPDX license. Content is Markdown description."
+    in_use: true
     content:
       type: free
-    tags: []
+    required:
+      - name
+      - f
+    multiple:
+      - f
+      - image
+      - t
+    tags:
+      - name: name
+        next:
+          type: free
+          required: true
+      - *platformtag
+      - name: summary
+        next:
+          type: free
+          required: true
+        description: short description, no markdown
+      - name: icon
+        next:
+          type: url
+          required: true
+      - *imagetag
+      - name: url
+        next:
+          type: url
+          required: true
+        description: website
+      - name: repository
+        next:
+          type: url
+          required: true
+        description: source code repository, must be git-cloneable
+      - name: a
+        next: *addr
+        description: pointer to a NIP-34 kind-30617 repository
+      - name: license
+        next:
+          type: free
+          required: true
+        description: SPDX license ID
 
   34550:
     description: Community Definition
@@ -4296,46 +4450,95 @@ kinds:
 
   3063:
     description: Software Asset
-    summary: "NIP-82 draft defines regular non-replaceable asset event binding downloadable software to SHA-256, MIME type, app identifier, version and optional platform/runtime constraints. Schema has extra/alternate fields (`size`, `f`, `variant`) and omits draft fields such as `version_code`, platform-version limits, and `supported_nip`."
+    summary: "NIP-82 regular event binding a downloadable software file to its SHA-256 (`x`), MIME type (`m`, primary source of truth for runtime), asset identifier (`i`), `version` and platforms (`f`). Optional URLs, size, platform version bounds, supported NIPs, variant/filename, commit, minimum allowed version. Android assets require `version_code` and `apk_certificate_hash`."
+    in_use: true
     content:
       type: empty
     required:
       - i
-      - m
       - x
       - version
+      - m
+      - f
+    multiple:
+      - f
+      - url
+      - supported_nip
+      - apk_certificate_hash
     tags:
       - name: i
         next:
           type: free
           required: true
-      - name: url
-        next:
-          type: url
-      - name: m
-        next:
-          type: free
-          required: true
+        description: asset identifier, may differ from the app identifier
       - name: x
         next:
           type: hex
           min: 64
           max: 64
           required: true
-      - name: size
-        next:
-          type: free
       - name: version
         next:
           type: free
           required: true
-      - name: f
+      - name: m
+        next:
+          type: free
+          required: true
+        description: MIME type
+      - *platformtag
+      - name: url
+        next:
+          type: url
+          required: true
+      - name: size
+        next:
+          type: free
+          required: true
+      - name: min_platform_version
+        next:
+          type: free
+          required: true
+      - name: target_platform_version
+        next:
+          type: free
+          required: true
+      - name: supported_nip
         next:
           type: free
           required: true
       - name: variant
         next:
           type: free
+          required: true
+      - name: filename
+        next:
+          type: free
+          required: true
+      - name: commit
+        next:
+          type: free
+          required: true
+      - name: min_allowed_version
+        next:
+          type: free
+          required: true
+      - name: version_code
+        next:
+          type: free
+          required: true
+        description: integer version code, required for Android
+      - name: min_allowed_version_code
+        next:
+          type: free
+          required: true
+      - name: apk_certificate_hash
+        next:
+          type: hex
+          min: 64
+          max: 64
+          required: true
+        description: SHA-256 of the APK signing certificate, required for Android
 
   3302:
     description: Concord Edit
