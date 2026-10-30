@@ -3841,6 +3841,44 @@ kinds:
         next:
           type: timestamp
 
+  37773:
+    description: Bitcoin-OTC Identity Linkage Proof (https://github.com/TheButterZone/nips/blob/bitcoin-otc/nip-xx.md)
+    summary: "A method for linking a Nostr public key (npub) to an external identity (bitcoin-otc nickname) via a self-attested cryptographic proof"
+    in_use: true
+    content:
+      type: PGP or Bicoin signed message attesting npub, <nick>, which verifies to <key>
+    tags:
+      -
+        name: d
+        next:
+          type: variable
+          prefix: "ext:bitcoin-otc:"
+            next:
+            - <nick>        
+          required: true
+      -
+        name: proof-type
+        type: constrained
+          either:
+            - pgp 
+            - btc
+          required: true
+      -
+        name: key
+        type: variable
+          either:
+            - <pgp-fingerprint> 
+            - <bitcoin-address>
+          required: true
+      -
+        name: uri
+        type: variable
+        prefix: "https://bitcoin-otc.com/viewratingdetail.php?nick="
+          next:
+            - <nick>
+            required: true
+        required: false
+
   38172:
     description: Cashu Mint Announcement
     summary: "Addressable announcement for a Cashu mint/service. Schema leaves content free-form and tags empty; mint URL, keysets, fees and capabilities must come from the actual proposal/source."
