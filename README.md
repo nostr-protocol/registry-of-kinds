@@ -7,3 +7,7 @@ Any reasonable event definition can be added here. Implementation and how-to-use
 The entire thing exists in a single YAML file (with lots of aliases such that common tag definitions don't have to be repeated) and can be used to automatically validate events (by relays at the time of event ingestion, for example).
 
 [The file.](schema.yaml)
+
+## How to add a kind
+
+Open a Pull Request adding it with maximum amount of detail possible. Include links to applications that you know are using it, and if you have user numbers that is even better.
