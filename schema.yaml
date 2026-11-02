@@ -3842,42 +3842,42 @@ kinds:
           type: timestamp
 
   37773:
-    description: Bitcoin-OTC Identity Linkage Proof (https://github.com/TheButterZone/nips/blob/bitcoin-otc/nip-xx.md)
-    summary: "A method for linking a Nostr public key (npub) to an external identity (bitcoin-otc nickname) via a self-attested cryptographic proof"
+    description: Bitcoin-OTC Identity Linkage Proof
+    summary: "Addressable self-attested proof linking the author's Nostr pubkey to a bitcoin-otc nickname. `d` is `ext:bitcoin-otc:<nick>`; `proof-type` says whether content is a PGP clearsigned message or a Bitcoin signed message (legacy P2PKH, BIP-137) asserting control of the npub; `key` is the PGP fingerprint or bitcoin address to verify against; optional `uri` points to the bitcoin-otc rating page."
     in_use: true
     content:
-      type: PGP or Bicoin signed message attesting npub, <nick>, which verifies to <key>
+      type: free
+    required:
+      - d
+      - proof-type
+      - key
     tags:
       -
         name: d
         next:
-          type: variable
-          prefix: "ext:bitcoin-otc:"
-            next:
-            - <nick>        
+          type: free
           required: true
+        description: external identity being claimed, in the form "ext:bitcoin-otc:<nick>"
       -
         name: proof-type
-        type: constrained
+        next:
+          type: constrained
           either:
-            - pgp 
+            - pgp
             - btc
           required: true
       -
         name: key
-        type: variable
-          either:
-            - <pgp-fingerprint> 
-            - <bitcoin-address>
+        next:
+          type: free
           required: true
+        description: PGP fingerprint or legacy P2PKH bitcoin address used to verify the signature in .content
       -
         name: uri
-        type: variable
-        prefix: "https://bitcoin-otc.com/viewratingdetail.php?nick="
-          next:
-            - <nick>
-            required: true
-        required: false
+        next:
+          type: url
+          required: true
+        description: bitcoin-otc rating page, "https://bitcoin-otc.com/viewratingdetail.php?nick=<nick>"
 
   38172:
     description: Cashu Mint Announcement
