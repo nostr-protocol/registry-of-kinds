@@ -1252,6 +1252,68 @@ kinds:
             type: relay
         description: repository URL or NIP-34 address
 
+  # Mialuna stories: https://github.com/Lwb89dev/mialuna/blob/main/docs/stories.md
+  1418:
+    description: Short-lived Story
+    summary: "A 24-hour photo or video story under its own kind, so that picture and short-video feeds (kinds 20/21/22) do not list it. One event carries one `imeta` media item; `expiration` (NIP-40) is at most 24 hours after created_at; the NIP-32 label `story` in namespace `mialuna.story` is required. Content is an optional caption. Clients show it only in a stories view. A close-friends story is the same event as an unsigned rumor inside a NIP-59 gift wrap."
+    in_use: true
+    content:
+      type: free
+    required:
+      - imeta
+      - expiration
+      - L
+      - l
+    multiple:
+      - t
+      - story-text
+    tags:
+      - *imetatag
+      - *titletag
+      - name: published_at
+        next:
+          type: timestamp
+          required: true
+        description: when the story was published
+      - name: expiration
+        next:
+          type: timestamp
+          required: true
+        description: NIP-40, at most 86400 seconds after created_at
+      - name: L
+        next:
+          type: free
+          required: true
+        description: label namespace, always "mialuna.story"
+      - name: l
+        next:
+          type: free
+          required: true
+          next:
+            type: free
+            required: true
+        description: the label "story" followed by its namespace "mialuna.story"
+      - name: duration
+        next:
+          type: free
+          required: true
+        description: video length in seconds
+      - name: t
+        next:
+          type: lowercase
+          required: true
+        description: hashtag
+      - name: content-warning
+        next:
+          type: free
+          required: true
+        description: NIP-36 reason
+      - name: story-text
+        next:
+          type: free
+          required: true
+        description: JSON describing a text laid over the media, drawn by the client
+
   1971:
     description: Problem Tracker
     summary: "Registry names kind 1971 “Problem Tracker” (historical Nostrocket mapping), but current Nostrocket NIP-1971 draft uses **kind 31971** for addressable problem snapshots. Problems form revision and parent DAGs; comments, claims and solutions use NIP-22 kind 1111."
